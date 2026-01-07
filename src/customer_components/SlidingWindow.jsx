@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { Outlet } from "react-router-dom";
 
-export default function SlidingWindow({ component }) {
+export default function SlidingWindow({ component, children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const transitionDuration = 300;
@@ -17,42 +16,39 @@ export default function SlidingWindow({ component }) {
     return () => clearTimeout(timeout);
   }, [isOpen]);
 
-  const panelWidth = isOpen ? "ml-64" : "ml-16";
-
   return (
-    <div className="h-screen">
+    <div className="h-screen flex">
       {/* Sliding panel */}
       <div
-        className={`fixed top-0 left-0 h-full bg-gray-800 text-white p-4
-          transition-all duration-300 ease-in-out z-40
+        className={`h-full bg-gray-800 text-white p-4
+          transition-all duration-300 ease-in-out
+          relative
           ${isOpen ? "w-64" : "w-16"}
         `}
       >
-        {showContent && (
-          <div className="mt-0">
-            {component}
-          </div>
-        )}
+        {showContent && <div className="mt-0">{component}</div>}
 
         <button
           className="
             absolute top-1/2 right-0 transform -translate-y-1/2
             p-3 bg-gray-900 hover:bg-gray-800 text-white
             rounded-full shadow-lg border border-gray-700
-            z-50 flex items-center justify-center
+            flex items-center justify-center
           "
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <ChevronLeftIcon size={20} /> : <ChevronRightIcon size={20} />}
+          {isOpen ? (
+            <ChevronLeftIcon size={20} />
+          ) : (
+            <ChevronRightIcon size={20} />
+          )}
         </button>
       </div>
 
-      {/* Main content (Outlet) */}
-      <main
-        className={`h-full transition-all duration-300 ease-in-out ${panelWidth}`}
-      >
-        <Outlet />
-      </main>
+      {/* Main content */}
+      <div className="flex-1 h-full transition-all duration-300 ease-in-out">
+        {children}
+      </div>
     </div>
   );
 }

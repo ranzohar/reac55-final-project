@@ -126,6 +126,24 @@ async function addCategory(name) {
   }
 }
 
+function getUser(uid, setCB) {
+  if (!uid) throw new Error("UID is required");
+
+  const userRef = doc(db, "users", uid);
+
+  const unsubscribe = onSnapshot(userRef, (docSnap) => {
+    if (!docSnap.exists()) {
+      setCB({});
+    } else {
+      console.log(docSnap.data());
+
+      setCB({ id: docSnap.id, ...docSnap.data() });
+    }
+  });
+
+  return unsubscribe; // call unsubscribe() to stop listening
+}
+
 export {
   getUsersData,
   getOrdersData,
@@ -134,4 +152,5 @@ export {
   updateCategory,
   removeCategory,
   addCategory,
+  getUser,
 };

@@ -14,3 +14,13 @@
     focus:outline-none focus:ring-2 focus:ring-blue-500
     dark:bg-gray-500 dark:text-white dark:border-gray-600;
 }
+
+.center-screen {
+  @apply items-center justify-center h-screen w-screen;
+}
+
+@layer base {
+  h3 {
+    @apply text-2xl font-bold;
+  }
+}

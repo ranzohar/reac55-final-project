@@ -1,5 +1,5 @@
-import { addCategory } from "../firebase/firebase-utils";
-import Category from "./Category";
+import { addCategory } from "../../firebase/firebase-utils";
+import Category from "../../admin_components/Category";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 

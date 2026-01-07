@@ -1,9 +1,6 @@
 import "./App.css";
-import Cart from "./customer_components/Cart";
-import ProductsBarChart from "./admin_components/ProductBarChart";
-import ProductsPieChart from "./admin_components/ProductsPieChart";
-import SlidingWindow from "./customer_components/SlidingWindow";
-import { Routes, Route } from "react-router";
+
+import { Routes, Route, Navigate } from "react-router";
 import WebpageTable from "./components/WebpageTable";
 import {
   getUsersData,
@@ -13,9 +10,17 @@ import {
 } from "./firebase/firebase-utils";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-import Categories from "./admin_components/Categories";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import AdminStatistics from "./pages/admin/Statistics";
+import AdminMain from "./pages/admin/Main";
+import AdminCategories from "./pages/admin/Categories";
+import AdminProducts from "./pages/admin/Products";
+import AdminUsers from "./pages/admin/Users";
+import CustomerMain from "./pages/customer/Main";
+import CustomerOrders from "./pages/customer/Orders";
+import CustomerProducts from "./pages/customer/Products";
+import CustomerDetails from "./pages/customer/Details";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -44,38 +49,44 @@ function App() {
 
   return (
     <>
-      <div className="w-screen flex justify-center mt-4">
+      {/* <div className="w-screen flex justify-center mt-4">
         <button onClick={getDataTest} className="mx-2">
           get data
         </button>
-      </div>
+      </div> */}
 
       <Routes>
-        <Route path="/" element={<SlidingWindow component={<Cart />} />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route
-            path="/charts"
-            element={
-              <>
-                <ProductsPieChart /> <ProductsBarChart />
-              </>
-            }
-          />
-          <Route path="/categories" element={<Categories />} />
-          <Route
-            path="/table"
-            element={
-              <WebpageTable
-                headers={["h1", "h2", "h3"]}
-                data={[
-                  ["1", "2", "3"],
-                  ["4", "5", "6"],
-                ]}
-              />
-            }
-          />
+        <Route path="/" element={<Navigate to="login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+
+        <Route path="/admin" element={<AdminMain />}>
+          <Route index element={<Navigate to="categories" replace />} />
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="statistics" element={<AdminStatistics />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="Users" element={<AdminUsers />} />
         </Route>
+
+        <Route path="/:customerId" element={<CustomerMain />}>
+          <Route index element={<Navigate to="products" replace />} />
+          <Route path="products" element={<CustomerProducts />} />
+          <Route path="orders" element={<CustomerOrders />} />
+          <Route path="details" element={<CustomerDetails />} />
+        </Route>
+
+        <Route
+          path="test_table"
+          element={
+            <WebpageTable
+              headers={["h1", "h2", "h3"]}
+              data={[
+                ["1", "2", "3"],
+                ["4", "5", "6"],
+              ]}
+            />
+          }
+        />
       </Routes>
     </>
   );

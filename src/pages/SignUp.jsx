@@ -1,20 +1,30 @@
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
+import { setDoc, doc } from "firebase/firestore";
+import { useNavigate, Link } from "react-router-dom";
 import PasswordInput from "../components/PasswordInput";
 import { db, app } from "../firebase/firebase";
-import { setDoc, doc } from "firebase/firestore";
 
 const SignUp = () => {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
-  const firebaseSignUp = async () => {
+  const navigate = useNavigate();
+
+  const firebaseSignUp = async (e) => {
+    e.preventDefault();
+
     const email = username + "@admin.admin";
     const auth = getAuth(app);
-
     let user = null;
+
+    // Sign out the previous user if any
+    if (auth.currentUser) {
+      await signOut(auth);
+    }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -30,53 +40,80 @@ const SignUp = () => {
         fname,
         lname,
         joined: new Date(),
-        ["allow others to see orders"]: true,
+        ["allow others to see orders"]: true, // TODO - add checkbox
       });
-    } catch (error) {
-      console.error(error.code, error.message);
+
+      // Redirect on success
+      navigate(`/${user.uid}`);
+    } catch (err) {
+      setError(err.message);
+
       if (user) {
         await deleteUser(user);
       }
     }
   };
+
   return (
-    <>
+    <div className="flex flex-col center-screen">
       <h3>New User Registration</h3>
-      First Name:
-      <br />
-      <input
-        type="text"
-        className="input-base"
-        onChange={(e) => {
-          setFname(e.target.value);
-        }}
-      />
-      <br />
-      Last Name:
-      <br />
-      <input
-        type="text"
-        className="input-base"
-        onChange={(e) => {
-          setLname(e.target.value);
-        }}
-      />
-      <br />
-      User Name:
-      <br />
-      <input
-        type="text"
-        className="input-base"
-        onChange={(e) => {
-          setUsername(e.target.value);
-        }}
-      />
-      <br />
-      Password:
-      <br />
-      <PasswordInput value={password} onChange={setPassword} />
-      <button onClick={firebaseSignUp}>Create</button>
-    </>
+      <form onSubmit={firebaseSignUp}>
+        <label>
+          <br />
+          First Name:
+          <br />
+          <input
+            type="text"
+            className="input-base"
+            value={fname}
+            onChange={(e) => setFname(e.target.value)}
+            required
+          />
+        </label>
+
+        <label>
+          <br />
+          Last Name:
+          <br />
+          <input
+            type="text"
+            className="input-base"
+            value={lname}
+            onChange={(e) => setLname(e.target.value)}
+            required
+          />
+        </label>
+
+        <label>
+          <br />
+          User Name:
+          <br />
+          <input
+            type="text"
+            className="input-base"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </label>
+
+        <label>
+          <br />
+          Password:
+          <PasswordInput value={password} onChange={setPassword} />
+        </label>
+
+        {error && <div className="error">{error}</div>}
+
+        <button type="submit">Create</button>
+        <br />
+        <div className="text-center w-50">
+          <Link to="/" className="text-center">
+            Back to login page
+          </Link>
+        </div>
+      </form>
+    </div>
   );
 };
 
