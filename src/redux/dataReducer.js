@@ -58,6 +58,8 @@ const dataReducer = (state = initialState, action) => {
       return state;
     case "DELETE_CATEGORY":
       return state;
+    case "LOG_OUT":
+      return initialState;
     default:
       return state;
   }

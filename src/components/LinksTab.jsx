@@ -1,8 +1,9 @@
 import { useLocation, Link } from "react-router-dom";
-import { firebaseLogout } from "../firebase/log-utils";
+import SignOut from "./SignOut";
 
 const LinksTab = ({ items }) => {
   const { pathname } = useLocation();
+
   return (
     <div className="flex gap-6">
       {items.map((item) => {
@@ -24,13 +25,7 @@ const LinksTab = ({ items }) => {
           </span>
         );
       })}
-      <Link
-        to={"/login"}
-        className="text-blue-500 !underline text-sm text-sm"
-        onClick={firebaseLogout}
-      >
-        Log Out
-      </Link>
+      <SignOut />
     </div>
   );
 };

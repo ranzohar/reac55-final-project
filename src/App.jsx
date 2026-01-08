@@ -40,12 +40,12 @@ function App() {
     console.log(data);
   }, [users, orders, categories, products]);
 
-  const getDataTest = async () => {
-    getUsersData(setUsers);
-    getOrdersData(setOrders);
-    getCategoriesData(setCategories);
-    getProductsData(setProducts);
-  };
+  // const getDataTest = async () => {
+  //   getUsersData(setUsers);
+  //   getOrdersData(setOrders);
+  //   getCategoriesData(setCategories);
+  //   getProductsData(setProducts);
+  // };
 
   return (
     <>
@@ -60,7 +60,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
 
-        <Route path="/admin" element={<AdminMain />}>
+        <Route path="/admin/:adminId" element={<AdminMain />}>
           <Route index element={<Navigate to="categories" replace />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="statistics" element={<AdminStatistics />} />

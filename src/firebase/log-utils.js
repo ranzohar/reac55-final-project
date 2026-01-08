@@ -3,51 +3,49 @@ import {
   signInWithEmailAndPassword,
   signOut,
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { db, app } from "../firebase/firebase";
 import { setDoc, doc } from "firebase/firestore";
 import { removeUser } from "../firebase/doc-utils";
+import { useState, useEffect } from "react";
 
-const firebaseLogin = async (username, password, navigate, setError) => {
+const firebaseLogin = async (username, password, setError) => {
   const email = username + "@admin.admin";
   const auth = getAuth(app);
 
-  firebaseLogout(auth);
+  await firebaseLogout(auth);
 
   try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-    const user = userCredential.user;
-
-    // Force refresh token until claims appear
-    let tokenResult = await user.getIdTokenResult(true);
-
-    if (!tokenResult.claims.admin) {
-      // Sometimes propagation is slightly delayed, retry once after a short wait
-      await new Promise((r) => setTimeout(r, 1000)); // wait 1 second
-      tokenResult = await user.getIdTokenResult(true);
-    }
-
-    if (tokenResult.claims.admin) {
-      navigate(`/admin`);
-    } else {
-      navigate(`/${user.uid}`);
-    }
+    await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
     setError(err.message);
     console.log(err.message);
   }
 };
 
+const checkIfAdmin = async (user) => {
+  // Force refresh token until claims appear
+  let tokenResult = await user.getIdTokenResult(true);
+
+  if (!tokenResult.claims.admin) {
+    // Sometimes propagation is slightly delayed, retry once after a short wait
+    await new Promise((r) => setTimeout(r, 1000)); // wait 1 second
+    tokenResult = await user.getIdTokenResult(true);
+  }
+
+  if (tokenResult.claims.admin) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 const firebaseLogout = async (authInstance) => {
   const auth = authInstance || getAuth(app);
-
-  if (!auth.currentUser) return;
-
+  if (!auth) {
+    return;
+  }
   try {
     await signOut(auth);
   } catch (error) {
@@ -56,12 +54,12 @@ const firebaseLogout = async (authInstance) => {
   }
 };
 
-const firebaseSignUp = async (fname, lname, username, navigate, setError) => {
+const firebaseSignUp = async (fname, lname, username, password, setError) => {
   const email = username + "@admin.admin";
   const auth = getAuth(app);
   let user = null;
 
-  firebaseLogout(auth);
+  await firebaseLogout(auth);
 
   try {
     const userCredential = await createUserWithEmailAndPassword(
@@ -79,9 +77,9 @@ const firebaseSignUp = async (fname, lname, username, navigate, setError) => {
       joined: new Date(),
       ["allow others to see orders"]: true, // TODO - add checkbox
     });
-
-    navigate(`/${user.uid}`);
   } catch (err) {
+    console.log(err);
+
     setError(err.message);
 
     if (user) {
@@ -90,4 +88,18 @@ const firebaseSignUp = async (fname, lname, username, navigate, setError) => {
   }
 };
 
-export { firebaseLogin, firebaseLogout, firebaseSignUp };
+const useAuth = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+    return () => unsubscribe;
+  }, []);
+  return { user, loading };
+};
+
+export { firebaseLogin, firebaseLogout, firebaseSignUp, checkIfAdmin, useAuth };

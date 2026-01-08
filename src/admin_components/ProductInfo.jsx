@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const ProductInfo = ({ productId }) => {
-  console.log(productId);
-
   const [productUpdate, setNameUpdate] = useState({});
   const { title, price, link, category } =
     useSelector((state) => state.data.products?.[productId]) || {};

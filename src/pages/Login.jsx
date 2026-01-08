@@ -1,17 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import PasswordInput from "../components/PasswordInput";
-import { firebaseLogin } from "../firebase/log-utils";
+import { firebaseLogin, checkIfAdmin, useAuth } from "../firebase/log-utils";
 
 const Login = () => {
+  const { user, loading } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!user || loading) {
+      return;
+    }
+    const navigateOnSignIn = async () => {
+      if (await checkIfAdmin(user)) {
+        navigate(`/admin/${user.uid}`);
+      } else {
+        navigate(`/${user.uid}`);
+      }
+      return;
+    };
+    navigateOnSignIn();
+  }, [user, loading]);
+
   const onSubmitCb = (e) => {
     e.preventDefault();
-    firebaseLogin(username, password, navigate, setError);
+    firebaseLogin(username, password, setError);
   };
 
   return (
