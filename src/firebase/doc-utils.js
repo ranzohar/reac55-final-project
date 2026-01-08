@@ -24,7 +24,6 @@ function setData(setCB, collectionName, parseData) {
         })
       );
     }
-    // console.log(data);
     setCB(data);
   });
 }

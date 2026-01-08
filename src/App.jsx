@@ -7,7 +7,7 @@ import {
   getOrdersData,
   getCategoriesData,
   getProductsData,
-} from "./firebase/firebase-utils";
+} from "./firebase/doc-utils";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import Login from "./pages/Login";
@@ -20,7 +20,7 @@ import AdminUsers from "./pages/admin/Users";
 import CustomerMain from "./pages/customer/Main";
 import CustomerOrders from "./pages/customer/Orders";
 import CustomerProducts from "./pages/customer/Products";
-import CustomerDetails from "./pages/customer/Details";
+import CustomerAccountDetails from "./pages/customer/Account";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -72,7 +72,7 @@ function App() {
           <Route index element={<Navigate to="products" replace />} />
           <Route path="products" element={<CustomerProducts />} />
           <Route path="orders" element={<CustomerOrders />} />
-          <Route path="details" element={<CustomerDetails />} />
+          <Route path="account" element={<CustomerAccountDetails />} />
         </Route>
 
         <Route

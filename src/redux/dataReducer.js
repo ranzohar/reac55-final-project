@@ -8,26 +8,48 @@ const initialState = {
 
 const dataReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "LOAD":
-      const users = action.payload.users.reduce((acc, user) => {
-        const { username, fname, lname, joined: joinDate } = user;
-        acc[user.id] = { username, fname, lname, joinDate };
-        return acc;
-      }, {});
-      console.log(action.payload);
+    case "LOAD": {
+      const {
+        users: payloadUsers,
+        products: payloadProducts,
+        categories: payloadCategories,
+        orders: payloadOrders,
+      } = action.payload;
 
-      const products = action.payload.products.reduce((acc, product) => {
-        const { title, price, link, category } = product;
-        acc[product.id] = { title, price, link, category };
-        return acc;
-      }, {});
+      const users =
+        payloadUsers && payloadUsers.length > 0
+          ? payloadUsers.reduce((acc, user) => {
+              const { username, fname, lname, joined: joinDate } = user;
+              acc[user.id] = { username, fname, lname, joinDate };
+              return acc;
+            }, {})
+          : state.users; // keep existing if missing/empty
 
-      const categories = action.payload.categories.reduce((acc, category) => {
-        const { name } = category;
-        acc[category.id] = { name };
-        return acc;
-      }, {});
-      return { users, orders: action.payload.orders, categories, products };
+      const products =
+        payloadProducts && payloadProducts.length > 0
+          ? payloadProducts.reduce((acc, product) => {
+              const { title, price, link, category } = product;
+              acc[product.id] = { title, price, link, category };
+              return acc;
+            }, {})
+          : state.products;
+
+      const categories =
+        payloadCategories && payloadCategories.length > 0
+          ? payloadCategories.reduce((acc, category) => {
+              const { name } = category;
+              acc[category.id] = { name };
+              return acc;
+            }, {})
+          : state.categories;
+
+      const orders =
+        payloadOrders && payloadOrders.length > 0
+          ? payloadOrders
+          : state.orders;
+
+      return { ...state, users, products, categories, orders };
+    }
     case "ADD_PRODUCT":
       return state;
     case "DELETE_PRODUCT":

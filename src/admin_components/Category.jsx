@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-import { updateCategory, removeCategory } from "../firebase/firebase-utils";
+import { updateCategory, removeCategory } from "../firebase/doc-utils";
 
 const Category = ({ categoryId }) => {
   const [editMode, setEditMode] = useState(false);
@@ -17,6 +17,10 @@ const Category = ({ categoryId }) => {
   }
 
   const updateCategoryName = async () => {
+    if (!nameUpdate) {
+      setNameUpdate(name);
+      return;
+    }
     await updateCategory(categoryId, nameUpdate);
   };
 
@@ -28,7 +32,7 @@ const Category = ({ categoryId }) => {
           type="text"
           value={nameUpdate}
           onChange={(e) => setNameUpdate(e.target.value)}
-          style={{ width: `${Math.max(nameUpdate.length, 1)}ch` }}
+          style={{ width: `${Math.max(nameUpdate.length + 2, 1)}ch` }}
           className="font-bold border px-1"
         />
       )}
