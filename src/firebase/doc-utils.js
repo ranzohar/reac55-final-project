@@ -143,6 +143,21 @@ function getUser(uid, setCB) {
   return unsubscribe; // call unsubscribe() to stop listening
 }
 
+async function removeUser(uid) {
+  if (!uid) {
+    throw new Error("uid is required");
+  }
+
+  const userRef = doc(db, "users", uid);
+
+  try {
+    await deleteDoc(userRef);
+  } catch (error) {
+    console.error("Error removing user:", error);
+    throw error;
+  }
+}
+
 export {
   getUsersData,
   getOrdersData,
@@ -152,4 +167,5 @@ export {
   removeCategory,
   addCategory,
   getUser,
+  removeUser,
 };

@@ -1,5 +1,12 @@
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { app } from "../firebase/firebase";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import { db, app } from "../firebase/firebase";
+import { setDoc, doc } from "firebase/firestore";
+import { removeUser } from "../firebase/doc-utils";
 
 const firebaseLogin = async (username, password, navigate, setError) => {
   const email = username + "@admin.admin";
@@ -43,11 +50,44 @@ const firebaseLogout = async (authInstance) => {
 
   try {
     await signOut(auth);
-    console.log("User signed out successfully");
   } catch (error) {
     console.error("Error signing out:", error);
     throw error;
   }
 };
 
-export { firebaseLogin, firebaseLogout };
+const firebaseSignUp = async (fname, lname, username, navigate, setError) => {
+  const email = username + "@admin.admin";
+  const auth = getAuth(app);
+  let user = null;
+
+  firebaseLogout(auth);
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      username: user.email.split("@")[0],
+      fname,
+      lname,
+      joined: new Date(),
+      ["allow others to see orders"]: true, // TODO - add checkbox
+    });
+
+    navigate(`/${user.uid}`);
+  } catch (err) {
+    setError(err.message);
+
+    if (user) {
+      await removeUser(user.uid);
+    }
+  }
+};
+
+export { firebaseLogin, firebaseLogout, firebaseSignUp };

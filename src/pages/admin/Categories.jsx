@@ -10,7 +10,6 @@ const Categories = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     // TODO - all components get the userAuth and load data if it changes. If it's not logged in clear firebase.
-    console.log("Getting categories");
     getCategoriesData(setCategories);
   }, []);
 

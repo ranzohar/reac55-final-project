@@ -1,9 +1,7 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { setDoc, doc } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
 import PasswordInput from "../components/PasswordInput";
-import { db, app } from "../firebase/firebase";
+import { firebaseSignUp } from "../firebase/log-utils";
 
 const SignUp = () => {
   const [fname, setFname] = useState("");
@@ -14,50 +12,15 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const firebaseSignUp = async (e) => {
+  const submitSignUp = (e) => {
     e.preventDefault();
-
-    const email = username + "@admin.admin";
-    const auth = getAuth(app);
-    let user = null;
-
-    // Sign out the previous user if any
-    if (auth.currentUser) {
-      await signOut(auth);
-    }
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      user = userCredential.user;
-
-      await setDoc(doc(db, "users", user.uid), {
-        username: user.email.split("@")[0],
-        fname,
-        lname,
-        joined: new Date(),
-        ["allow others to see orders"]: true, // TODO - add checkbox
-      });
-
-      // Redirect on success
-      navigate(`/${user.uid}`);
-    } catch (err) {
-      setError(err.message);
-
-      if (user) {
-        await deleteUser(user);
-      }
-    }
+    firebaseSignUp(fname, lname, username, navigate, setError);
   };
 
   return (
     <div className="flex flex-col center-screen">
       <h3>New User Registration</h3>
-      <form onSubmit={firebaseSignUp}>
+      <form onSubmit={submitSignUp}>
         <label>
           <br />
           First Name:
