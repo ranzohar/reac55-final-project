@@ -62,16 +62,19 @@ function getCategoriesData(setCB) {
 
 function getProductsData(setCB) {
   const parseProductsData = async (product) => {
-    const categoryDoc = await getDoc(product.category);
     let categoryName = "";
-    if (categoryDoc.exists()) {
-      categoryName = categoryDoc.data().name;
+    if (product.category) {
+      const categoryDoc = await getDoc(product.category);
+      if (categoryDoc.exists()) {
+        categoryName = categoryDoc.data().name;
+      }
     }
 
     return {
       title: product.title,
       price: product.price,
       link: product.link_to_pic,
+      description: product.description,
       category: categoryName,
     };
   };
@@ -125,6 +128,44 @@ async function addCategory(name) {
   }
 }
 
+async function updateProduct({
+  productId,
+  title,
+  price,
+  link_to_pic,
+  description,
+  categoryId,
+}) {
+  if (!productId) throw new Error("productId is required");
+  if (!title || price == null) throw new Error("title and price are required");
+
+  const productRef = doc(db, "products", productId);
+
+  let categoryRef = null;
+
+  if (categoryId) {
+    const categoryDocRef = doc(db, "categories", categoryId);
+    const categorySnap = await getDoc(categoryDocRef);
+    if (!categorySnap.exists()) {
+      throw new Error("Category does not exist");
+    }
+    categoryRef = categoryDocRef;
+  }
+
+  try {
+    await updateDoc(productRef, {
+      title,
+      price,
+      link_to_pic: link_to_pic || "",
+      description: description || "",
+      category: categoryRef,
+    });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+}
+
 function getUser(uid, setCB) {
   if (!uid) throw new Error("UID is required");
 
@@ -134,8 +175,6 @@ function getUser(uid, setCB) {
     if (!docSnap.exists()) {
       setCB({});
     } else {
-      console.log(docSnap.data());
-
       setCB({ id: docSnap.id, ...docSnap.data() });
     }
   });
@@ -166,6 +205,7 @@ export {
   updateCategory,
   removeCategory,
   addCategory,
+  updateProduct,
   getUser,
   removeUser,
 };

@@ -28,8 +28,8 @@ const dataReducer = (state = initialState, action) => {
       const products =
         payloadProducts && payloadProducts.length > 0
           ? payloadProducts.reduce((acc, product) => {
-              const { title, price, link, category } = product;
-              acc[product.id] = { title, price, link, category };
+              const { title, price, link, category, description } = product;
+              acc[product.id] = { title, price, link, category, description };
               return acc;
             }, {})
           : state.products;

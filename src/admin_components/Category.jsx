@@ -1,27 +1,29 @@
-import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
-import { updateCategory, removeCategory } from "../firebase/doc-utils";
+import { useState } from "react";
 
-const Category = ({ categoryId }) => {
+const Category = ({
+  name,
+  id,
+  updateExistingCategory,
+  removeExistingCategory,
+}) => {
   const [editMode, setEditMode] = useState(false);
-  const [nameUpdate, setNameUpdate] = useState("");
-  const name = useSelector(
-    (state) => state.data.categories?.[categoryId]?.name
-  );
-  useEffect(() => {
-    setNameUpdate(name);
-  }, [name]);
+  const [nameUpdate, setNameUpdate] = useState(name || "");
 
-  if (!name) {
-    return;
-  }
+  if (!name) return null;
 
-  const updateCategoryName = async () => {
+  const handleUpdate = () => {
     if (!nameUpdate) {
       setNameUpdate(name);
       return;
     }
-    await updateCategory(categoryId, nameUpdate);
+    if (nameUpdate !== name) {
+      updateExistingCategory(id, nameUpdate);
+    }
+    setEditMode(false);
+  };
+
+  const handleRemove = () => {
+    removeExistingCategory(id);
   };
 
   return (
@@ -36,15 +38,11 @@ const Category = ({ categoryId }) => {
           className="font-bold border px-1"
         />
       )}
-      <button
-        onClick={() => {
-          setEditMode(!editMode);
-          updateCategoryName();
-        }}
-      >
-        Update
+      <button onClick={() => setEditMode(!editMode)}>
+        {editMode ? "Save" : "Edit"}
       </button>
-      <button onClick={() => removeCategory(categoryId)}>Remove</button>
+      {editMode && <button onClick={handleUpdate}>Save</button>}
+      <button onClick={handleRemove}>Remove</button>
     </div>
   );
 };

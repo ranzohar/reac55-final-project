@@ -4,37 +4,36 @@ const SIZE_CLASSES = {
   lg: "text-lg [&_th]:px-8 [&_th]:py-6 [&_td]:px-8 [&_td]:py-6",
 };
 
-const WebpageTable = ({headers, data, size="lg"}) => {
+const WebpageTable = ({ headers, data, size = "md" }) => {
   const sizeClasses = SIZE_CLASSES[size] ?? SIZE_CLASSES.md;
 
   return (
     <>
-        <table
+      <table
         className={`border-collapse border border-black
         [&_th]:border [&_td]:border
         [&_th]:border-black [&_td]:border-black
         ${sizeClasses}`}
-        >
+      >
         <thead>
-            <tr>
-                {headers.map((header, index) => {
-                    console.log(header);
-                    return <th key={index}>{header}</th>
-                })}
-            </tr>
+          <tr>
+            {headers.map((header, index) => {
+              return <th key={index}>{header}</th>;
+            })}
+          </tr>
         </thead>
         <tbody>
-            {data.map((row, index) => {
-                return <tr key={index}>
-                    {row.map((component, index) => {
-                        console.log(component);
-                        
-                        return <td key={index}>{component}</td>
-                    })}
-                </tr>
-            })}
+          {data.map((row, index) => {
+            return (
+              <tr key={index}>
+                {row.map((component, index) => {
+                  return <td key={index}>{component}</td>;
+                })}
+              </tr>
+            );
+          })}
         </tbody>
-        </table>
+      </table>
     </>
   );
 };

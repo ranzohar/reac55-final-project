@@ -30,23 +30,6 @@ function App() {
   const data = useSelector((state) => state.data);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (users.length > 0) {
-      dispatch({
-        type: "LOAD",
-        payload: { users, orders, categories, products },
-      });
-    }
-    console.log(data);
-  }, [users, orders, categories, products]);
-
-  // const getDataTest = async () => {
-  //   getUsersData(setUsers);
-  //   getOrdersData(setOrders);
-  //   getCategoriesData(setCategories);
-  //   getProductsData(setProducts);
-  // };
-
   return (
     <>
       {/* <div className="w-screen flex justify-center mt-4">

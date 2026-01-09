@@ -1,45 +1,34 @@
-import { addCategory } from "../../firebase/doc-utils";
 import Category from "../../admin_components/Category";
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { getCategoriesData } from "../../firebase/doc-utils";
+import useCategories from "../../firebase/hooks/useCategories";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 const Categories = () => {
-  const [categories, setCategories] = useState([]);
+  const { adminId } = useParams();
+  const {
+    categories,
+    addNewCategory,
+    updateExistingCategory,
+    removeExistingCategory,
+  } = useCategories(adminId);
   const [newCategory, setNewCategory] = useState("");
-  const dispatch = useDispatch();
-  useEffect(() => {
-    // TODO - all components get the userAuth and load data if it changes. If it's not logged in clear firebase.
-    getCategoriesData(setCategories);
-  }, []);
-
-  useEffect(() => {
-    dispatch({
-      type: "LOAD",
-      payload: { categories },
-    });
-  }, [categories]);
-
-  const onAddCategory = (newCategory) => {
-    if (
-      newCategory.toLowerCase() === "undefined" ||
-      categories.find(
-        (category) => category.name.toLowerCase() === newCategory.toLowerCase()
-      )
-    ) {
-      return;
-    }
-    addCategory(newCategory);
-  };
 
   return (
     <div>
       <h2 className="text-2xl font-bold">Categories:</h2>
-      {categories.map((category) => {
-        return <Category key={category.id} categoryId={category.id} />;
-      })}
+      {categories.map((category) => (
+        <Category
+          key={category.id} // use id as key instead of index
+          id={category.id} // pass id to child
+          name={category.name}
+          updateExistingCategory={updateExistingCategory}
+          removeExistingCategory={removeExistingCategory}
+        />
+      ))}
+
       <input
         type="text"
+        value={newCategory}
         onChange={(e) => setNewCategory(e.target.value)}
         className="
           px-3 py-1
@@ -53,8 +42,11 @@ const Categories = () => {
         placeholder="Add new category"
       />
       <button
-        className="bg-green-500 w-20"
-        onClick={() => onAddCategory(newCategory)}
+        className="bg-green-500 w-20 text-black"
+        onClick={() => {
+          addNewCategory(newCategory);
+          setNewCategory("");
+        }}
       >
         Add
       </button>
