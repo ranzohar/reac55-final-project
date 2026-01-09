@@ -42,7 +42,7 @@ const Categories = () => {
         placeholder="Add new category"
       />
       <button
-        className="bg-green-500 w-20 text-black"
+        className="bg-green-400 dark:bg-green-600 w-20 text-black"
         onClick={() => {
           addNewCategory(newCategory);
           setNewCategory("");

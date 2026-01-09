@@ -166,6 +166,44 @@ async function updateProduct({
   }
 }
 
+async function addProduct({
+  title,
+  price,
+  link_to_pic = "",
+  description = "",
+  categoryId = null,
+}) {
+  if (!title || price == null) {
+    throw new Error("title and price are required");
+  }
+
+  let categoryRef = null;
+
+  if (categoryId) {
+    const categoryDocRef = doc(db, "categories", categoryId);
+    const categorySnap = await getDoc(categoryDocRef);
+    if (!categorySnap.exists()) {
+      throw new Error("Category does not exist");
+    }
+    categoryRef = categoryDocRef;
+  }
+
+  try {
+    const docRef = await addDoc(collection(db, "products"), {
+      title,
+      price,
+      link_to_pic,
+      description,
+      category: categoryRef,
+    });
+
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding product:", error);
+    throw error;
+  }
+}
+
 function getUser(uid, setCB) {
   if (!uid) throw new Error("UID is required");
 
@@ -206,6 +244,7 @@ export {
   removeCategory,
   addCategory,
   updateProduct,
+  addProduct,
   getUser,
   removeUser,
 };

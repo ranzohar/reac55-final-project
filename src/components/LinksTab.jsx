@@ -5,7 +5,7 @@ const LinksTab = ({ items }) => {
   const { pathname } = useLocation();
 
   return (
-    <div className="flex gap-6">
+    <div className="flex gap-6 p-2">
       {items.map((item) => {
         const resolvedPath = new URL(item.path, `http://dummy${pathname}`)
           .pathname;

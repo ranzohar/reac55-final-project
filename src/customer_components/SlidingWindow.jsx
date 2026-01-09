@@ -20,7 +20,7 @@ export default function SlidingWindow({ component, children }) {
     <div className="h-screen flex">
       {/* Sliding panel */}
       <div
-        className={`h-full bg-gray-800 text-white p-4
+        className={`h-full bg-gray-300 dark:bg-gray-800 text-white p-4
           transition-all duration-300 ease-in-out
           relative
           ${isOpen ? "w-64" : "w-16"}
@@ -30,11 +30,14 @@ export default function SlidingWindow({ component, children }) {
 
         <button
           className="
-            absolute top-1/2 right-0 transform -translate-y-1/2
-            p-3 bg-gray-900 hover:bg-gray-800 text-white
-            rounded-full shadow-lg border border-gray-700
-            flex items-center justify-center
-          "
+    absolute top-1/2 right-0 transform -translate-y-1/2
+    p-3 rounded-full shadow-lg border
+    border-gray-300 dark:border-gray-700
+    bg-gray-200 dark:bg-gray-900
+    text-gray-700 dark:text-white
+    hover:bg-gray-300 dark:hover:bg-gray-800
+    flex items-center justify-center
+  "
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? (

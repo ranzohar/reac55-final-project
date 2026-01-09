@@ -1,4 +1,3 @@
-// TODO - move users to admin reducer
 const initialState = {
   users: {}, //details + join date per user ID
   orders: [],
@@ -19,8 +18,15 @@ const dataReducer = (state = initialState, action) => {
       const users =
         payloadUsers && payloadUsers.length > 0
           ? payloadUsers.reduce((acc, user) => {
-              const { username, fname, lname, joined: joinDate } = user;
-              acc[user.id] = { username, fname, lname, joinDate };
+              const { username, fname, lname, joined } = user;
+              const date = new Date(joined.seconds * 1000);
+              const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+              acc[user.id] = {
+                username,
+                fname,
+                lname,
+                joinDate: formattedDate,
+              };
               return acc;
             }, {})
           : state.users; // keep existing if missing/empty
@@ -50,16 +56,6 @@ const dataReducer = (state = initialState, action) => {
 
       return { ...state, users, products, categories, orders };
     }
-    case "ADD_PRODUCT":
-      return state;
-    case "DELETE_PRODUCT":
-      return state;
-    case "ADD_CATEGORY":
-      return state;
-    case "DELETE_CATEGORY":
-      return state;
-    case "LOG_OUT":
-      return initialState;
     default:
       return state;
   }

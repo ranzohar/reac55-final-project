@@ -18,7 +18,7 @@ const useProducts = (userId) => {
     });
 
     return () => unsubscribe();
-  }, [userId, dispatch]);
+  }, [userId]);
 
   /** Add a new product if it doesn't exist */
   const addNewProduct = (newProduct) => {
@@ -29,9 +29,7 @@ const useProducts = (userId) => {
     );
     if (exists) return;
 
-    // Call your addProduct function if you have one
-    // addProduct(newProduct);
-    console.warn("addProduct not implemented here, implement if needed");
+    // addProduct(newProduct); TODO - implement
   };
 
   /** Update an existing product by ID */

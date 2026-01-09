@@ -114,7 +114,7 @@ const ProductInfo = ({ product, onUpdate }) => {
 
       <div className="flex gap-2 mt-2">
         <button
-          className="bg-green-500 w-20"
+          className="bg-green-400 dark:bg-green-600 w-20"
           onClick={() =>
             onUpdate({
               title: changeProduct.title,

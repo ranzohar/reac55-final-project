@@ -13,6 +13,7 @@ const WebpageTable = ({ headers, data, size = "md" }) => {
         className={`border-collapse border border-black
         [&_th]:border [&_td]:border
         [&_th]:border-black [&_td]:border-black
+        [&_th]:text-center [&_td]:text-center
         ${sizeClasses}`}
       >
         <thead>

@@ -27,7 +27,7 @@ const Category = ({
   };
 
   return (
-    <div className="flex flex-row gap-4 w-fit p-4 border border-gray-300 rounded-lg shadow-md bg-white dark:bg-gray-800 min-w-80 mr-4">
+    <div className="flex flex-row max-w-xl border border-gray-300 dark:border-gray-700 rounded-xl p-4 mb-1 bg-white dark:bg-gray-900 shadow-sm gap-2">
       {!editMode && <strong className="self-center">{nameUpdate}</strong>}
       {editMode && (
         <input
@@ -38,10 +38,17 @@ const Category = ({
           className="font-bold border px-1"
         />
       )}
-      <button onClick={() => setEditMode(!editMode)}>
+      <button
+        onClick={() => {
+          if (editMode) {
+            handleUpdate(); // save first
+          } else {
+            setEditMode(true); // enter edit mode
+          }
+        }}
+      >
         {editMode ? "Save" : "Edit"}
       </button>
-      {editMode && <button onClick={handleUpdate}>Save</button>}
       <button onClick={handleRemove}>Remove</button>
     </div>
   );
