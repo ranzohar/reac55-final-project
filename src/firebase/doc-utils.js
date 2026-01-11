@@ -4,10 +4,12 @@ import {
   query,
   onSnapshot,
   getDoc,
+  setDoc,
   updateDoc,
   doc,
   deleteDoc,
   addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 
 function setData(setCB, collectionName, parseData) {
@@ -76,6 +78,7 @@ function getProductsData(setCB) {
       link: product.link_to_pic,
       description: product.description,
       category: categoryName,
+      createDate: product.createDate,
     };
   };
   return setData(setCB, "products", parseProductsData);
@@ -169,9 +172,9 @@ async function updateProduct({
 async function addProduct({
   title,
   price,
-  link_to_pic = "",
-  description = "",
-  categoryId = null,
+  link_to_pic,
+  description,
+  categoryId,
 }) {
   if (!title || price == null) {
     throw new Error("title and price are required");
@@ -192,9 +195,10 @@ async function addProduct({
     const docRef = await addDoc(collection(db, "products"), {
       title,
       price,
-      link_to_pic,
-      description,
+      link_to_pic: link_to_pic || "",
+      description: description || "",
       category: categoryRef,
+      createDate: serverTimestamp(),
     });
 
     return docRef.id;

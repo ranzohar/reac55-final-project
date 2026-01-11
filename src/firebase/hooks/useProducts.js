@@ -1,12 +1,15 @@
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProductsData, updateProduct } from "../../firebase/doc-utils";
+import {
+  getProductsData,
+  updateProduct,
+  addProduct,
+} from "../../firebase/doc-utils";
 
 const useProducts = (userId) => {
   const dispatch = useDispatch();
   const productsMap = useSelector((state) => state.data.products);
 
-  // Subscribe to Firebase products
   useEffect(() => {
     if (!userId) return;
 
@@ -22,17 +25,9 @@ const useProducts = (userId) => {
 
   /** Add a new product if it doesn't exist */
   const addNewProduct = (newProduct) => {
-    if (!newProduct?.title) return;
-
-    const exists = Object.values(productsMap).some(
-      (prod) => prod.title.toLowerCase() === newProduct.title.toLowerCase()
-    );
-    if (exists) return;
-
-    // addProduct(newProduct); TODO - implement
+    addProduct(newProduct);
   };
 
-  /** Update an existing product by ID */
   const updateExistingProduct = async (id, updatedData) => {
     if (!id || !updatedData || !productsMap[id]) return;
 

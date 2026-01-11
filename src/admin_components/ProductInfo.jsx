@@ -24,7 +24,7 @@ const ProductInfo = ({ product, onUpdate }) => {
         title: product.title || "",
         categoryId: matchedCategory ? matchedCategory.id : "",
         description: product.description || "",
-        price: product.price ?? -1,
+        price: product.price ?? 0,
         link: product.link || "",
       });
     }
@@ -32,6 +32,19 @@ const ProductInfo = ({ product, onUpdate }) => {
 
   const handleChange = (key, value) => {
     setChangeProduct((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const update = () => {
+    if (!changeProduct.title || !(changeProduct.price > 0)) {
+      return;
+    }
+    onUpdate({
+      title: changeProduct.title,
+      price: Number(changeProduct.price),
+      link_to_pic: changeProduct.link,
+      description: changeProduct.description,
+      categoryId: changeProduct.categoryId || undefined,
+    });
   };
 
   if (!product) return null;
@@ -115,15 +128,7 @@ const ProductInfo = ({ product, onUpdate }) => {
       <div className="flex gap-2 mt-2">
         <button
           className="bg-green-400 dark:bg-green-600 w-20"
-          onClick={() =>
-            onUpdate({
-              title: changeProduct.title,
-              price: Number(changeProduct.price),
-              link_to_pic: changeProduct.link,
-              description: changeProduct.description,
-              categoryId: changeProduct.categoryId || undefined,
-            })
-          }
+          onClick={update}
         >
           Save
         </button>
