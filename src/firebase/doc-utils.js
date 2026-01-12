@@ -131,81 +131,43 @@ async function addCategory(name) {
   }
 }
 
-async function updateProduct({
-  productId,
-  title,
-  price,
-  link_to_pic,
-  description,
-  categoryId,
-}) {
-  if (!productId) throw new Error("productId is required");
-  if (!title || price == null) throw new Error("title and price are required");
+async function upsertProduct(id, fields) {
+  const { title, price, link_to_pic, description, categoryId, createDate } =
+    fields;
+  console.log(fields);
 
-  const productRef = doc(db, "products", productId);
+  if (!id) throw new Error("productId is required");
+  if (!title || !price) throw new Error("title and price are required");
+
+  const productRef = doc(db, "products", id);
+  const snap = await getDoc(productRef);
 
   let categoryRef = null;
 
   if (categoryId) {
     const categoryDocRef = doc(db, "categories", categoryId);
     const categorySnap = await getDoc(categoryDocRef);
-    if (!categorySnap.exists()) {
-      throw new Error("Category does not exist");
-    }
+    if (!categorySnap.exists()) throw new Error("Category does not exist");
     categoryRef = categoryDocRef;
   }
 
-  try {
-    await updateDoc(productRef, {
-      title,
-      price,
-      link_to_pic: link_to_pic || "",
-      description: description || "",
-      category: categoryRef,
-    });
-  } catch (error) {
-    console.error("Error updating product:", error);
-    throw error;
+  const data = {
+    title,
+    price,
+    link_to_pic: link_to_pic || "",
+    description: description || "",
+    category: categoryRef,
+  };
+
+  if (!snap.exists()) {
+    data.createDate = serverTimestamp();
   }
+
+  await setDoc(productRef, data);
 }
 
-async function addProduct({
-  title,
-  price,
-  link_to_pic,
-  description,
-  categoryId,
-}) {
-  if (!title || price == null) {
-    throw new Error("title and price are required");
-  }
-
-  let categoryRef = null;
-
-  if (categoryId) {
-    const categoryDocRef = doc(db, "categories", categoryId);
-    const categorySnap = await getDoc(categoryDocRef);
-    if (!categorySnap.exists()) {
-      throw new Error("Category does not exist");
-    }
-    categoryRef = categoryDocRef;
-  }
-
-  try {
-    const docRef = await addDoc(collection(db, "products"), {
-      title,
-      price,
-      link_to_pic: link_to_pic || "",
-      description: description || "",
-      category: categoryRef,
-      createDate: serverTimestamp(),
-    });
-
-    return docRef.id;
-  } catch (error) {
-    console.error("Error adding product:", error);
-    throw error;
-  }
+async function getFirebaseUniqueId() {
+  return doc(collection(db, "products")).id;
 }
 
 function getUser(uid, setCB) {
@@ -247,8 +209,8 @@ export {
   updateCategory,
   removeCategory,
   addCategory,
-  updateProduct,
-  addProduct,
+  upsertProduct,
   getUser,
   removeUser,
+  getFirebaseUniqueId,
 };

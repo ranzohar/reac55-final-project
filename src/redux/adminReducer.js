@@ -1,37 +1,31 @@
-import { v4 as uuidv4 } from "uuid";
-
 const initialState = {
-  pendingProducts: {}, //{ uuid: title, price, link_to_pic, description, category, quantity },
-};
-
-const EMPTY_PRODUCT = {
-  title: "",
-  price: "",
-  link_to_pic: "",
-  description: "",
-  category: "",
-  quantity: "",
+  products: {},
+  // This adds a layer of new products on top of firebase existing product. They
 };
 
 const adminReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "NEW_PRODUCT":
+    case "LOAD_ADMIN_PRODUCTS": {
+      const updatedProducts = { ...state.products };
+      action.payload.forEach((product) => {
+        updatedProducts[product.id] = { ...product };
+      });
+      console.log(updatedProducts);
       return {
         ...state,
-        pendingProducts: {
-          ...state.pendingProducts,
-          [uuidv4()]: EMPTY_PRODUCT,
-        },
+        products: updatedProducts,
       };
-
-    case "REMOVE_PENDING_PRODUCT":
-      const pendingProducts = { ...state.pendingProducts };
-      delete pendingProducts[action.payload];
+    }
+    case "ADD_PRODUCT": {
+      const updatedProducts = {
+        ...state.products,
+        [action.payload]: { id: action.payload },
+      };
       return {
         ...state,
-        pendingProducts,
+        products: updatedProducts,
       };
-
+    }
     default:
       return state;
   }

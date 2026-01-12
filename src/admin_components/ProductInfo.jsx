@@ -11,7 +11,7 @@ const ProductInfo = ({ product, onUpdate }) => {
     title: "",
     categoryId: "",
     description: "",
-    price: -1,
+    price: "",
     link: "",
   });
 
@@ -24,7 +24,7 @@ const ProductInfo = ({ product, onUpdate }) => {
         title: product.title || "",
         categoryId: matchedCategory ? matchedCategory.id : "",
         description: product.description || "",
-        price: product.price ?? 0,
+        price: product.price || "",
         link: product.link || "",
       });
     }
@@ -35,12 +35,12 @@ const ProductInfo = ({ product, onUpdate }) => {
   };
 
   const update = () => {
-    if (!changeProduct.title || !(changeProduct.price > 0)) {
+    if (!changeProduct.title || !changeProduct.price) {
       return;
     }
     onUpdate({
       title: changeProduct.title,
-      price: Number(changeProduct.price),
+      price: changeProduct.price,
       link_to_pic: changeProduct.link,
       description: changeProduct.description,
       categoryId: changeProduct.categoryId || undefined,
@@ -64,9 +64,8 @@ const ProductInfo = ({ product, onUpdate }) => {
         Price:
         <input
           className="input-base"
-          type="number"
           value={changeProduct.price}
-          onChange={(e) => handleChange("price", Number(e.target.value))}
+          onChange={(e) => handleChange("price", e.target.value)}
         />
       </label>
 

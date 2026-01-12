@@ -1,15 +1,6 @@
 import "./App.css";
 
 import { Routes, Route, Navigate } from "react-router";
-import WebpageTable from "./components/WebpageTable";
-import {
-  getUsersData,
-  getOrdersData,
-  getCategoriesData,
-  getProductsData,
-} from "./firebase/doc-utils";
-import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import AdminStatistics from "./pages/admin/Statistics";
@@ -23,21 +14,8 @@ import CustomerProducts from "./pages/customer/Products";
 import CustomerAccountDetails from "./pages/customer/Account";
 
 function App() {
-  const [users, setUsers] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
-  const data = useSelector((state) => state.data);
-  const dispatch = useDispatch();
-
   return (
     <>
-      {/* <div className="w-screen flex justify-center mt-4">
-        <button onClick={getDataTest} className="mx-2">
-          get data
-        </button>
-      </div> */}
-
       <Routes>
         <Route path="/" element={<Navigate to="login" replace />} />
         <Route path="/login" element={<Login />} />
@@ -57,19 +35,6 @@ function App() {
           <Route path="orders" element={<CustomerOrders />} />
           <Route path="account" element={<CustomerAccountDetails />} />
         </Route>
-
-        <Route
-          path="test_table"
-          element={
-            <WebpageTable
-              headers={["h1", "h2", "h3"]}
-              data={[
-                ["1", "2", "3"],
-                ["4", "5", "6"],
-              ]}
-            />
-          }
-        />
       </Routes>
     </>
   );

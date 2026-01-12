@@ -2,7 +2,7 @@ const initialState = {
   users: {}, //details + join date per user ID
   orders: [],
   categories: {}, // names
-  products: {}, // title, category, description, price link to pic per ID
+  products: [], // id, title, category, description, price link to pic per ID TODO add qunatity
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -34,8 +34,16 @@ const dataReducer = (state = initialState, action) => {
       const products =
         payloadProducts && payloadProducts.length > 0
           ? payloadProducts.reduce((acc, product) => {
-              const { title, price, link, category, description } = product;
-              acc[product.id] = { title, price, link, category, description };
+              const { title, price, link, category, description, createDate } =
+                product;
+              acc[product.id] = {
+                title,
+                price,
+                link,
+                category,
+                description,
+                createDate,
+              };
               return acc;
             }, {})
           : state.products;
