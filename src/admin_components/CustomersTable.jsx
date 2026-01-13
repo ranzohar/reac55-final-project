@@ -3,8 +3,9 @@ import { useSelector } from "react-redux";
 import WebpageTable from "../components/WebpageTable";
 
 const CustomersTable = () => {
-  const usersMap = useSelector((state) => state.data.users);
-  const orders = useSelector((state) => state.data.orders);
+  const usersMap = useSelector((state) => state.admin.users);
+  const orders = useSelector((state) => state.admin.orders);
+  const products = useSelector((state) => state.data.products);
 
   const tableData = useMemo(() => {
     if (!usersMap || usersMap.size === 0) return [];
@@ -32,7 +33,7 @@ const CustomersTable = () => {
       const ordersTableData = userOrders?.flatMap((order) => {
         return order.products.map((orderedProduct) => {
           return [
-            orderedProduct.product.title,
+            products[orderedProduct.id]?.title,
             orderedProduct.quantity,
             order.date,
           ];
@@ -49,7 +50,7 @@ const CustomersTable = () => {
       }
       return [`${user.fname} ${user.lname}`, user.joinDate, ordersTable];
     });
-  }, [usersMap, orders]);
+  }, [usersMap, orders, products]);
 
   if (!tableData.length) return null;
 

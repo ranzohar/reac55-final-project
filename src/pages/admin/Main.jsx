@@ -14,22 +14,20 @@ const AdminPage = () => {
   const { adminId } = useParams();
 
   useEffect(() => {
-    const unsubscribes = [];
-    const loadData = (payload) => {
-      dispatch({
-        type: "LOAD",
-        payload,
-      });
-    };
-    const getters = [
-      { payloadKey: "users", getData: getUsersData },
-      { payloadKey: "categories", getData: getCategoriesData },
-      { payloadKey: "products", getData: getProductsData },
-    ];
-    getters.forEach(({ payloadKey, getData }) => {
-      const unsubscribe = getData((data) => loadData({ [payloadKey]: data }));
-      unsubscribes.push(unsubscribe);
+    const unsubscribeUsers = getUsersData((data) => {
+      dispatch({ type: "LOAD_USERS", payload: { users: data } });
     });
+    const unsubscribeCategories = getCategoriesData((data) =>
+      dispatch({ type: "LOAD", payload: { categories: data } })
+    );
+    const unsubscribeProducts = getProductsData((data) =>
+      dispatch({ type: "LOAD", payload: { products: data } })
+    );
+    const unsubscribes = [
+      unsubscribeUsers,
+      unsubscribeCategories,
+      unsubscribeProducts,
+    ];
     return () => {
       unsubscribes.forEach((unsub) => unsub && unsub());
     };

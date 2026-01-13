@@ -5,16 +5,25 @@ import { useSelector } from "react-redux";
 import UserSelect from "./UserSelect";
 
 const ProductsBarChart = () => {
-  const orders = useSelector((state) => state.data.orders);
+  const orders = useSelector((state) => state.admin.orders);
+  const products = useSelector((state) => state.data.products);
   const [userId, setUserId] = useState("");
   const dataPerUser = useMemo(() => {
     const dataPerUserObj = {};
     orders.forEach((order) => {
+      if (
+        Object.entries(products).length === 0 ||
+        Object.entries(orders).length === 0
+      ) {
+        return [];
+      } // TODO check if needed
       const userId = order.userId;
       if (!dataPerUserObj[userId]) {
         dataPerUserObj[userId] = {};
       }
-      order.products.forEach(({ product, quantity }) => {
+      order.products.forEach((orderedProduct) => {
+        const product = products[orderedProduct.id];
+        const quantity = orderedProduct.quantity;
         dataPerUserObj[userId][product.title] = {
           qty: (dataPerUserObj[userId][product.title]?.qty ?? 0) + quantity,
           color: product.color,
@@ -31,7 +40,7 @@ const ProductsBarChart = () => {
     });
 
     return dataPerUserLists;
-  }, [orders]);
+  }, [orders, products]);
   const sortedData = useMemo(() => {
     return [...(dataPerUser[userId] || [])].sort(
       (a, b) => a.quantity - b.quantity

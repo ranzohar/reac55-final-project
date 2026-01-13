@@ -60,14 +60,21 @@ const renderCustomizedLabel = ({
 };
 
 const ProductsPieChart = () => {
-  const orders = useSelector((state) => state.data.orders);
-
+  const orders = useSelector((state) => state.admin.orders);
+  const products = useSelector((state) => state.data.products);
   const data = useMemo(() => {
+    if (
+      Object.entries(products).length === 0 ||
+      Object.entries(orders).length === 0
+    ) {
+      return [];
+    } // TODO check if needed
     const totals = {};
 
     orders.forEach((order) => {
       order.products.forEach((orderedProduct) => {
-        const product = orderedProduct.product;
+        console.log(products);
+        const product = products[orderedProduct.id];
         const quantity = orderedProduct.quantity;
         totals[product.title] = {
           qty: (totals[product.title]?.qty ?? 0) + quantity,
@@ -83,7 +90,7 @@ const ProductsPieChart = () => {
         color: product.color,
       };
     });
-  }, [orders]);
+  }, [orders, products]);
 
   return (
     <>

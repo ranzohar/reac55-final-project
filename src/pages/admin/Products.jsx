@@ -15,10 +15,10 @@ const Products = () => {
   const dispatch = useDispatch();
   const adminProducts = useSelector((state) => state.admin.products);
   const orders = useSelector((state) => {
-    return state.data.orders;
+    return state.admin.orders;
   });
   const users = useSelector((state) => {
-    return state.data.users;
+    return state.admin.users;
   });
 
   useEffect(() => {
@@ -31,13 +31,15 @@ const Products = () => {
   const sortedProductsWithStats = useMemo(() => {
     const ordersPerProduct = {};
     orders?.forEach((order) => {
-      order.products.forEach(({ quantity, product }) => {
-        ordersPerProduct[product.id] = [
-          ...(ordersPerProduct[product.id] || []),
+      order.products.forEach(({ quantity, id }) => {
+        ordersPerProduct[id] = [
+          ...(ordersPerProduct[id] || []),
           [users[order.userId].fname, quantity, order.date],
         ];
       });
     });
+    console.log(adminProducts);
+
     const sortedProduct = Object.values(adminProducts).sort((a, b) => {
       const hasA = !!a.createDate;
       const hasB = !!b.createDate;
@@ -54,9 +56,9 @@ const Products = () => {
     sortedProduct.forEach((product) => {
       product.boughtBy = ordersPerProduct[product.id];
     });
-
+    // console.log(sortedProduct);
     return sortedProduct;
-  }, [orders, adminProducts]);
+  }, [users, adminProducts]);
 
   const addNew = async () => {
     const id = await getFirebaseUniqueId();
@@ -65,7 +67,6 @@ const Products = () => {
       payload: id,
     });
   };
-
   return (
     <div>
       {sortedProductsWithStats.length > 0 &&

@@ -53,87 +53,69 @@ function setData(setCB, collectionName, parseData) {
   });
 }
 
+// function getUsersData(setCB) {
+//   const q = query(collection(db, "users"));
+
+//   return onSnapshot(q, async (usersSnap) => {
+//     const users = await Promise.all(
+//       usersSnap.docs.map(async (doc) => {
+//         const data = doc.data();
+
+//         // Parse orders and their products
+//         const orders = await Promise.all(
+//           (data.orders || []).map(async (order) => {
+//             const products = await Promise.all(
+//               (order.products || []).map(async (orderedProduct) => {
+//                 const productRef =
+//                   typeof orderedProduct.ref === "string"
+//                     ? doc(db, ...orderedProduct.ref.split("/").filter(Boolean))
+//                     : orderedProduct.ref;
+
+//                 const productSnap = await getDoc(productRef);
+//                 if (!productSnap.exists()) {
+//                   return { quantity: orderedProduct.quantity, product: null };
+//                 }
+
+//                 return {
+//                   quantity: orderedProduct.quantity,
+//                   product: { id: productSnap.id, ...productSnap.data() },
+//                 };
+//               })
+//             );
+
+//             return {
+//               ...order,
+//               products,
+//               date: order.date,
+//             };
+//           })
+//         );
+
+//         return {
+//           id: doc.id,
+//           username: data.username,
+//           fname: data.fname,
+//           lname: data.lname,
+//           joined: data.joined,
+//           orders,
+//         };
+//       })
+//     );
+
+//     setCB(users);
+//   });
+// }
+
 function getUsersData(setCB) {
-  const q = query(collection(db, "users"));
-
-  return onSnapshot(q, async (usersSnap) => {
-    const users = await Promise.all(
-      usersSnap.docs.map(async (doc) => {
-        const data = doc.data();
-
-        // Parse orders and their products
-        const orders = await Promise.all(
-          (data.orders || []).map(async (order) => {
-            const products = await Promise.all(
-              (order.products || []).map(async (orderedProduct) => {
-                const productRef =
-                  typeof orderedProduct.ref === "string"
-                    ? doc(db, ...orderedProduct.ref.split("/").filter(Boolean))
-                    : orderedProduct.ref;
-
-                const productSnap = await getDoc(productRef);
-                if (!productSnap.exists()) {
-                  return { quantity: orderedProduct.quantity, product: null };
-                }
-
-                const productData = await parseProductData(productSnap.data());
-
-                return {
-                  quantity: orderedProduct.quantity,
-                  product: { id: productSnap.id, ...productData },
-                };
-              })
-            );
-
-            return {
-              ...order,
-              products,
-              date: order.date,
-            };
-          })
-        );
-
-        return {
-          id: doc.id,
-          username: data.username,
-          fname: data.fname,
-          lname: data.lname,
-          joined: data.joined,
-          orders,
-        };
-      })
-    );
-
-    setCB(users);
-  });
+  return setData(setCB, "users");
 }
 
 function getCategoriesData(setCB) {
   return setData(setCB, "categories");
 }
 
-const parseProductData = async (product) => {
-  let categoryName = "";
-  if (product.category) {
-    const categoryDoc = await getDoc(product.category);
-    if (categoryDoc.exists()) {
-      categoryName = categoryDoc.data().name;
-    }
-  }
-
-  return {
-    title: product.title,
-    price: product.price,
-    link: product.link_to_pic,
-    description: product.description,
-    category: categoryName,
-    createDate: product.createDate,
-    color: product.color,
-  };
-};
-
 function getProductsData(setCB) {
-  return setData(setCB, "products", parseProductData);
+  return setData(setCB, "products");
 }
 
 async function updateCategory(categoryId, name) {
@@ -192,21 +174,12 @@ async function upsertProduct(id, fields, index) {
   const productRef = doc(db, "products", id);
   const snap = await getDoc(productRef);
 
-  let categoryRef = null;
-
-  if (categoryId) {
-    const categoryDocRef = doc(db, "categories", categoryId);
-    const categorySnap = await getDoc(categoryDocRef);
-    if (!categorySnap.exists()) throw new Error("Category does not exist");
-    categoryRef = categoryDocRef;
-  }
-
   const data = {
     title,
     price,
     link_to_pic: link_to_pic || "",
     description: description || "",
-    category: categoryRef,
+    categoryId: categoryId,
   };
 
   if (!snap.exists()) {

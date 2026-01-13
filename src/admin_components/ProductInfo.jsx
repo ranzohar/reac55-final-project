@@ -12,20 +12,17 @@ const ProductInfo = ({ product, onUpdate }) => {
     categoryId: "",
     description: "",
     price: "",
-    link: "",
+    link_to_pic: "",
   });
 
   useEffect(() => {
     if (product && categories) {
-      const matchedCategory = categories.find(
-        (category) => category.name === product.category
-      );
       setChangeProduct({
         title: product.title || "",
-        categoryId: matchedCategory ? matchedCategory.id : "",
+        categoryId: product.categoryId || "",
         description: product.description || "",
         price: product.price || "",
-        link: product.link || "",
+        link_to_pic: product.link_to_pic || "",
       });
     }
   }, [product, categories]);
@@ -41,9 +38,9 @@ const ProductInfo = ({ product, onUpdate }) => {
     onUpdate({
       title: changeProduct.title,
       price: changeProduct.price,
-      link_to_pic: changeProduct.link,
+      link_to_pic: changeProduct.link_to_pic,
       description: changeProduct.description,
-      categoryId: changeProduct.categoryId || undefined,
+      categoryId: changeProduct.categoryId,
     });
   };
 
@@ -89,8 +86,8 @@ const ProductInfo = ({ product, onUpdate }) => {
         Link to pic:
         <input
           className="input-base"
-          value={changeProduct.link}
-          onChange={(e) => handleChange("link", e.target.value)}
+          value={changeProduct.link_to_pic}
+          onChange={(e) => handleChange("link_to_pic", e.target.value)}
         />
       </label>
 
