@@ -4,23 +4,52 @@ import WebpageTable from "../components/WebpageTable";
 
 const CustomersTable = () => {
   const usersMap = useSelector((state) => state.data.users);
+  const orders = useSelector((state) => state.data.orders);
 
   const tableData = useMemo(() => {
-    if (!usersMap) return [];
+    if (!usersMap || usersMap.size === 0) return [];
+    const ordersPerUser = {};
 
-    return Object.entries(usersMap)
-      .map(([id, user]) => ({ id, ...user }))
-      .sort((a, b) => {
-        const dateA = a.joinDate?.toDate
-          ? a.joinDate.toDate()
-          : new Date(a.joinDate);
-        const dateB = b.joinDate?.toDate
-          ? b.joinDate.toDate()
-          : new Date(b.joinDate);
-        return dateA - dateB;
-      })
-      .map((user) => [`${user.fname} ${user.lname}`, user.joinDate, []]);
-  }, [usersMap]);
+    orders.forEach((order) => {
+      ordersPerUser[order.userId] = [
+        ...(ordersPerUser[order.userId] || []),
+        order,
+      ];
+    });
+
+    const usersArray = Object.entries(usersMap).map(([id, user]) => ({
+      id,
+      ...user,
+    }));
+    const sortedUsersArray = usersArray.sort((a, b) => {
+      const [dA, mA, yA] = a.joinDate.split("/").map(Number);
+      const [dB, mB, yB] = b.joinDate.split("/").map(Number);
+
+      return new Date(yA, mA - 1, dA) - new Date(yB, mB - 1, dB);
+    });
+    return sortedUsersArray?.map((user) => {
+      const userOrders = ordersPerUser[user.id];
+      const ordersTableData = userOrders?.flatMap((order) => {
+        return order.products.map((orderedProduct) => {
+          return [
+            orderedProduct.product.title,
+            orderedProduct.quantity,
+            order.date,
+          ];
+        });
+      });
+      let ordersTable = [];
+      if (ordersTableData) {
+        ordersTable = (
+          <WebpageTable
+            headers={["Product", "Qty", "Date"]}
+            data={ordersTableData || []}
+          />
+        );
+      }
+      return [`${user.fname} ${user.lname}`, user.joinDate, ordersTable];
+    });
+  }, [usersMap, orders]);
 
   if (!tableData.length) return null;
 

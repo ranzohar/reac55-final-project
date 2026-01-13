@@ -12,8 +12,6 @@ const useCategories = () => {
       (cat) => cat.name.toLowerCase() === newCategoryName.toLowerCase()
     );
     if (exists) return;
-    console.log(newCategoryName);
-
     addCategory(newCategoryName);
   };
 
@@ -23,8 +21,6 @@ const useCategories = () => {
   };
 
   const removeExistingCategory = (id) => {
-    console.log("removing", id);
-
     if (!id || !categoriesMap[id]) return;
     removeCategory(id);
   };

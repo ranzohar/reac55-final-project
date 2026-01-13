@@ -18,7 +18,7 @@ const ProductInfo = ({ product, onUpdate }) => {
   useEffect(() => {
     if (product && categories) {
       const matchedCategory = categories.find(
-        (cat) => cat.name === product.category
+        (category) => category.name === product.category
       );
       setChangeProduct({
         title: product.title || "",
@@ -106,21 +106,8 @@ const ProductInfo = ({ product, onUpdate }) => {
       <div className="flex flex-col">
         Bought By:
         <WebpageTable
-          headers={["h1", "h2", "h3"]}
-          data={[
-            ["1", "2", "3"],
-            [
-              "4",
-              "5",
-              <WebpageTable
-                headers={["h1", "h2", "h3"]}
-                data={[
-                  ["1", "2", "3"],
-                  ["4", "5", "6"],
-                ]}
-              />,
-            ],
-          ]}
+          headers={["Name", "Qty", "date"]}
+          data={product.boughtBy || []}
         />
       </div>
 

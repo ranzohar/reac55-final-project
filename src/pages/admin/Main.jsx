@@ -3,7 +3,6 @@ import LinksTab from "../../components/LinksTab";
 import { useEffect } from "react";
 import {
   getUsersData,
-  getOrdersData,
   getCategoriesData,
   getProductsData,
 } from "../../firebase/doc-utils";
@@ -24,7 +23,6 @@ const AdminPage = () => {
     };
     const getters = [
       { payloadKey: "users", getData: getUsersData },
-      { payloadKey: "orders", getData: getOrdersData },
       { payloadKey: "categories", getData: getCategoriesData },
       { payloadKey: "products", getData: getProductsData },
     ];

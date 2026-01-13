@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 const Products = () => {
   const { customerId } = useParams();
   const { products } = useProducts(customerId);
-  console.log(products);
 
   return (
     <div>

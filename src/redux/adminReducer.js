@@ -6,13 +6,10 @@ const initialState = {
 const adminReducer = (state = initialState, action) => {
   switch (action.type) {
     case "LOAD_ADMIN_PRODUCTS": {
-      console.log(action.payload);
-
       const updatedProducts = { ...state.products };
       action.payload.forEach((product) => {
         updatedProducts[product.id] = { ...product };
       });
-      console.log(updatedProducts);
       return {
         ...state,
         products: updatedProducts,

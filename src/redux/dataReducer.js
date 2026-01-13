@@ -1,8 +1,8 @@
 const initialState = {
-  users: {}, //details + join date per user ID
-  orders: [],
-  categories: {}, // names
-  products: [], // id, title, category, description, price link to pic per ID TODO add qunatity
+  users: {}, // { [userId]: { username, fname, lname, joinDate, orders } }
+  orders: [], // flattened array of all orders, sorted by date
+  categories: {}, // { [categoryId]: { name } }
+  products: {}, // { [productId]: { title, price, link, category, description, createDate } }
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -12,31 +12,60 @@ const dataReducer = (state = initialState, action) => {
         users: payloadUsers,
         products: payloadProducts,
         categories: payloadCategories,
-        orders: payloadOrders,
       } = action.payload;
 
       const users =
         payloadUsers && payloadUsers.length > 0
           ? payloadUsers.reduce((acc, user) => {
-              const { username, fname, lname, joined } = user;
-              const date = new Date(joined.seconds * 1000);
-              const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-              acc[user.id] = {
+              const { id, username, fname, lname, joined, orders } = user;
+              const date = joined?.seconds
+                ? new Date(joined.seconds * 1000)
+                : joined;
+              const formattedJoinDate = date
+                ? `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+                : null;
+
+              acc[id] = {
                 username,
                 fname,
                 lname,
-                joinDate: formattedDate,
+                joinDate: formattedJoinDate,
+                orders: orders || [],
               };
               return acc;
             }, {})
-          : state.users; // keep existing if missing/empty
+          : state.users;
+
+      const orders = Object.entries(users)
+        .flatMap(([userId, user]) => {
+          return (user.orders || []).map((order) => {
+            const date = new Date(order.date.seconds * 1000);
+            return {
+              ...order,
+              userId,
+              date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
+            };
+          });
+        })
+        .sort((a, b) => {
+          const aTime = a.date instanceof Date ? a.date.getTime() : 0;
+          const bTime = b.date instanceof Date ? b.date.getTime() : 0;
+          return aTime - bTime;
+        });
 
       const products =
         payloadProducts && payloadProducts.length > 0
           ? payloadProducts.reduce((acc, product) => {
-              const { title, price, link, category, description, createDate } =
-                product;
-              acc[product.id] = {
+              const {
+                id,
+                title,
+                price,
+                link,
+                category,
+                description,
+                createDate,
+              } = product;
+              acc[id] = {
                 title,
                 price,
                 link,
@@ -51,19 +80,15 @@ const dataReducer = (state = initialState, action) => {
       const categories =
         payloadCategories && payloadCategories.length > 0
           ? payloadCategories.reduce((acc, category) => {
-              const { name } = category;
-              acc[category.id] = { name };
+              const { id, name } = category;
+              acc[id] = { name };
               return acc;
             }, {})
           : state.categories;
 
-      const orders =
-        payloadOrders && payloadOrders.length > 0
-          ? payloadOrders
-          : state.orders;
-
-      return { ...state, users, products, categories, orders };
+      return { ...state, users, orders, products, categories };
     }
+
     default:
       return state;
   }

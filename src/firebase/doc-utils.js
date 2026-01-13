@@ -54,75 +54,58 @@ function setData(setCB, collectionName, parseData) {
 }
 
 function getUsersData(setCB) {
-  return setData(setCB, "users");
-}
+  const q = query(collection(db, "users"));
 
-function getOrdersData(setCB) {
-  const colRef = collection(db, "orders");
+  return onSnapshot(q, async (usersSnap) => {
+    const users = await Promise.all(
+      usersSnap.docs.map(async (doc) => {
+        const data = doc.data();
 
-  const unsubscribe = onSnapshot(colRef, async (snapshot) => {
-    const results = await Promise.all(
-      snapshot.docs.map(async (wrapperDoc) => {
-        const orderRefWrapper = wrapperDoc.data();
+        // Parse orders and their products
+        const orders = await Promise.all(
+          (data.orders || []).map(async (order) => {
+            const products = await Promise.all(
+              (order.products || []).map(async (orderedProduct) => {
+                const productRef =
+                  typeof orderedProduct.ref === "string"
+                    ? doc(db, ...orderedProduct.ref.split("/").filter(Boolean))
+                    : orderedProduct.ref;
 
-        if (!orderRefWrapper.ref) {
-          throw new Error(`Order wrapper ${wrapperDoc.id} missing 'ref'`);
-        }
+                const productSnap = await getDoc(productRef);
+                if (!productSnap.exists()) {
+                  return { quantity: orderedProduct.quantity, product: null };
+                }
 
-        const orderSnap = await getDoc(orderRefWrapper.ref);
+                const productData = await parseProductData(productSnap.data());
 
-        if (!orderSnap.exists()) {
-          throw new Error(
-            `Referenced order ${orderRefWrapper.ref.path} does not exist`
-          );
-        }
-
-        const order = orderSnap.data();
-
-        if (!Array.isArray(order.products) || order.products.length === 0) {
-          throw new Error(
-            `Order ${orderSnap.id} must contain at least one product`
-          );
-        }
-
-        const userId = orderRefWrapper.ref.parent.parent.id;
-
-        const products = await Promise.all(
-          order.products.map(async (orderedProduct, index) => {
-            const productRef =
-              typeof orderedProduct.ref === "string"
-                ? doc(db, ...orderedProduct.ref.split("/").filter(Boolean))
-                : orderedProduct.ref;
-
-            const productSnap = await getDoc(productRef);
-
-            if (!productSnap.exists()) {
-              return { quantity: orderedProduct.quantity, product: null };
-            }
-
-            const productData = await parseProductData(productSnap.data());
+                return {
+                  quantity: orderedProduct.quantity,
+                  product: { id: productSnap.id, ...productData },
+                };
+              })
+            );
 
             return {
-              quantity: orderedProduct.quantity,
-              product: { id: productSnap.id, ...productData },
+              ...order,
+              products,
+              date: order.date,
             };
           })
         );
 
         return {
-          id: wrapperDoc.id,
-          userId,
-          products,
-          date: order.date || null,
-          status: order.status || null,
+          id: doc.id,
+          username: data.username,
+          fname: data.fname,
+          lname: data.lname,
+          joined: data.joined,
+          orders,
         };
       })
     );
 
-    setCB(results);
+    setCB(users);
   });
-
-  return unsubscribe;
 }
 
 function getCategoriesData(setCB) {
@@ -230,7 +213,6 @@ async function upsertProduct(id, fields, index) {
     data.createDate = serverTimestamp();
     data.color = COLORS[index % COLORS.length];
   }
-  console.log(data.color);
 
   await setDoc(productRef, data);
 }
@@ -272,7 +254,6 @@ async function removeUser(uid) {
 
 export {
   getUsersData,
-  getOrdersData,
   getCategoriesData,
   getProductsData,
   updateCategory,

@@ -69,8 +69,6 @@ const ProductsPieChart = () => {
       order.products.forEach((orderedProduct) => {
         const product = orderedProduct.product;
         const quantity = orderedProduct.quantity;
-        console.log(product);
-
         totals[product.title] = {
           qty: (totals[product.title]?.qty ?? 0) + quantity,
           color: product.color,
