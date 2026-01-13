@@ -38,8 +38,6 @@ const Products = () => {
         ];
       });
     });
-    console.log(adminProducts);
-
     const sortedProduct = Object.values(adminProducts).sort((a, b) => {
       const hasA = !!a.createDate;
       const hasB = !!b.createDate;
@@ -56,7 +54,6 @@ const Products = () => {
     sortedProduct.forEach((product) => {
       product.boughtBy = ordersPerProduct[product.id];
     });
-    // console.log(sortedProduct);
     return sortedProduct;
   }, [users, adminProducts]);
 

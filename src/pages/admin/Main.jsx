@@ -29,7 +29,7 @@ const AdminPage = () => {
       unsubscribeProducts,
     ];
     return () => {
-      unsubscribes.forEach((unsub) => unsub && unsub());
+      unsubscribes.forEach((unsubscribe) => unsubscribe && unsubscribe());
     };
   }, [adminId, dispatch]);
 

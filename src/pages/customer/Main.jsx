@@ -1,17 +1,36 @@
 import Cart from "../../customer_components/Cart";
 import SlidingWindow from "../../customer_components/SlidingWindow";
 import { useParams, Outlet } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { getUser } from "../../firebase/doc-utils";
+import { useEffect } from "react";
+import {
+  getUser,
+  getProductsData,
+  getCategoriesData,
+} from "../../firebase/doc-utils";
 import LinksTab from "../../components/LinksTab";
+import { useDispatch, useSelector } from "react-redux";
 
 const CustomerPage = () => {
+  const dispatch = useDispatch();
   const { customerId } = useParams();
-  const [user, setUser] = useState({});
+  const user = useSelector((state) => state.customer.user);
 
   useEffect(() => {
-    const unsubscribe = getUser(customerId, setUser);
-    return () => unsubscribe();
+    const unsubscribeUser = getUser(customerId, (data) =>
+      dispatch({ type: "LOAD_USER", payload: data })
+    );
+    const unsubscribeCategories = getCategoriesData((data) =>
+      dispatch({ type: "LOAD", payload: { categories: data } })
+    );
+    const unsubscribeProducts = getProductsData((data) =>
+      dispatch({ type: "LOAD", payload: { products: data } })
+    );
+    const ubsubscribes = [
+      unsubscribeUser,
+      unsubscribeProducts,
+      unsubscribeCategories,
+    ];
+    return () => ubsubscribes.forEach((unsubscribe) => unsubscribe());
   }, [customerId]);
 
   const links = [
@@ -23,11 +42,18 @@ const CustomerPage = () => {
     <div className="flex">
       <SlidingWindow component={<Cart />} />
       {
-        <div className="flex flex-col center-screen">
-          <LinksTab items={links} />
-          Hello, {user.fname}
-          <br />
-          <Outlet />
+        <div className="flex flex-col items-center w-full min-h-screen">
+          {/* This inner wrapper handles vertical centering */}
+          <div className="flex flex-col items-center w-full max-w-4xl mx-auto py-6 flex-grow justify-center">
+            <div className="text-center mb-4">Hello, {user.fname}</div>
+
+            <LinksTab items={links} />
+
+            {/* Products and other content */}
+            <div className="w-full mt-6">
+              <Outlet />
+            </div>
+          </div>
         </div>
       }
     </div>

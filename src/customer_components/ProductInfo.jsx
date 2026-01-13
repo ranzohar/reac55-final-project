@@ -20,7 +20,7 @@ const ProductInfo = ({ product }) => {
         {/* Image */}
         <div className="flex justify-center">
           <img
-            src={product.link}
+            src={product.link_to_pic}
             alt={product.title}
             className="h-48 w-auto object-cover rounded-lg"
           />

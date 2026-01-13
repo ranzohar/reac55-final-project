@@ -201,13 +201,13 @@ function getUser(uid, setCB) {
 
   const unsubscribe = onSnapshot(userRef, (docSnap) => {
     if (!docSnap.exists()) {
-      setCB({});
+      throw new Error("User does not exist");
     } else {
       setCB({ id: docSnap.id, ...docSnap.data() });
     }
   });
 
-  return unsubscribe; // call unsubscribe() to stop listening
+  return unsubscribe;
 }
 
 async function removeUser(uid) {

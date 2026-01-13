@@ -1,19 +1,17 @@
-// includes cart and orders TODO - every user should have priviledges to see only his own orders
 const initialState = {
-  details: { fname: "", lname: "", username: "", password: "" }, //TODO keep password out of database
-  cart: [], // products
-  orders: [], // products + date
+  cart: [],
+  user: [],
 };
 
 const customerReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "LOAD_USER":
+      return { ...state, user: action.payload };
     case "ADD_TO_CART":
       return state;
     case "REMOVE_FROM_CART":
       return state;
-    case "ORDER_MADE":
-      return state;
-    case "UPDATE_DETAILS": // on load when entering username/password. On create new use. On update details page
+    case "ORDER":
       return state;
     default:
       return state;

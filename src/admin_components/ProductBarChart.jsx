@@ -11,23 +11,22 @@ const ProductsBarChart = () => {
   const dataPerUser = useMemo(() => {
     const dataPerUserObj = {};
     orders.forEach((order) => {
-      if (
-        Object.entries(products).length === 0 ||
-        Object.entries(orders).length === 0
-      ) {
+      if (Object.entries(orders).length === 0) {
         return [];
-      } // TODO check if needed
+      }
       const userId = order.userId;
       if (!dataPerUserObj[userId]) {
         dataPerUserObj[userId] = {};
       }
       order.products.forEach((orderedProduct) => {
-        const product = products[orderedProduct.id];
-        const quantity = orderedProduct.quantity;
-        dataPerUserObj[userId][product.title] = {
-          qty: (dataPerUserObj[userId][product.title]?.qty ?? 0) + quantity,
-          color: product.color,
-        };
+        if (orderedProduct.id in products) {
+          const product = products[orderedProduct.id];
+          const quantity = orderedProduct.quantity;
+          dataPerUserObj[userId][product.title] = {
+            qty: (dataPerUserObj[userId][product.title]?.qty ?? 0) + quantity,
+            color: product.color,
+          };
+        }
       });
     });
     const dataPerUserLists = {};

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import Cart from "./Cart";
 
 export default function SlidingWindow({ component, children }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,39 +18,27 @@ export default function SlidingWindow({ component, children }) {
   }, [isOpen]);
 
   return (
-    <div className="h-screen flex">
-      {/* Sliding panel */}
+    <div className="relative">
+      {/* Fixed Sidebar */}
       <div
-        className={`h-full bg-gray-300 dark:bg-gray-800 text-white p-4
-          transition-all duration-300 ease-in-out
-          relative
-          ${isOpen ? "w-64" : "w-16"}
-        `}
+        className={`fixed top-0 left-0 h-screen bg-gray-300 dark:bg-gray-800 text-white
+      transition-all duration-300 ease-in-out
+      ${isOpen ? "w-64" : "w-16"} p-4 z-20`}
       >
-        {showContent && <div className="mt-0">{component}</div>}
-
+        {showContent && <Cart />}
         <button
-          className="
-    absolute top-1/2 right-0 transform -translate-y-1/2
-    p-3 rounded-full shadow-lg border
-    border-gray-300 dark:border-gray-700
-    bg-gray-200 dark:bg-gray-900
-    text-gray-700 dark:text-white
-    hover:bg-gray-300 dark:hover:bg-gray-800
-    flex items-center justify-center
-  "
+          className="absolute top-1/2 right-0 transform -translate-y-1/2 ..."
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? (
-            <ChevronLeftIcon size={20} />
-          ) : (
-            <ChevronRightIcon size={20} />
-          )}
+          {isOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </button>
       </div>
 
-      {/* Main content */}
-      <div className="flex-1 h-full transition-all duration-300 ease-in-out">
+      {/* Main content with dynamic margin */}
+      <div
+        className={`transition-all duration-300`}
+        style={{ marginLeft: isOpen ? "16rem" : "4rem" }}
+      >
         {children}
       </div>
     </div>

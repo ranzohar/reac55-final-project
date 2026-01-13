@@ -63,23 +63,21 @@ const ProductsPieChart = () => {
   const orders = useSelector((state) => state.admin.orders);
   const products = useSelector((state) => state.data.products);
   const data = useMemo(() => {
-    if (
-      Object.entries(products).length === 0 ||
-      Object.entries(orders).length === 0
-    ) {
+    if (Object.entries(orders).length === 0) {
       return [];
-    } // TODO check if needed
+    }
     const totals = {};
 
     orders.forEach((order) => {
       order.products.forEach((orderedProduct) => {
-        console.log(products);
-        const product = products[orderedProduct.id];
-        const quantity = orderedProduct.quantity;
-        totals[product.title] = {
-          qty: (totals[product.title]?.qty ?? 0) + quantity,
-          color: product.color,
-        };
+        if (orderedProduct.id in products) {
+          const product = products[orderedProduct.id];
+          const quantity = orderedProduct.quantity;
+          totals[product.title] = {
+            qty: (totals[product.title]?.qty ?? 0) + quantity,
+            color: product.color,
+          };
+        }
       });
     });
 
