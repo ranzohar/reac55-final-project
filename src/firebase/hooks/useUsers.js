@@ -1,25 +1,8 @@
-import { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getUsersData } from "../doc-utils";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
-const useUsers = (userId) => {
-  const dispatch = useDispatch();
+const useUsers = () => {
   const usersMap = useSelector((state) => state.data.users);
-
-  useEffect(() => {
-    console.log(userId);
-
-    if (!userId) return;
-
-    const unsubscribe = getUsersData((data) => {
-      dispatch({
-        type: "LOAD",
-        payload: { users: data },
-      });
-    });
-
-    return () => unsubscribe();
-  }, [userId]);
 
   const users = useMemo(
     () =>

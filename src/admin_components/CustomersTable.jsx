@@ -1,10 +1,8 @@
 import useUsers from "../firebase/hooks/useUsers";
 import WebpageTable from "../components/WebpageTable";
-import { useParams } from "react-router-dom";
 
 const CustomersTable = () => {
-  const { adminId } = useParams();
-  const users = useUsers(adminId);
+  const users = useUsers();
   if (users.length === 0) {
     return;
   }

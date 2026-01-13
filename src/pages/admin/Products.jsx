@@ -1,30 +1,38 @@
 import ProductInfo from "../../admin_components/ProductInfo";
 import useProducts from "../../firebase/hooks/useProducts"; // import your updated hook
-import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getFirebaseUniqueId } from "../../firebase/doc-utils";
+import { useEffect } from "react";
+
+// Products uses the local redux firebase
+// Any updates done by other admins or directly on firebase will not be seen
+// untill refreshing the site. This is acceptable as products shuold only
+// be added/edits by a single admin
+// For deleting products, access firebase->delete product->refresh the page
 
 const Products = () => {
-  const { adminId } = useParams();
-  const { products, addOrUpdateProduct } = useProducts(adminId, true);
+  const { products, addOrUpdateProduct } = useProducts();
   const dispatch = useDispatch();
   const adminProducts = useSelector((state) => state.admin.products);
 
-  if (products.length === 0) {
-    return null;
-  }
+  useEffect(() => {
+    dispatch({
+      type: "LOAD_ADMIN_PRODUCTS",
+      payload: products,
+    });
+  }, [products]);
 
   const sortedProducts = Object.values(adminProducts).sort((a, b) => {
     const hasA = !!a.createDate;
     const hasB = !!b.createDate;
 
-    if (!hasA && !hasB) return 0; // both missing → equal
-    if (!hasA) return 1; // a missing → a goes after b
-    if (!hasB) return -1; // b missing → b goes after a
+    if (!hasA && !hasB) return 0;
+    if (!hasA) return 1;
+    if (!hasB) return -1;
 
     const ta = a.createDate.seconds * 1000 + a.createDate.nanoseconds / 1e6;
     const tb = b.createDate.seconds * 1000 + b.createDate.nanoseconds / 1e6;
-    return ta - tb; // asc: oldest → newest
+    return ta - tb;
   });
 
   const addNew = async () => {
@@ -37,17 +45,18 @@ const Products = () => {
   console.log(sortedProducts);
   return (
     <div>
-      {sortedProducts.map((product) => {
-        return (
-          <ProductInfo
-            key={product.id}
-            product={product}
-            onUpdate={(updatedData) =>
-              addOrUpdateProduct(product.id, updatedData)
-            }
-          />
-        );
-      })}
+      {sortedProducts.length > 0 &&
+        sortedProducts.map((product, index) => {
+          return (
+            <ProductInfo
+              key={product.id}
+              product={product}
+              onUpdate={(updatedData) =>
+                addOrUpdateProduct(product.id, updatedData, index)
+              }
+            />
+          );
+        })}
       <button onClick={addNew}>Add new</button>
     </div>
   );

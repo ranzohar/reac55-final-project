@@ -1,7 +1,5 @@
 import CustomersTable from "../../admin_components/CustomersTable";
 
-CustomersTable;
-
 const Users = () => {
   return (
     <div

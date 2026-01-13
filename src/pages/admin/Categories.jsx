@@ -1,16 +1,14 @@
 import Category from "../../admin_components/Category";
 import useCategories from "../../firebase/hooks/useCategories";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
 
 const Categories = () => {
-  const { adminId } = useParams();
   const {
     categories,
     addNewCategory,
     updateExistingCategory,
     removeExistingCategory,
-  } = useCategories(adminId);
+  } = useCategories();
   const [newCategory, setNewCategory] = useState("");
 
   return (
@@ -18,8 +16,8 @@ const Categories = () => {
       <h2 className="text-2xl font-bold">Categories:</h2>
       {categories.map((category) => (
         <Category
-          key={category.id} // use id as key instead of index
-          id={category.id} // pass id to child
+          key={category.id}
+          id={category.id}
           name={category.name}
           updateExistingCategory={updateExistingCategory}
           removeExistingCategory={removeExistingCategory}

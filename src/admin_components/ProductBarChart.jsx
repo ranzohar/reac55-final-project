@@ -37,19 +37,20 @@ const ProductsBarChart = () => {
       if (!dataPerUserObj[userId]) {
         dataPerUserObj[userId] = {};
       }
-      order.products.forEach(({ name, quantity }) => {
-        dataPerUserObj[userId][name] =
-          (dataPerUserObj[userId][name] ?? 0) + quantity;
+      order.products.forEach(({ product, quantity }) => {
+        dataPerUserObj[userId][product.title] = {
+          qty: (dataPerUserObj[userId][product.title]?.qty ?? 0) + quantity,
+          color: product.color,
+        };
       });
     });
     const dataPerUserLists = {};
     Object.entries(dataPerUserObj).forEach(([userId, totals]) => {
-      dataPerUserLists[userId] = Object.entries(totals).map(
-        ([name, value]) => ({
-          name,
-          value,
-        })
-      );
+      dataPerUserLists[userId] = Object.entries(totals).map(([name, data]) => ({
+        name,
+        value: data.qty,
+        color: data.color,
+      }));
     });
 
     return dataPerUserLists;
@@ -97,8 +98,8 @@ const ProductsBarChart = () => {
         fill="transparent"
       >
         <Bar dataKey="value" isAnimationActive={false}>
-          {sortedData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          {sortedData.map((data, index) => (
+            <Cell key={`cell-${index}`} fill={data.color} />
           ))}
           <LabelList content={renderLabelInside} />
         </Bar>

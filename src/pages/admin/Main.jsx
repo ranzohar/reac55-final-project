@@ -1,7 +1,42 @@
 import { Outlet } from "react-router-dom";
 import LinksTab from "../../components/LinksTab";
+import { useEffect } from "react";
+import {
+  getUsersData,
+  getOrdersData,
+  getCategoriesData,
+  getProductsData,
+} from "../../firebase/doc-utils";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const AdminPage = () => {
+  const dispatch = useDispatch();
+  const { adminId } = useParams();
+
+  useEffect(() => {
+    const unsubscribes = [];
+    const loadData = (payload) => {
+      dispatch({
+        type: "LOAD",
+        payload,
+      });
+    };
+    const getters = [
+      { payloadKey: "users", getData: getUsersData },
+      { payloadKey: "orders", getData: getOrdersData },
+      { payloadKey: "categories", getData: getCategoriesData },
+      { payloadKey: "products", getData: getProductsData },
+    ];
+    getters.forEach(({ payloadKey, getData }) => {
+      const unsubscribe = getData((data) => loadData({ [payloadKey]: data }));
+      unsubscribes.push(unsubscribe);
+    });
+    return () => {
+      unsubscribes.forEach((unsub) => unsub && unsub());
+    };
+  }, [adminId, dispatch]);
+
   const links = [
     { name: "Categories", path: "categories" },
     { name: "Products", path: "products" },
