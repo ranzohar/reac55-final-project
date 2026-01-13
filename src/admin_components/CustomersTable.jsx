@@ -1,17 +1,29 @@
-import useUsers from "../firebase/hooks/useUsers";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
 import WebpageTable from "../components/WebpageTable";
 
 const CustomersTable = () => {
-  const users = useUsers();
-  if (users.length === 0) {
-    return;
-  }
-  console.log(users);
-  const tableData = users.map((user) => {
-    console.log(user.joinDate);
+  const usersMap = useSelector((state) => state.data.users);
 
-    return [user.fname + " " + user.lname, user.joinDate, []];
-  });
+  const tableData = useMemo(() => {
+    if (!usersMap) return [];
+
+    return Object.entries(usersMap)
+      .map(([id, user]) => ({ id, ...user }))
+      .sort((a, b) => {
+        const dateA = a.joinDate?.toDate
+          ? a.joinDate.toDate()
+          : new Date(a.joinDate);
+        const dateB = b.joinDate?.toDate
+          ? b.joinDate.toDate()
+          : new Date(b.joinDate);
+        return dateA - dateB;
+      })
+      .map((user) => [`${user.fname} ${user.lname}`, user.joinDate, []]);
+  }, [usersMap]);
+
+  if (!tableData.length) return null;
+
   return (
     <WebpageTable
       headers={["Full Name", "Joined At", "Products Bought"]}

@@ -4,29 +4,6 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import UserSelect from "./UserSelect";
 
-const COLORS = [
-  "#1F77B4",
-  "#2CA02C",
-  "#D62728",
-  "#E377C2",
-  "#FF7F0E",
-  "#9467BD",
-  "#17BECF",
-  "#BCBD22",
-  "#8C564B",
-  "#AEC7E8",
-  "#98DF8A",
-  "#FF9896",
-  "#C5B0D5",
-  "#F7B6D2",
-  "#C49C94",
-  "#9EDAE5",
-  "#DBDB8D",
-  "#7F7F7F",
-  "#393B79",
-  "#637939",
-];
-
 const ProductsBarChart = () => {
   const orders = useSelector((state) => state.data.orders);
   const [userId, setUserId] = useState("");
@@ -61,7 +38,6 @@ const ProductsBarChart = () => {
     );
   }, [userId, dataPerUser]);
 
-  // Custom label renderer for inside-bar labels
   const renderLabelInside = (props) => {
     const { x, y, width, height, index } = props;
     const entry = sortedData[index];
@@ -69,7 +45,7 @@ const ProductsBarChart = () => {
 
     return (
       <text
-        x={x + width / 2} // center horizontally
+        x={x + width / 2}
         y={y + OFFSET}
         fill="black"
         textAnchor="middle"
