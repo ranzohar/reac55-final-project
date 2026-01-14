@@ -15,7 +15,7 @@ const renderCustomizedLabel = ({
   if (cx == null || cy == null || innerRadius == null || outerRadius == null)
     return null;
 
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.93;
   const ncx = Number(cx);
   const ncy = Number(cy);
 
@@ -93,7 +93,7 @@ const ProductsPieChart = () => {
   return (
     <>
       <h3>Total Sold Products</h3>
-      <PieChart width={400} height={300}>
+      <PieChart width={600} height={500}>
         <Pie
           data={data}
           labelLine={false}

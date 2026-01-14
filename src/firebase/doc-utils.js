@@ -10,6 +10,7 @@ import {
   deleteDoc,
   addDoc,
   serverTimestamp,
+  arrayUnion,
 } from "firebase/firestore";
 
 const COLORS = [
@@ -52,59 +53,6 @@ function setData(setCB, collectionName, parseData) {
     setCB(data);
   });
 }
-
-// function getUsersData(setCB) {
-//   const q = query(collection(db, "users"));
-
-//   return onSnapshot(q, async (usersSnap) => {
-//     const users = await Promise.all(
-//       usersSnap.docs.map(async (doc) => {
-//         const data = doc.data();
-
-//         // Parse orders and their products
-//         const orders = await Promise.all(
-//           (data.orders || []).map(async (order) => {
-//             const products = await Promise.all(
-//               (order.products || []).map(async (orderedProduct) => {
-//                 const productRef =
-//                   typeof orderedProduct.ref === "string"
-//                     ? doc(db, ...orderedProduct.ref.split("/").filter(Boolean))
-//                     : orderedProduct.ref;
-
-//                 const productSnap = await getDoc(productRef);
-//                 if (!productSnap.exists()) {
-//                   return { quantity: orderedProduct.quantity, product: null };
-//                 }
-
-//                 return {
-//                   quantity: orderedProduct.quantity,
-//                   product: { id: productSnap.id, ...productSnap.data() },
-//                 };
-//               })
-//             );
-
-//             return {
-//               ...order,
-//               products,
-//               date: order.date,
-//             };
-//           })
-//         );
-
-//         return {
-//           id: doc.id,
-//           username: data.username,
-//           fname: data.fname,
-//           lname: data.lname,
-//           joined: data.joined,
-//           orders,
-//         };
-//       })
-//     );
-
-//     setCB(users);
-//   });
-// }
 
 function getUsersData(setCB) {
   return setData(setCB, "users");
@@ -225,6 +173,43 @@ async function removeUser(uid) {
   }
 }
 
+async function addOrderToUser(uid, orderData) {
+  if (!uid) throw new Error("UID is required");
+  if (!orderData) throw new Error("orderData is required");
+  if (!Array.isArray(orderData.products) || orderData.products.length === 0) {
+    throw new Error("Order must have at least one product");
+  }
+  for (const product of orderData.products) {
+    if (
+      !product.id ||
+      typeof product.id !== "string" ||
+      !product.quantity ||
+      typeof product.quantity !== "number" ||
+      product.quantity < 1
+    ) {
+      throw new Error(
+        "Each product must have a valid ref (string) and quantity (number >= 1)"
+      );
+    }
+  }
+
+  const userRef = doc(db, "users", uid);
+
+  try {
+    const orderWithTimestamp = {
+      ...orderData,
+      date: new Date(),
+    };
+
+    await updateDoc(userRef, {
+      orders: arrayUnion(orderWithTimestamp),
+    });
+  } catch (error) {
+    console.error("Error adding order to user:", error);
+    throw error;
+  }
+}
+
 export {
   getUsersData,
   getCategoriesData,
@@ -236,4 +221,5 @@ export {
   getUser,
   removeUser,
   getFirebaseUniqueId,
+  addOrderToUser,
 };

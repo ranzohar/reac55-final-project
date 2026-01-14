@@ -4,7 +4,7 @@ const SIZE_CLASSES = {
   lg: "text-lg [&_th]:px-8 [&_th]:py-6 [&_td]:px-8 [&_td]:py-6",
 };
 
-const WebpageTable = ({ headers, data, size = "md" }) => {
+const WebpageTable = ({ headers, data, size = "md", striped = false }) => {
   const sizeClasses = SIZE_CLASSES[size] ?? SIZE_CLASSES.md;
 
   return (
@@ -14,6 +14,7 @@ const WebpageTable = ({ headers, data, size = "md" }) => {
         [&_th]:border [&_td]:border
         [&_th]:border-black [&_td]:border-black
         [&_th]:text-center [&_td]:text-center
+        table-auto w-full
         ${sizeClasses}`}
       >
         <thead>
@@ -26,7 +27,10 @@ const WebpageTable = ({ headers, data, size = "md" }) => {
         <tbody>
           {data.map((row, index) => {
             return (
-              <tr key={index}>
+              <tr
+                key={index}
+                className={striped ? "odd:bg-gray-800 even:bg-grey-500" : ""}
+              >
                 {row.map((component, index) => {
                   return <td key={index}>{component}</td>;
                 })}

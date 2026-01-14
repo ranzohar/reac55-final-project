@@ -41,9 +41,7 @@ const ProductsBarChart = () => {
     return dataPerUserLists;
   }, [orders, products]);
   const sortedData = useMemo(() => {
-    return [...(dataPerUser[userId] || [])].sort(
-      (a, b) => a.quantity - b.quantity
-    );
+    return [...(dataPerUser[userId] || [])].sort((a, b) => a.value - b.value);
   }, [userId, dataPerUser]);
 
   const renderLabelInside = (props) => {

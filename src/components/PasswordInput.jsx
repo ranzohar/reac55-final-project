@@ -5,19 +5,19 @@ function PasswordInput({ value, onChange }) {
   const [visible, setVisible] = useState(false);
 
   return (
-    <div className="relative w-64">
+    <div className="relative w-full">
       <input
         type={visible ? "text" : "password"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         autoComplete="current-password"
         required
-        className="input-base"
+        className="input-base w-full pr-10" // full width + padding for the button
       />
       <button
         type="button"
         onClick={() => setVisible((v) => !v)}
-        className="absolute inset-y-0 right-0 flex items-center justify-center p-0 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white translate-x-2"
+        className="absolute inset-y-0 right-0 flex items-center justify-center p-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
         style={{
           background: "none",
           border: "none",

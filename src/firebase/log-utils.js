@@ -4,9 +4,12 @@ import {
   signOut,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth";
 import { db, app } from "../firebase/firebase";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, updateDoc } from "firebase/firestore";
 import { removeUser } from "../firebase/doc-utils";
 import { useState, useEffect } from "react";
 
@@ -102,4 +105,54 @@ const useAuth = () => {
   return { user, loading };
 };
 
-export { firebaseLogin, firebaseLogout, firebaseSignUp, checkIfAdmin, useAuth };
+async function updateUserInfo(uid, data) {
+  if (!uid) throw new Error("UID is required");
+  if (!data || typeof data !== "object") throw new Error("Data is required");
+  console.log(uid);
+
+  const userRef = doc(db, "users", uid);
+
+  try {
+    await updateDoc(userRef, data);
+  } catch (error) {
+    console.error("Error updating user info:", error);
+    throw error;
+  }
+}
+
+async function updateUserPassword(newPassword, currentPassword) {
+  if (!newPassword || newPassword.length < 6)
+    throw new Error("Password must be at least 6 characters");
+
+  if (!currentPassword)
+    throw new Error("Current password is required to change password");
+
+  try {
+    const auth = getAuth();
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) throw new Error("No authenticated user");
+
+    // Reauthenticate user with current password
+    const credential = EmailAuthProvider.credential(
+      firebaseUser.email,
+      currentPassword
+    );
+    await reauthenticateWithCredential(firebaseUser, credential);
+
+    // Now update the password
+    await updatePassword(firebaseUser, newPassword);
+  } catch (error) {
+    console.error("Error updating password:", error);
+    throw error;
+  }
+}
+
+export {
+  firebaseLogin,
+  firebaseLogout,
+  firebaseSignUp,
+  checkIfAdmin,
+  useAuth,
+  updateUserInfo,
+  updateUserPassword,
+};

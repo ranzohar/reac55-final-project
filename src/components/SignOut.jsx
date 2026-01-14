@@ -14,10 +14,11 @@ const SignOut = () => {
 
   const logOutFromFirebase = async () => {
     await firebaseLogout();
+    sessionStorage.clear();
   };
   return (
     <span
-      className="text-blue-500 !underline text-sm cursor-pointer bg-transparent p-0"
+      className="text-blue-500 underline! text-sm cursor-pointer bg-transparent p-0"
       onClick={logOutFromFirebase}
     >
       Log Out

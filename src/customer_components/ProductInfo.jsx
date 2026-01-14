@@ -1,10 +1,29 @@
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProductInfo = ({ product }) => {
-  const [count, setCount] = useState(0);
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.customer.cart);
+  const quantity = cart[product.id] ?? 0;
 
-  const increment = () => setCount((prev) => prev + 1);
-  const decrement = () => setCount((prev) => (prev > 0 ? prev - 1 : 0));
+  const updateCart = (updatedQuantity) => {
+    dispatch({
+      type: "UPDATE_CART",
+      payload: {
+        productId: product.id,
+        quantity: updatedQuantity,
+        price: +product.price.replace(/^\D/, ""),
+        removeFromCart: updatedQuantity === 0,
+      },
+    });
+  };
+
+  const increment = () => {
+    updateCart(quantity + 1);
+  };
+
+  const decrement = () => {
+    updateCart(Math.max(0, quantity - 1));
+  };
 
   return (
     <div className="max-w-xl border border-gray-300 dark:border-gray-700 rounded-xl p-4 mb-4 bg-white dark:bg-gray-900 shadow-sm">
@@ -46,7 +65,7 @@ const ProductInfo = ({ product }) => {
         </svg>
 
         <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-600 text-lg font-medium">
-          {count}
+          {quantity}
         </div>
 
         {/* Plus icon */}
