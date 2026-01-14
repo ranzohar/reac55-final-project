@@ -57,7 +57,14 @@ const firebaseLogout = async (authInstance) => {
   }
 };
 
-const firebaseSignUp = async (fname, lname, username, password, setError) => {
+const firebaseSignUp = async (
+  fname,
+  lname,
+  username,
+  password,
+  setError,
+  alloOthers
+) => {
   const email = username + "@admin.admin";
   const auth = getAuth(app);
   let user = null;
@@ -78,7 +85,7 @@ const firebaseSignUp = async (fname, lname, username, password, setError) => {
       fname,
       lname,
       joined: new Date(),
-      ["allow others to see orders"]: true, // TODO - add checkbox
+      ["allow others to see orders"]: alloOthers,
     });
   } catch (err) {
     console.log(err);

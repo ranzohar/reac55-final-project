@@ -41,7 +41,7 @@ const AdminPage = () => {
   ];
 
   return (
-    <div className="shrink-0 p-4 flex flex-col items-center">
+    <div className="shrink-0 p-4 flex flex-col">
       <div className="shrink-0 p-4 ">
         <h3>Hello, Admin</h3>
         <div className="my-2">

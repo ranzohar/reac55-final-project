@@ -43,7 +43,7 @@ const CustomerPage = () => {
       <SlidingWindow component={<Cart />} />
 
       <div className="flex flex-col items-center w-full min-h-screen ml-32">
-        <div className="flex flex-col items-center w-full max-w-4xl mx-auto py-6 grow justify-center">
+        <div className="flex flex-col items-center w-full max-w-4xl mx-auto py-6 grow">
           <div className="text-center mb-4">Hello, {user.fname}</div>
 
           <LinksTab items={links} />

@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import useCategories from "../firebase/hooks/useCategories";
 import WebpageTable from "../components/WebpageTable";
-import { useParams } from "react-router-dom";
 
 const ProductInfo = ({ product, onUpdate }) => {
-  const { adminId } = useParams();
-  const { categories } = useCategories(adminId);
+  const { categories } = useCategories();
 
   const [changeProduct, setChangeProduct] = useState({
     title: "",

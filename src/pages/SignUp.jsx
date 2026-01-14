@@ -9,19 +9,18 @@ const SignUp = () => {
   const [lname, setLname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [allowOthers, setAllowOthers] = useState(false); // <-- new state
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user || loading) {
-      return;
-    }
+    if (!user || loading) return;
     navigate(`/${user.uid}`);
   }, [user, loading]);
 
   const submitSignUp = (e) => {
     e.preventDefault();
-    firebaseSignUp(fname, lname, username, password, setError);
+    firebaseSignUp(fname, lname, username, password, setError, allowOthers);
   };
 
   return (
@@ -73,12 +72,30 @@ const SignUp = () => {
           <PasswordInput value={password} onChange={setPassword} />
         </label>
 
-        {error && <div className="error">{error}</div>}
+        {/* New checkbox */}
+        <label className="inline-flex items-center mt-2">
+          <input
+            type="checkbox"
+            checked={allowOthers}
+            onChange={(e) => setAllowOthers(e.target.checked)}
+            className="form-checkbox h-5 w-5 text-blue-600"
+          />
+          <span className="ml-2 text-gray-700 dark:text-gray-300">
+            Allow others to see my orders
+          </span>
+        </label>
 
-        <button type="submit">Create</button>
+        {error && <div className="error mt-2">{error}</div>}
         <br />
-        <div className="text-center w-50">
-          <Link to="/" className="text-center">
+        <button
+          type="submit"
+          className="mt-4 bg-green-700 text-white py-2 px-4 rounded"
+        >
+          Create
+        </button>
+
+        <div className="text-center w-50 mt-2">
+          <Link to="/" className="text-center text-blue-600 dark:text-blue-400">
             Back to login page
           </Link>
         </div>

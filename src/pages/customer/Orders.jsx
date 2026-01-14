@@ -38,7 +38,7 @@ const Orders = () => {
   );
 
   return (
-    <WebpageTable headers={headers} data={data} size="sm" striped={true} />
+    <WebpageTable headers={headers} data={data} size="lg" striped={true} />
   );
 };
 
