@@ -6,6 +6,7 @@ import {
   getUser,
   getProductsData,
   getCategoriesData,
+  getPublicOrders,
 } from "../../firebase/doc-utils";
 import LinksTab from "../../components/LinksTab";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,9 +17,15 @@ const CustomerPage = () => {
   const user = useSelector((state) => state.customer.user);
 
   useEffect(() => {
-    const unsubscribeUser = getUser(customerId, (data) =>
-      dispatch({ type: "LOAD_USER", payload: data })
-    );
+    const unsubscribeUser = getUser(customerId, (data) => {
+      dispatch({ type: "CUSTOMER_LOAD", payload: { user: data } });
+    });
+    const unsubscribePublicOrders = getPublicOrders((data) => {
+      dispatch({
+        type: "CUSTOMER_LOAD",
+        payload: { publicOrders: data[0] },
+      });
+    });
     const unsubscribeCategories = getCategoriesData((data) =>
       dispatch({ type: "LOAD", payload: { categories: data } })
     );
@@ -27,6 +34,7 @@ const CustomerPage = () => {
     );
     const ubsubscribes = [
       unsubscribeUser,
+      unsubscribePublicOrders,
       unsubscribeProducts,
       unsubscribeCategories,
     ];

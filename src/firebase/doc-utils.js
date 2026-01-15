@@ -4,6 +4,7 @@ import {
   query,
   onSnapshot,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
   doc,
@@ -36,110 +37,18 @@ const COLORS = [
   "#637939",
 ];
 
-function setData(setCB, collectionName, parseData) {
+function setData(setCB, collectionName) {
   const q = query(collection(db, collectionName));
-  return onSnapshot(q, async (qSnap) => {
-    let data;
-    if (!parseData) {
-      data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    } else {
-      data = await Promise.all(
-        qSnap.docs.map(async (doc) => {
-          const parsedData = await parseData(doc.data());
-          return { id: doc.id, ...parsedData };
-        })
-      );
-    }
+  return onSnapshot(q, (qSnap) => {
+    const data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     setCB(data);
   });
 }
 
+/** --------------------- USERS --------------------- **/
+
 function getUsersData(setCB) {
   return setData(setCB, "users");
-}
-
-function getCategoriesData(setCB) {
-  return setData(setCB, "categories");
-}
-
-function getProductsData(setCB) {
-  return setData(setCB, "products");
-}
-
-async function updateCategory(categoryId, name) {
-  if (!categoryId || !name) {
-    throw new Error("categoryId and data are required");
-  }
-
-  const categoryRef = doc(db, "categories", categoryId);
-
-  try {
-    await updateDoc(categoryRef, { name });
-  } catch (error) {
-    console.error("Error updating category:", error);
-    throw error;
-  }
-}
-
-async function removeCategory(categoryId) {
-  if (!categoryId) {
-    throw new Error("categoryId is required");
-  }
-
-  const categoryRef = doc(db, "categories", categoryId);
-
-  try {
-    await deleteDoc(categoryRef);
-  } catch (error) {
-    console.error("Error removing category:", error);
-    throw error;
-  }
-}
-
-async function addCategory(name) {
-  if (!name) {
-    return;
-  }
-
-  try {
-    const docRef = await addDoc(collection(db, "categories"), {
-      name,
-    });
-
-    return docRef.id;
-  } catch (error) {
-    console.error("Error adding category:", error);
-    throw error;
-  }
-}
-
-async function upsertProduct(id, fields, index) {
-  const { title, price, link_to_pic, description, categoryId } = fields;
-
-  if (!id) throw new Error("productId is required");
-  if (!title || !price) throw new Error("title and price are required");
-
-  const productRef = doc(db, "products", id);
-  const snap = await getDoc(productRef);
-
-  const data = {
-    title,
-    price,
-    link_to_pic: link_to_pic || "",
-    description: description || "",
-    categoryId: categoryId,
-  };
-
-  if (!snap.exists()) {
-    data.createDate = serverTimestamp();
-    data.color = COLORS[index % COLORS.length];
-  }
-
-  await setDoc(productRef, data);
-}
-
-async function getFirebaseUniqueId() {
-  return doc(collection(db, "products")).id;
 }
 
 function getUser(uid, setCB) {
@@ -173,12 +82,18 @@ async function removeUser(uid) {
   }
 }
 
-async function addOrderToUser(uid, orderData) {
+async function addOrderToUser(
+  uid,
+  orderData,
+  allowOthers,
+  currentPublicOrders = {}
+) {
   if (!uid) throw new Error("UID is required");
-  if (!orderData) throw new Error("orderData is required");
-  if (!Array.isArray(orderData.products) || orderData.products.length === 0) {
+  if (!orderData || typeof orderData !== "object")
+    throw new Error("orderData is required");
+  if (!Array.isArray(orderData.products) || orderData.products.length === 0)
     throw new Error("Order must have at least one product");
-  }
+
   for (const product of orderData.products) {
     if (
       !product.id ||
@@ -204,22 +119,153 @@ async function addOrderToUser(uid, orderData) {
     await updateDoc(userRef, {
       orders: arrayUnion(orderWithTimestamp),
     });
+
+    if (allowOthers) {
+      const updatedPublicOrders = { ...currentPublicOrders };
+      for (const product of orderData.products) {
+        const { id, quantity } = product;
+        console.log(`Updating: ${id}`, quantity);
+
+        updatedPublicOrders[id] = (updatedPublicOrders[id] || 0) + quantity;
+      }
+      await setPublicOrders(updatedPublicOrders);
+    }
   } catch (error) {
     console.error("Error adding order to user:", error);
     throw error;
   }
 }
 
+/** --------------------- CATEGORIES --------------------- **/
+
+function getCategoriesData(setCB) {
+  return setData(setCB, "categories");
+}
+
+async function addCategory(name) {
+  if (!name) return;
+
+  try {
+    const docRef = await addDoc(collection(db, "categories"), {
+      name,
+    });
+
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding category:", error);
+    throw error;
+  }
+}
+
+async function updateCategory(categoryId, name) {
+  if (!categoryId || !name) {
+    throw new Error("categoryId and data are required");
+  }
+
+  const categoryRef = doc(db, "categories", categoryId);
+
+  try {
+    await updateDoc(categoryRef, { name });
+  } catch (error) {
+    console.error("Error updating category:", error);
+    throw error;
+  }
+}
+
+async function removeCategory(categoryId) {
+  if (!categoryId) {
+    throw new Error("categoryId is required");
+  }
+
+  const categoryRef = doc(db, "categories", categoryId);
+
+  try {
+    await deleteDoc(categoryRef);
+  } catch (error) {
+    console.error("Error removing category:", error);
+    throw error;
+  }
+}
+
+/** --------------------- PRODUCTS --------------------- **/
+
+function getProductsData(setCB) {
+  return setData(setCB, "products");
+}
+
+async function upsertProduct(id, fields, index) {
+  const { title, price, link_to_pic, description, categoryId } = fields;
+
+  if (!id) throw new Error("productId is required");
+  if (!title || !price) throw new Error("title and price are required");
+
+  const productRef = doc(db, "products", id);
+  const snap = await getDoc(productRef);
+
+  const data = {
+    title,
+    price,
+    link_to_pic: link_to_pic || "",
+    description: description || "",
+    categoryId: categoryId,
+  };
+
+  if (!snap.exists()) {
+    data.createDate = serverTimestamp();
+    data.color = COLORS[index % COLORS.length];
+  }
+
+  await setDoc(productRef, data);
+}
+
+async function getFirebaseUniqueId() {
+  return doc(collection(db, "products")).id;
+}
+
+/** --------------------- PUBLIC ORDERS --------------------- **/
+
+function getPublicOrders(setCB) {
+  return setData(setCB, "public-orders");
+}
+
+async function setPublicOrders(totalsObj) {
+  if (!totalsObj || typeof totalsObj !== "object") {
+    throw new Error("totalsObj must be a non-null object");
+  }
+
+  const colRef = collection(db, "public-orders");
+
+  try {
+    const snap = await getDocs(colRef);
+
+    if (!snap.empty) {
+      const docRef = doc(db, "public-orders", snap.docs[0].id);
+      await setDoc(docRef, totalsObj, { merge: true });
+      return docRef.id;
+    } else {
+      const docRef = await addDoc(colRef, totalsObj);
+      return docRef.id;
+    }
+  } catch (error) {
+    console.error("Error setting public orders:", error);
+    throw error;
+  }
+}
+
+/** --------------------- EXPORTS --------------------- **/
+
 export {
   getUsersData,
-  getCategoriesData,
-  getProductsData,
-  updateCategory,
-  removeCategory,
-  addCategory,
-  upsertProduct,
   getUser,
   removeUser,
-  getFirebaseUniqueId,
   addOrderToUser,
+  getCategoriesData,
+  addCategory,
+  updateCategory,
+  removeCategory,
+  getProductsData,
+  upsertProduct,
+  getFirebaseUniqueId,
+  getPublicOrders,
+  setPublicOrders,
 };

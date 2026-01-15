@@ -2,9 +2,14 @@ import { useState, useMemo } from "react";
 import ProductInfo from "../../customer_components/ProductInfo";
 import useProducts from "../../firebase/hooks/useProducts";
 import FilterTab from "./FilterTab";
-
+import { useSelector } from "react-redux";
 const Products = () => {
   const { products } = useProducts();
+  const publicOrders = useSelector((state) => {
+    // TODO - check if doc doesn't exist nothing breaks
+    return state.customer.publicOrders;
+  });
+  console.log(publicOrders);
 
   const [priceLimit, setPriceLimit] = useState(0);
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -35,9 +40,15 @@ const Products = () => {
         setTitleFilter={setTitleFilter}
       />
 
-      {filteredProducts.map((product, index) => (
-        <ProductInfo key={index} product={product} />
-      ))}
+      {filteredProducts.map((product, index) => {
+        return (
+          <ProductInfo
+            key={index}
+            product={product}
+            bought={publicOrders?.[product.id] ?? 0}
+          />
+        );
+      })}
     </div>
   );
 };

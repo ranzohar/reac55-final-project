@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 
-const ProductInfo = ({ product }) => {
+const ProductInfo = ({ product, bought }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.customer.cart);
   const quantity = cart[product.id] ?? 0;
@@ -47,7 +47,7 @@ const ProductInfo = ({ product }) => {
 
         {/* Bought */}
         <div className="flex items-center justify-center text-lg font-semibold">
-          Bought: ???
+          Bought: {bought}
         </div>
       </div>
 

@@ -1,12 +1,19 @@
 const INITIAL_STATE = {
   cart: { price: 0 },
-  user: [],
+  user: {},
+  publicOrders: {},
 };
 
 const customerReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case "LOAD_USER":
-      return { ...state, user: action.payload };
+    case "CUSTOMER_LOAD": {
+      const { user, publicOrders } = action.payload;
+      return {
+        ...state,
+        user: user ?? state.user,
+        publicOrders: publicOrders ?? state.publicOrders,
+      };
+    }
     case "UPDATE_CART": {
       const { productId, quantity, price, removeFromCart } = action.payload;
       let cart = { ...state.cart };

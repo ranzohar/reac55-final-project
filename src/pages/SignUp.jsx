@@ -9,7 +9,7 @@ const SignUp = () => {
   const [lname, setLname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [allowOthers, setAllowOthers] = useState(false); // <-- new state
+  const [allowOthers, setAllowOthers] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -72,7 +72,6 @@ const SignUp = () => {
           <PasswordInput value={password} onChange={setPassword} />
         </label>
 
-        {/* New checkbox */}
         <label className="inline-flex items-center mt-2">
           <input
             type="checkbox"

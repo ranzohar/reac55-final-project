@@ -6,9 +6,13 @@ import { useParams } from "react-router-dom";
 const Cart = () => {
   const dispatch = useDispatch();
   const { customerId } = useParams();
-  const cart = useSelector((state) => state.customer.cart);
-  const products = useSelector((state) => state.data.products);
+  const { cart, publicOrders } = useSelector((state) => state.customer);
+  console.log(publicOrders);
 
+  const products = useSelector((state) => state.data.products);
+  const allowOthersToSeeOrders = useSelector(
+    (state) => state.customer.user["allow others to see orders"]
+  );
   const updateCart = (productId, quantity, price, removeFromCart) => {
     dispatch({
       type: "UPDATE_CART",
@@ -35,7 +39,12 @@ const Cart = () => {
     if (Object.keys(cart).length === 0) {
       return;
     }
-    await addOrderToUser(customerId, orderDataFromCart(cart));
+    await addOrderToUser(
+      customerId,
+      orderDataFromCart(cart),
+      allowOthersToSeeOrders,
+      publicOrders
+    );
     dispatch({
       type: "CLEAR_CART",
     });

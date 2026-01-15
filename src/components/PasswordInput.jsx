@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
-function PasswordInput({ value, onChange }) {
+function PasswordInput({ value, onChange, required }) {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -11,7 +11,7 @@ function PasswordInput({ value, onChange }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         autoComplete="current-password"
-        required
+        required={required}
         className="input-base w-full pr-10" // full width + padding for the button
       />
       <button
