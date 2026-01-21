@@ -15,7 +15,7 @@ const LinksTab = ({ items }) => {
           <Link
             key={item.path}
             to={item.path}
-            className="!text-black dark:!text-white !underline text-sm text-sm"
+            className="text-black! dark:text-white! underline! text-sm"
           >
             {item.name}
           </Link>

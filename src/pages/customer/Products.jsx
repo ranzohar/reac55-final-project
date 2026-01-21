@@ -9,8 +9,6 @@ const Products = () => {
     // TODO - check if doc doesn't exist nothing breaks
     return state.customer.publicOrders;
   });
-  console.log(publicOrders);
-
   const [priceLimit, setPriceLimit] = useState(0);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [titleFilter, setTitleFilter] = useState("");

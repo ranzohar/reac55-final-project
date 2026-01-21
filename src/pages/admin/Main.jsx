@@ -36,7 +36,7 @@ const AdminPage = () => {
   const links = [
     { name: "Categories", path: "categories" },
     { name: "Products", path: "products" },
-    { name: "Customers", path: "users" },
+    { name: "Customers", path: "customers" },
     { name: "Statistics", path: "statistics" },
   ];
 

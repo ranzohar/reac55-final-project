@@ -1,6 +1,6 @@
 import CustomersTable from "../../admin_components/CustomersTable";
 
-const Users = () => {
+const Customers = () => {
   return (
     <div
       className="
@@ -18,4 +18,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Customers;

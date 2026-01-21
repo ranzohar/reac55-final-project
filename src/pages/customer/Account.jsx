@@ -58,82 +58,110 @@ const Account = () => {
   if (!user) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col">
-      <h3>Edit Account Information</h3>
-      <form onSubmit={submitEdit}>
-        <label>
-          <br />
-          First Name:
-          <br />
+    <div className="flex flex-col max-w-md mx-auto">
+      <h3 className="mb-4 text-xl font-semibold">Edit Account Information</h3>
+      <form onSubmit={submitEdit} className="flex flex-col gap-4">
+        {/* First Name */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="fname"
+            className="font-medium text-gray-700 dark:text-gray-300"
+          >
+            First Name
+          </label>
           <input
+            id="fname"
             type="text"
             className="input-base"
             value={fname}
             onChange={(e) => setFname(e.target.value)}
             required
           />
-        </label>
+        </div>
 
-        <label>
-          <br />
-          Last Name:
-          <br />
+        {/* Last Name */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="lname"
+            className="font-medium text-gray-700 dark:text-gray-300"
+          >
+            Last Name
+          </label>
           <input
+            id="lname"
             type="text"
             className="input-base"
             value={lname}
             onChange={(e) => setLname(e.target.value)}
             required
           />
-        </label>
+        </div>
 
-        <label>
-          <br />
-          Username:
-          <br />
+        {/* Username */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="username"
+            className="font-medium text-gray-700 dark:text-gray-300"
+          >
+            Username
+          </label>
           <input
+            id="username"
             type="text"
             className="input-base"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
-        </label>
+        </div>
 
-        <label>
-          <br />
-          Current Password (leave empty to keep current):
-          <br />
+        {/* Current Password */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="currentPassword"
+            className="font-medium text-gray-700 dark:text-gray-300"
+          >
+            Current Password (leave empty to keep current)
+          </label>
           <PasswordInput
+            id="currentPassword"
             value={currentPassword}
             onChange={setCurrentPassword}
-            required={false} // explicitly make it optional
+            required={false}
           />
-        </label>
+        </div>
 
-        <label>
-          <br />
-          New Password:
+        {/* New Password */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="newPassword"
+            className="font-medium text-gray-700 dark:text-gray-300"
+          >
+            New Password
+          </label>
           <PasswordInput
+            id="newPassword"
             value={newPassword}
             onChange={setNewPassword}
             required={false}
           />
-        </label>
+        </div>
 
-        <label className="flex items-center gap-2 mt-2">
+        {/* Allow others checkbox */}
+        <label className="inline-flex items-center gap-2 mt-2">
           <input
             type="checkbox"
             checked={allowOthers}
             onChange={(e) => setAllowOthers(e.target.checked)}
-            required={false} // explicitly make it optional
           />
           Allow others to see my orders
         </label>
 
+        {/* Error / Success messages */}
         {error && <div className="error">{error}</div>}
         {success && <div className="success">{success}</div>}
 
+        {/* Submit */}
         <button
           type="submit"
           className="mt-2 w-full bg-green-700 text-white py-2 rounded"

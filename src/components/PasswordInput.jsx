@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
-function PasswordInput({ value, onChange, required }) {
+function PasswordInput({ id, value, onChange, required }) {
   const [visible, setVisible] = useState(false);
 
   return (
     <div className="relative w-full">
       <input
+        id={id}
         type={visible ? "text" : "password"}
         value={value}
         onChange={(e) => onChange(e.target.value)}

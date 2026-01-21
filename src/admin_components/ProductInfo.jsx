@@ -46,73 +46,80 @@ const ProductInfo = ({ product, onUpdate }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4 max-w-xl border border-gray-300 dark:border-gray-700 rounded-xl p-4 mb-4 bg-white dark:bg-gray-900 shadow-sm">
-      <label className="flex items-center gap-2">
-        <span>Title:</span>
-        <input
-          className="input-base"
-          value={changeProduct.title}
-          onChange={(e) => handleChange("title", e.target.value)}
-        />
-      </label>
+      <form
+        className="col-span-2 grid grid-cols-2 gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          update();
+        }}
+      >
+        <label className="flex items-center gap-2">
+          <span>Title:</span>
+          <input
+            className="input-base"
+            value={changeProduct.title}
+            onChange={(e) => handleChange("title", e.target.value)}
+            required
+          />
+        </label>
 
-      <label className="flex flex-col">
-        Price:
-        <input
-          className="input-base"
-          value={changeProduct.price}
-          onChange={(e) => handleChange("price", e.target.value)}
-        />
-      </label>
+        <label className="flex flex-col">
+          Price:
+          <input
+            className="input-base"
+            value={changeProduct.price}
+            onChange={(e) => handleChange("price", e.target.value)}
+            required
+          />
+        </label>
 
-      <label className="flex flex-col">
-        Category:
-        <select
-          className="input-base"
-          value={changeProduct.categoryId}
-          onChange={(e) => handleChange("categoryId", e.target.value)}
-        >
-          <option value="">No category</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-      </label>
+        <label className="flex flex-col">
+          Category:
+          <select
+            className="input-base"
+            value={changeProduct.categoryId}
+            onChange={(e) => handleChange("categoryId", e.target.value)}
+          >
+            <option value="">No category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </label>
 
-      <label className="flex flex-col">
-        Link to pic:
-        <input
-          className="input-base"
-          value={changeProduct.link_to_pic}
-          onChange={(e) => handleChange("link_to_pic", e.target.value)}
-        />
-      </label>
+        <label className="flex flex-col">
+          Link to pic:
+          <input
+            className="input-base"
+            value={changeProduct.link_to_pic}
+            onChange={(e) => handleChange("link_to_pic", e.target.value)}
+          />
+        </label>
 
-      <label className="flex flex-col">
-        Description:
-        <textarea
-          className="input-base h-full"
-          value={changeProduct.description}
-          onChange={(e) => handleChange("description", e.target.value)}
-        />
-      </label>
+        <label className="flex flex-col col-span-2">
+          Description:
+          <textarea
+            className="input-base h-full"
+            value={changeProduct.description}
+            onChange={(e) => handleChange("description", e.target.value)}
+          />
+        </label>
 
-      <div className="flex flex-col">
+        <div className="flex gap-2 mt-2 col-span-2">
+          <button type="submit" className="bg-green-400 dark:bg-green-600 w-20">
+            Save
+          </button>
+        </div>
+      </form>
+
+      <div className="flex flex-col col-span-2">
         Bought By:
         <WebpageTable
           headers={["Name", "Qty", "date"]}
           data={product.boughtBy || []}
         />
-      </div>
-
-      <div className="flex gap-2 mt-2">
-        <button
-          className="bg-green-400 dark:bg-green-600 w-20"
-          onClick={update}
-        >
-          Save
-        </button>
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ import { setDoc, doc, updateDoc } from "firebase/firestore";
 import { removeUser } from "../firebase/doc-utils";
 import { useState, useEffect } from "react";
 
-const firebaseLogin = async (username, password, setError) => {
+const firebaseLogin = async (username, password) => {
   const email = username + "@admin.admin";
   const auth = getAuth(app);
 
@@ -21,19 +21,18 @@ const firebaseLogin = async (username, password, setError) => {
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
+    return true;
   } catch (err) {
-    setError(err.message);
-    console.log(err.message);
+    console.error("Login failed:", err.message);
+    throw new Error(err.message || "Login failed");
   }
 };
 
 const checkIfAdmin = async (user) => {
-  // Force refresh token until claims appear
   let tokenResult = await user.getIdTokenResult(true);
 
   if (!tokenResult.claims.admin) {
-    // Sometimes propagation is slightly delayed, retry once after a short wait
-    await new Promise((r) => setTimeout(r, 1000)); // wait 1 second
+    await new Promise((r) => setTimeout(r, 1000));
     tokenResult = await user.getIdTokenResult(true);
   }
 

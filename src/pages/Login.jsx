@@ -11,51 +11,49 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user || loading) {
-      return;
-    }
-    const navigateOnSignIn = async () => {
-      if (await checkIfAdmin(user)) {
-        navigate(`/admin/${user.uid}`);
-      } else {
-        navigate(`/${user.uid}`);
-      }
-      return;
-    };
-    navigateOnSignIn();
-  }, [user, loading]);
+    if (!user || loading) return;
 
-  const onSubmitCb = (e) => {
+    (async () => {
+      const path = (await checkIfAdmin(user))
+        ? `/admin/${user.uid}`
+        : `/customer/${user.uid}`;
+      navigate(path);
+    })();
+  }, [user, loading, navigate]);
+
+  const onSubmitCb = async (e) => {
     e.preventDefault();
-    firebaseLogin(username, password, setError);
+    setError(null);
+
+    try {
+      await firebaseLogin(username.trim(), password);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
     <div className="flex flex-col center-screen">
       <h3>Next Generation E-commerce Login</h3>
       <form onSubmit={onSubmitCb}>
-        <label>
-          <br />
-          User Name:
-          <br />
-          <input
-            type="text"
-            className="input-base"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </label>
+        <label htmlFor="username">User Name:</label>
+        <input
+          id="username"
+          type="text"
+          className="input-base"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
 
-        <label>
-          <br />
-          Password:
-          <PasswordInput value={password} onChange={setPassword} />
-        </label>
+        <label htmlFor="password">Password:</label>
+        <PasswordInput id="password" value={password} onChange={setPassword} />
 
         {error && <div className="error">{error}</div>}
 
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          Login
+        </button>
       </form>
       <br />
       New User? <Link to="/signup">Register</Link>
