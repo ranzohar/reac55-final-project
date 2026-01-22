@@ -58,7 +58,8 @@ function getUser(uid, setCB) {
 
   const unsubscribe = onSnapshot(userRef, (docSnap) => {
     if (!docSnap.exists()) {
-      throw new Error("User does not exist");
+      console.warn("User does not exist:", userRef.path);
+      setCB(null);
     } else {
       setCB({ id: docSnap.id, ...docSnap.data() });
     }
@@ -86,7 +87,7 @@ async function addOrderToUser(
   uid,
   orderData,
   allowOthers,
-  currentPublicOrders = {}
+  currentPublicOrders = {},
 ) {
   if (!uid) throw new Error("UID is required");
   if (!orderData || typeof orderData !== "object")
@@ -103,7 +104,7 @@ async function addOrderToUser(
       product.quantity < 1
     ) {
       throw new Error(
-        "Each product must have a valid ref (string) and quantity (number >= 1)"
+        "Each product must have a valid ref (string) and quantity (number >= 1)",
       );
     }
   }
@@ -214,8 +215,7 @@ async function upsertProduct(id, fields, index) {
     data.createDate = serverTimestamp();
     data.color = COLORS[index % COLORS.length];
   }
-
-  await setDoc(productRef, data);
+  await setDoc(productRef, data, { merge: true });
 }
 
 async function getFirebaseUniqueId() {

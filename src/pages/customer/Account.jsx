@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { PasswordInput } from "@/components";
 import { useParams } from "react-router-dom";
 import { updateUserInfo, updateUserPassword } from "@/firebase";
+import { ALLOW_OTHERS_KEY } from "@/constants";
 
 const Account = () => {
   const user = useSelector((state) => state.customer.user);
@@ -21,7 +22,7 @@ const Account = () => {
     setFname(user.fname ?? "");
     setLname(user.lname ?? "");
     setUsername(user.username ?? "");
-    setAllowOthers(!!user["allow others to see orders"]);
+    setAllowOthers(!!user[ALLOW_OTHERS_KEY]);
   }, [user]);
 
   const submitEdit = async (e) => {
@@ -34,7 +35,7 @@ const Account = () => {
         fname,
         lname,
         username,
-        "allow others to see orders": allowOthers,
+        [ALLOW_OTHERS_KEY]: allowOthers,
       });
 
       if (newPassword) {

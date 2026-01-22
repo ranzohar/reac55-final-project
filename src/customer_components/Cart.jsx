@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 import CartProduct from "./CartProduct";
 import { addOrderToUser } from "@/firebase";
+import { ALLOW_OTHERS_KEY } from "@/constants";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -11,8 +12,8 @@ const Cart = () => {
   console.log(publicOrders);
 
   const products = useSelector((state) => state.data.products);
-  const allowOthersToSeeOrders = useSelector(
-    (state) => state.customer.user["allow others to see orders"],
+  const allowOthersToSeeOrders = useSelector((state) =>
+    state.customer.user ? state.customer.user[ALLOW_OTHERS_KEY] : false,
   );
   const updateCart = (productId, quantity, price, removeFromCart) => {
     dispatch({

@@ -9,9 +9,10 @@ import {
 } from "firebase/auth";
 import useAuth from "./hooks/useAuth";
 import { setDoc, doc, updateDoc } from "firebase/firestore";
-import { removeUser } from "../firebase/doc-utils";
+import { removeUser } from "./doc-utils";
 
-import { db, app } from "../firebase/firebase";
+import { db, app } from "./firebase";
+import { ALLOW_OTHERS_KEY } from "@/constants";
 
 const firebaseLogin = async (username, password) => {
   const email = username + "@admin.admin";
@@ -62,7 +63,7 @@ const firebaseSignUp = async (
   username,
   password,
   setError,
-  alloOthers,
+  allowOthers,
 ) => {
   const email = username + "@admin.admin";
   const auth = getAuth(app);
@@ -84,7 +85,7 @@ const firebaseSignUp = async (
       fname,
       lname,
       joined: new Date(),
-      ["allow others to see orders"]: alloOthers,
+      [ALLOW_OTHERS_KEY]: allowOthers,
     });
   } catch (err) {
     console.log(err);
