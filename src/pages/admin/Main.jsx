@@ -1,11 +1,7 @@
 import { Outlet } from "react-router-dom";
-import { LinksTab } from "../../components";
+import { LinksTab } from "@/components";
 import { useEffect } from "react";
-import {
-  getUsersData,
-  getCategoriesData,
-  getProductsData,
-} from "../../firebase";
+import { getUsersData, getCategoriesData, getProductsData } from "@/firebase";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 

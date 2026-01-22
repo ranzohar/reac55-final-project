@@ -41,9 +41,9 @@ const Category = ({
       <button
         onClick={() => {
           if (editMode) {
-            handleUpdate(); // save first
+            handleUpdate();
           } else {
-            setEditMode(true); // enter edit mode
+            setEditMode(true);
           }
         }}
       >

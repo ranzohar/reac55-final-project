@@ -124,14 +124,12 @@ async function updateUserPassword(newPassword, currentPassword) {
     const firebaseUser = auth.currentUser;
     if (!firebaseUser) throw new Error("No authenticated user");
 
-    // Reauthenticate user with current password
     const credential = EmailAuthProvider.credential(
       firebaseUser.email,
       currentPassword,
     );
     await reauthenticateWithCredential(firebaseUser, credential);
 
-    // Now update the password
     await updatePassword(firebaseUser, newPassword);
   } catch (error) {
     console.error("Error updating password:", error);

@@ -1,5 +1,5 @@
-import { Category } from "../../admin_components";
-import { useCategories } from "../../hooks";
+import { Category } from "@/admin_components";
+import { useCategories } from "@/hooks";
 import { useState } from "react";
 
 const Categories = () => {

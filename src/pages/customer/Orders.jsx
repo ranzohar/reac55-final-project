@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { WebpageTable } from "../../components";
+import { WebpageTable } from "@/components";
 
 const Orders = () => {
   const user = useSelector((state) => state.customer.user);
@@ -10,7 +10,6 @@ const Orders = () => {
 
   const headers = ["Title", "Qty", "Price", "Date"];
 
-  // Flatten orders so each product has its own row
   const data = orders.flatMap((order) =>
     order.products
       .map((product) => {

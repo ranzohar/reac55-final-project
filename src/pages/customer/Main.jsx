@@ -1,4 +1,4 @@
-import { Cart, SlidingWindow } from "../../customer_components";
+import { Cart, SlidingWindow } from "@/customer_components";
 import { useParams, Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -6,8 +6,8 @@ import {
   getProductsData,
   getCategoriesData,
   getPublicOrders,
-} from "../../firebase";
-import { LinksTab } from "../../components";
+} from "@/firebase";
+import { LinksTab } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerPage = () => {

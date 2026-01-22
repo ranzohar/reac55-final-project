@@ -20,12 +20,10 @@ const renderCustomizedLabel = ({
   const ncx = Number(cx);
   const ncy = Number(cy);
 
-  // Inside slice (value)
   const xInside = ncx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
   const yInside = ncy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
 
-  // Outside slice (name)
-  const outerRadiusOffset = 20; // distance outside the slice
+  const outerRadiusOffset = 20;
   const xOutside =
     ncx +
     (outerRadius + outerRadiusOffset) * Math.cos(-(midAngle ?? 0) * RADIAN);

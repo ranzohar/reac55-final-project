@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { PasswordInput } from "../../components";
+import { PasswordInput } from "@/components";
 import { useParams } from "react-router-dom";
-import { updateUserInfo, updateUserPassword } from "../../firebase";
+import { updateUserInfo, updateUserPassword } from "@/firebase";
 
 const Account = () => {
   const user = useSelector((state) => state.customer.user);

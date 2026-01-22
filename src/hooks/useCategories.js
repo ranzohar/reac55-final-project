@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
-import { addCategory, updateCategory, removeCategory } from "../firebase";
+import { addCategory, updateCategory, removeCategory } from "@/firebase";
 
 const useCategories = () => {
   const categoriesMap = useSelector((state) => state.data.categories);

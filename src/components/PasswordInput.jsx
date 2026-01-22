@@ -14,7 +14,7 @@ function PasswordInput({ id, value, onChange, required }) {
         onChange={(e) => onChange(e.target.value)}
         autoComplete="current-password"
         required={required}
-        className="input-base w-full pr-10" // full width + padding for the button
+        className="input-base w-full pr-10"
       />
       <button
         type="button"

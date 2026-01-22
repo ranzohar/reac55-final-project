@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import CartProduct from "./CartProduct";
-import { addOrderToUser } from "../firebase";
+import { addOrderToUser } from "@/firebase";
 
 const Cart = () => {
   const dispatch = useDispatch();

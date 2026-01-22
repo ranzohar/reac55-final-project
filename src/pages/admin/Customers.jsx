@@ -1,4 +1,4 @@
-import { CustomersTable } from "../../admin_components";
+import { CustomersTable } from "@/admin_components";
 
 const Customers = () => {
   return (
