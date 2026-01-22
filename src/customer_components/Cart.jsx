@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 import CartProduct from "./CartProduct";
 import { addOrderToUser } from "@/firebase";
+import { parsePrice } from "@/utils";
 import { ALLOW_OTHERS_KEY } from "@/constants";
 
 const Cart = () => {
@@ -28,13 +29,12 @@ const Cart = () => {
   };
 
   const orderDataFromCart = (cart) => {
+    if (!cart || typeof cart !== "object") return { products: [] };
     const { price: _, ...orderMap } = cart;
-
     const products = Object.entries(orderMap).map(([productId, quantity]) => ({
       id: productId,
       quantity,
     }));
-
     return { products };
   };
   const order = async () => {
@@ -60,8 +60,7 @@ const Cart = () => {
           return null;
         }
         const rawPrice = products[productId].price;
-        const pricePrefix = rawPrice[0].match(/\D/) ? rawPrice[0] : "";
-        const price = +rawPrice.replace(/^\D/, "");
+        const { pricePrefix, price } = parsePrice(rawPrice);
 
         return (
           <CartProduct

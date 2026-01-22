@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { WebpageTable } from "@/components";
+import { parsePrice } from "@/utils";
 
 const Orders = () => {
   const user = useSelector((state) => state.customer.user);
@@ -20,8 +21,7 @@ const Orders = () => {
         const quantity = product.quantity;
 
         const rawPrice = productData.price;
-        const pricePrefix = rawPrice[0].match(/\D/) ? rawPrice[0] : "";
-        const unitPrice = +rawPrice.replace(/^\D/, "");
+        const { pricePrefix, price: unitPrice } = parsePrice(rawPrice);
 
         const totalPrice = unitPrice * quantity;
 
