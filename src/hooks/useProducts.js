@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
 import { upsertProduct } from "@/firebase";
+import { mapObjectToArray } from "@/utils";
 
 const useProducts = () => {
   const productsMap = useSelector((state) => state.data.products);
@@ -10,14 +11,7 @@ const useProducts = () => {
     upsertProduct(id, newProduct, index);
   };
 
-  const products = useMemo(
-    () =>
-      Object.entries(productsMap).map(([id, product]) => ({
-        id,
-        ...product,
-      })),
-    [productsMap],
-  );
+  const products = useMemo(() => mapObjectToArray(productsMap), [productsMap]);
 
   return {
     products,

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
 import { addCategory, updateCategory, removeCategory } from "@/firebase";
+import { mapObjectToArray } from "@/utils";
 
 const useCategories = () => {
   const categoriesMap = useSelector((state) => state.data.categories);
@@ -27,11 +28,7 @@ const useCategories = () => {
   };
 
   const categories = useMemo(
-    () =>
-      Object.entries(categoriesMap).map(([id, category]) => ({
-        id,
-        ...category,
-      })),
+    () => mapObjectToArray(categoriesMap),
     [categoriesMap],
   );
 
