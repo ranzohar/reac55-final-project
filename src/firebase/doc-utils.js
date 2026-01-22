@@ -13,6 +13,7 @@ import {
   serverTimestamp,
   arrayUnion,
 } from "firebase/firestore";
+import { safeAsync } from "@/utils/safe";
 
 const COLORS = [
   "#1F77B4",
@@ -74,13 +75,7 @@ async function removeUser(uid) {
   }
 
   const userRef = doc(db, "users", uid);
-
-  try {
-    await deleteDoc(userRef);
-  } catch (error) {
-    console.error("Error removing user:", error);
-    throw error;
-  }
+  await deleteDoc(userRef);
 }
 
 async function addOrderToUser(
@@ -111,29 +106,24 @@ async function addOrderToUser(
 
   const userRef = doc(db, "users", uid);
 
-  try {
-    const orderWithTimestamp = {
-      ...orderData,
-      date: new Date(),
-    };
+  const orderWithTimestamp = {
+    ...orderData,
+    date: new Date(),
+  };
 
-    await updateDoc(userRef, {
-      orders: arrayUnion(orderWithTimestamp),
-    });
+  await updateDoc(userRef, {
+    orders: arrayUnion(orderWithTimestamp),
+  });
 
-    if (allowOthers) {
-      const updatedPublicOrders = { ...currentPublicOrders };
-      for (const product of orderData.products) {
-        const { id, quantity } = product;
-        console.log(`Updating: ${id}`, quantity);
+  if (allowOthers) {
+    const updatedPublicOrders = { ...currentPublicOrders };
+    for (const product of orderData.products) {
+      const { id, quantity } = product;
+      console.log(`Updating: ${id}`, quantity);
 
-        updatedPublicOrders[id] = (updatedPublicOrders[id] || 0) + quantity;
-      }
-      await setPublicOrders(updatedPublicOrders);
+      updatedPublicOrders[id] = (updatedPublicOrders[id] || 0) + quantity;
     }
-  } catch (error) {
-    console.error("Error adding order to user:", error);
-    throw error;
+    await setPublicOrders(updatedPublicOrders);
   }
 }
 
@@ -145,17 +135,11 @@ function getCategoriesData(setCB) {
 
 async function addCategory(name) {
   if (!name) return;
+  const docRef = await addDoc(collection(db, "categories"), {
+    name,
+  });
 
-  try {
-    const docRef = await addDoc(collection(db, "categories"), {
-      name,
-    });
-
-    return docRef.id;
-  } catch (error) {
-    console.error("Error adding category:", error);
-    throw error;
-  }
+  return docRef.id;
 }
 
 async function updateCategory(categoryId, name) {
@@ -164,13 +148,7 @@ async function updateCategory(categoryId, name) {
   }
 
   const categoryRef = doc(db, "categories", categoryId);
-
-  try {
-    await updateDoc(categoryRef, { name });
-  } catch (error) {
-    console.error("Error updating category:", error);
-    throw error;
-  }
+  await updateDoc(categoryRef, { name });
 }
 
 async function removeCategory(categoryId) {
@@ -179,13 +157,7 @@ async function removeCategory(categoryId) {
   }
 
   const categoryRef = doc(db, "categories", categoryId);
-
-  try {
-    await deleteDoc(categoryRef);
-  } catch (error) {
-    console.error("Error removing category:", error);
-    throw error;
-  }
+  await deleteDoc(categoryRef);
 }
 
 /** --------------------- PRODUCTS --------------------- **/
@@ -234,38 +206,43 @@ async function setPublicOrders(totalsObj) {
   }
 
   const colRef = collection(db, "public-orders");
+  const snap = await getDocs(colRef);
 
-  try {
-    const snap = await getDocs(colRef);
-
-    if (!snap.empty) {
-      const docRef = doc(db, "public-orders", snap.docs[0].id);
-      await setDoc(docRef, totalsObj, { merge: true });
-      return docRef.id;
-    } else {
-      const docRef = await addDoc(colRef, totalsObj);
-      return docRef.id;
-    }
-  } catch (error) {
-    console.error("Error setting public orders:", error);
-    throw error;
+  if (!snap.empty) {
+    const docRef = doc(db, "public-orders", snap.docs[0].id);
+    await setDoc(docRef, totalsObj, { merge: true });
+    return docRef.id;
+  } else {
+    const docRef = await addDoc(colRef, totalsObj);
+    return docRef.id;
   }
 }
+
+// Wrapped safe versions (consistent logging) — exported under original names below
+const safeRemoveUser = safeAsync(removeUser, "removeUser");
+const safeAddOrderToUser = safeAsync(addOrderToUser, "addOrderToUser");
+const safeAddCategory = safeAsync(addCategory, "addCategory");
+const safeUpdateCategory = safeAsync(updateCategory, "updateCategory");
+const safeRemoveCategory = safeAsync(removeCategory, "removeCategory");
+const safeUpsertProduct = safeAsync(upsertProduct, "upsertProduct");
+const safeSetPublicOrders = safeAsync(setPublicOrders, "setPublicOrders");
 
 /** --------------------- EXPORTS --------------------- **/
 
 export {
   getUsersData,
   getUser,
-  removeUser,
-  addOrderToUser,
+  getUsersData,
+  getUser,
+  safeRemoveUser as removeUser,
+  safeAddOrderToUser as addOrderToUser,
   getCategoriesData,
-  addCategory,
-  updateCategory,
-  removeCategory,
+  safeAddCategory as addCategory,
+  safeUpdateCategory as updateCategory,
+  safeRemoveCategory as removeCategory,
   getProductsData,
-  upsertProduct,
+  safeUpsertProduct as upsertProduct,
   getFirebaseUniqueId,
   getPublicOrders,
-  setPublicOrders,
+  safeSetPublicOrders as setPublicOrders,
 };
