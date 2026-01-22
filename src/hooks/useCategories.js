@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { addCategory, updateCategory, removeCategory } from "../doc-utils";
+
+import { addCategory, updateCategory, removeCategory } from "../firebase";
 
 const useCategories = () => {
   const categoriesMap = useSelector((state) => state.data.categories);
@@ -9,7 +10,7 @@ const useCategories = () => {
     if (!newCategoryName) return;
 
     const exists = Object.values(categoriesMap).some(
-      (cat) => cat.name.toLowerCase() === newCategoryName.toLowerCase()
+      (cat) => cat.name.toLowerCase() === newCategoryName.toLowerCase(),
     );
     if (exists) return;
     addCategory(newCategoryName);
@@ -31,7 +32,7 @@ const useCategories = () => {
         id,
         ...category,
       })),
-    [categoriesMap]
+    [categoriesMap],
   );
 
   return {

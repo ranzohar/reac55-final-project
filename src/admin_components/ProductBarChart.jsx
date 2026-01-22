@@ -1,7 +1,9 @@
-import { BarChart, Bar, Cell, LabelList } from "recharts";
 import { useMemo } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+
+import { BarChart, Bar, Cell, LabelList } from "recharts";
+
 import UserSelect from "./UserSelect";
 
 const ProductsBarChart = () => {

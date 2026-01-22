@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import PasswordInput from "../../components/PasswordInput";
+import { PasswordInput } from "../../components";
 import { useParams } from "react-router-dom";
-import { updateUserInfo, updateUserPassword } from "../../firebase/log-utils";
+import { updateUserInfo, updateUserPassword } from "../../firebase";
 
 const Account = () => {
   const user = useSelector((state) => state.customer.user);
@@ -40,7 +40,7 @@ const Account = () => {
       if (newPassword) {
         if (!currentPassword) {
           throw new Error(
-            "Current password is required to change your password."
+            "Current password is required to change your password.",
           );
         }
         await updateUserPassword(newPassword, currentPassword);

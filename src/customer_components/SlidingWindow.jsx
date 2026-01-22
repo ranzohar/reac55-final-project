@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+
 import Cart from "./Cart";
 
 export default function SlidingWindow({ children }) {

@@ -1,6 +1,7 @@
-import { firebaseLogout, useAuth } from "../firebase/log-utils";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { firebaseLogout, useAuth } from "../firebase";
 
 const SignOut = () => {
   const { user, loading } = useAuth();

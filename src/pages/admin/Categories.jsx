@@ -1,5 +1,5 @@
-import Category from "../../admin_components/Category";
-import useCategories from "../../firebase/hooks/useCategories";
+import { Category } from "../../admin_components";
+import { useCategories } from "../../hooks";
 import { useState } from "react";
 
 const Categories = () => {

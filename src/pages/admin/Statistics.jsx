@@ -1,5 +1,4 @@
-import ProductsBarChart from "../../admin_components/ProductBarChart";
-import ProductsPieChart from "../../admin_components/ProductsPieChart";
+import { ProductsBarChart, ProductsPieChart } from "../../admin_components";
 
 const Statistics = () => {
   return (

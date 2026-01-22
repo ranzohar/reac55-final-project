@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
-import ProductInfo from "../../customer_components/ProductInfo";
-import useProducts from "../../firebase/hooks/useProducts";
+import { ProductInfo } from "../../customer_components";
+import { useProducts } from "../../hooks";
 import FilterTab from "./FilterTab";
 import { useSelector } from "react-redux";
 const Products = () => {

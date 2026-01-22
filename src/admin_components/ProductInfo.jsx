@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import useCategories from "../firebase/hooks/useCategories";
-import WebpageTable from "../components/WebpageTable";
+
+import { useCategories } from "../hooks";
+import { WebpageTable } from "../components";
 
 const ProductInfo = ({ product, onUpdate }) => {
   const { categories } = useCategories();

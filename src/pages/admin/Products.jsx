@@ -1,7 +1,7 @@
-import ProductInfo from "../../admin_components/ProductInfo";
-import useProducts from "../../firebase/hooks/useProducts"; // import your updated hook
+import { ProductInfo } from "../../admin_components";
 import { useSelector, useDispatch } from "react-redux";
-import { getFirebaseUniqueId } from "../../firebase/doc-utils";
+import { useProducts } from "../../hooks"; // import hook from hooks barrel
+import { getFirebaseUniqueId } from "../../firebase";
 import { useEffect, useMemo } from "react";
 
 // Products uses the local redux firebase

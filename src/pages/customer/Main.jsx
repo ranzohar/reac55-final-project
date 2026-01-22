@@ -1,5 +1,4 @@
-import Cart from "../../customer_components/Cart";
-import SlidingWindow from "../../customer_components/SlidingWindow";
+import { Cart, SlidingWindow } from "../../customer_components";
 import { useParams, Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -7,8 +6,8 @@ import {
   getProductsData,
   getCategoriesData,
   getPublicOrders,
-} from "../../firebase/doc-utils";
-import LinksTab from "../../components/LinksTab";
+} from "../../firebase";
+import { LinksTab } from "../../components";
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerPage = () => {
@@ -27,10 +26,10 @@ const CustomerPage = () => {
       });
     });
     const unsubscribeCategories = getCategoriesData((data) =>
-      dispatch({ type: "LOAD", payload: { categories: data } })
+      dispatch({ type: "LOAD", payload: { categories: data } }),
     );
     const unsubscribeProducts = getProductsData((data) =>
-      dispatch({ type: "LOAD", payload: { products: data } })
+      dispatch({ type: "LOAD", payload: { products: data } }),
     );
     const ubsubscribes = [
       unsubscribeUser,

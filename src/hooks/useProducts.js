@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { upsertProduct } from "../../firebase/doc-utils";
+
+import { upsertProduct } from "../firebase";
 
 const useProducts = () => {
   const productsMap = useSelector((state) => state.data.products);
@@ -15,7 +16,7 @@ const useProducts = () => {
         id,
         ...product,
       })),
-    [productsMap]
+    [productsMap],
   );
 
   return {

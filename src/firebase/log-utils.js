@@ -3,15 +3,15 @@ import {
   signInWithEmailAndPassword,
   signOut,
   createUserWithEmailAndPassword,
-  onAuthStateChanged,
   updatePassword,
   EmailAuthProvider,
   reauthenticateWithCredential,
 } from "firebase/auth";
-import { db, app } from "../firebase/firebase";
+import useAuth from "./hooks/useAuth";
 import { setDoc, doc, updateDoc } from "firebase/firestore";
 import { removeUser } from "../firebase/doc-utils";
-import { useState, useEffect } from "react";
+
+import { db, app } from "../firebase/firebase";
 
 const firebaseLogin = async (username, password) => {
   const email = username + "@admin.admin";
@@ -62,7 +62,7 @@ const firebaseSignUp = async (
   username,
   password,
   setError,
-  alloOthers
+  alloOthers,
 ) => {
   const email = username + "@admin.admin";
   const auth = getAuth(app);
@@ -74,7 +74,7 @@ const firebaseSignUp = async (
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
-      password
+      password,
     );
 
     user = userCredential.user;
@@ -95,20 +95,6 @@ const firebaseSignUp = async (
       await removeUser(user.uid);
     }
   }
-};
-
-const useAuth = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-    return () => unsubscribe;
-  }, []);
-  return { user, loading };
 };
 
 async function updateUserInfo(uid, data) {
@@ -141,7 +127,7 @@ async function updateUserPassword(newPassword, currentPassword) {
     // Reauthenticate user with current password
     const credential = EmailAuthProvider.credential(
       firebaseUser.email,
-      currentPassword
+      currentPassword,
     );
     await reauthenticateWithCredential(firebaseUser, credential);
 

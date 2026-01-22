@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import WebpageTable from "../../components/WebpageTable";
+import { WebpageTable } from "../../components";
 
 const Orders = () => {
   const user = useSelector((state) => state.customer.user);
@@ -34,7 +34,7 @@ const Orders = () => {
 
         return [title, quantity, `${pricePrefix}${totalPrice}`, orderDate];
       })
-      .filter(Boolean)
+      .filter(Boolean),
   );
 
   return (

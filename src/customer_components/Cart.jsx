@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import CartProduct from "./CartProduct";
-import { addOrderToUser } from "../firebase/doc-utils";
 import { useParams } from "react-router-dom";
+
+import CartProduct from "./CartProduct";
+import { addOrderToUser } from "../firebase";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -11,7 +12,7 @@ const Cart = () => {
 
   const products = useSelector((state) => state.data.products);
   const allowOthersToSeeOrders = useSelector(
-    (state) => state.customer.user["allow others to see orders"]
+    (state) => state.customer.user["allow others to see orders"],
   );
   const updateCart = (productId, quantity, price, removeFromCart) => {
     dispatch({
@@ -43,7 +44,7 @@ const Cart = () => {
       customerId,
       orderDataFromCart(cart),
       allowOthersToSeeOrders,
-      publicOrders
+      publicOrders,
     );
     dispatch({
       type: "CLEAR_CART",

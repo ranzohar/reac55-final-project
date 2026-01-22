@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import PasswordInput from "../components/PasswordInput";
-import { firebaseSignUp, useAuth } from "../firebase/log-utils";
+import { PasswordInput } from "../components";
+import { firebaseSignUp, useAuth } from "../firebase";
 
 const SignUp = () => {
   const { user, loading } = useAuth();

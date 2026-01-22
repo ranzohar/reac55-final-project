@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import WebpageTable from "../components/WebpageTable";
+
+import { WebpageTable } from "../components";
 
 const CustomersTable = () => {
   const usersMap = useSelector((state) => state.admin.users);
