@@ -13,7 +13,7 @@ import {
   serverTimestamp,
   arrayUnion,
 } from "firebase/firestore";
-import { safeAsync } from "@/utils/safe";
+import { safeAsync } from "@/utils";
 
 const COLORS = [
   "#1F77B4",
@@ -230,8 +230,6 @@ const safeSetPublicOrders = safeAsync(setPublicOrders, "setPublicOrders");
 /** --------------------- EXPORTS --------------------- **/
 
 export {
-  getUsersData,
-  getUser,
   getUsersData,
   getUser,
   safeRemoveUser as removeUser,
