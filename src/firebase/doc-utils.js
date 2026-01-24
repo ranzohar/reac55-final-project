@@ -14,6 +14,7 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import { safeAsync } from "@/utils";
+import { LINK_TO_PIC } from "@/firebase-key-constants";
 
 const COLORS = [
   "#1F77B4",
@@ -167,7 +168,8 @@ function getProductsData(setCB) {
 }
 
 async function upsertProduct(id, fields, index) {
-  const { title, price, link_to_pic, description, categoryId } = fields;
+  const { title, price, description, categoryId } = fields;
+  const linkToPic = fields[LINK_TO_PIC];
 
   if (!id) throw new Error("productId is required");
   if (!title || !price) throw new Error("title and price are required");
@@ -178,10 +180,10 @@ async function upsertProduct(id, fields, index) {
   const data = {
     title,
     price,
-    link_to_pic: link_to_pic || "",
     description: description || "",
     categoryId: categoryId,
   };
+  data[LINK_TO_PIC] = linkToPic || "";
 
   if (!snap.exists()) {
     data.createDate = serverTimestamp();

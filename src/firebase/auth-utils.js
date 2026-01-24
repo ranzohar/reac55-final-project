@@ -12,7 +12,7 @@ import { setDoc, doc, updateDoc } from "firebase/firestore";
 import { removeUser } from "./doc-utils";
 
 import { db, app } from "./firebase";
-import { ALLOW_OTHERS_KEY } from "@/constants";
+import { ALLOW_OTHERS } from "@/firebase-key-constants";
 
 const firebaseLogin = async (username, password) => {
   const email = username + "@admin.admin";
@@ -85,7 +85,7 @@ const firebaseSignUp = async (
       fname,
       lname,
       joined: new Date(),
-      [ALLOW_OTHERS_KEY]: allowOthers,
+      [ALLOW_OTHERS]: allowOthers,
     });
   } catch (err) {
     console.log(err);

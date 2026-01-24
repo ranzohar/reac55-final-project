@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import { useCategories } from "../hooks";
 import { WebpageTable } from "../components";
+import { LINK_TO_PIC } from "@/firebase-key-constants";
 
 const ProductInfo = ({ product, onUpdate }) => {
   const { categories } = useCategories();
@@ -11,7 +12,7 @@ const ProductInfo = ({ product, onUpdate }) => {
     categoryId: "",
     description: "",
     price: "",
-    link_to_pic: "",
+    [LINK_TO_PIC]: "",
   });
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const ProductInfo = ({ product, onUpdate }) => {
         categoryId: product.categoryId || "",
         description: product.description || "",
         price: product.price || "",
-        link_to_pic: product.link_to_pic || "",
+        [LINK_TO_PIC]: product[LINK_TO_PIC] || "",
       });
     }
   }, [product, categories]);
@@ -37,7 +38,7 @@ const ProductInfo = ({ product, onUpdate }) => {
     onUpdate({
       title: changeProduct.title,
       price: changeProduct.price,
-      link_to_pic: changeProduct.link_to_pic,
+      [LINK_TO_PIC]: changeProduct[LINK_TO_PIC],
       description: changeProduct.description,
       categoryId: changeProduct.categoryId,
     });
@@ -94,8 +95,8 @@ const ProductInfo = ({ product, onUpdate }) => {
           Link to pic:
           <input
             className="input-base"
-            value={changeProduct.link_to_pic}
-            onChange={(e) => handleChange("link_to_pic", e.target.value)}
+            value={changeProduct[LINK_TO_PIC]}
+            onChange={(e) => handleChange(LINK_TO_PIC, e.target.value)}
           />
         </label>
 

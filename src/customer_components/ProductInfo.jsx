@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { LINK_TO_PIC } from "@/firebase-key-constants";
 
 const ProductInfo = ({ product, bought }) => {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ const ProductInfo = ({ product, bought }) => {
         {/* Image */}
         <div className="flex justify-center">
           <img
-            src={product.link_to_pic}
+            src={product[LINK_TO_PIC]}
             alt={product.title}
             className="h-48 w-auto object-cover rounded-lg"
           />
