@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import useAuth from "./hooks/useAuth";
 import { setDoc, doc, updateDoc } from "firebase/firestore";
-import { removeUser } from "./doc-utils";
+import { removeUser, withCreateDate } from "./doc-utils";
 
 import { db, app } from "./firebase";
 import { ALLOW_OTHERS } from "@/firebase-key-constants";
@@ -80,13 +80,15 @@ const firebaseSignUp = async (
 
     user = userCredential.user;
 
-    await setDoc(doc(db, "users", user.uid), {
-      username: user.email.split("@")[0],
-      fname,
-      lname,
-      joinDate: new Date(),
-      [ALLOW_OTHERS]: allowOthers,
-    });
+    await setDoc(
+      doc(db, "users", user.uid),
+      withCreateDate({
+        username: user.email.split("@")[0],
+        fname,
+        lname,
+        [ALLOW_OTHERS]: allowOthers,
+      }),
+    );
   } catch (err) {
     console.log(err);
 

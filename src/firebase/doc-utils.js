@@ -17,6 +17,16 @@ import {
 import { safeAsync } from "@/utils";
 import { LINK_TO_PIC } from "@/firebase-key-constants";
 
+// Utility function to ensure createDate is added to all documents
+const withCreateDate = (data) => ({
+  ...data,
+  createDate: serverTimestamp(),
+});
+
+// Utility function to create a query sorted by createDate
+const createSortedQuery = (collectionName) =>
+  query(collection(db, collectionName), orderBy("createDate", "asc"));
+
 const COLORS = [
   "#1F77B4",
   "#2CA02C",
@@ -41,7 +51,7 @@ const COLORS = [
 ];
 
 function setData(setCB, collectionName) {
-  const q = query(collection(db, collectionName));
+  const q = createSortedQuery(collectionName);
   return onSnapshot(q, (qSnap) => {
     const data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     setCB(data);
@@ -51,7 +61,7 @@ function setData(setCB, collectionName) {
 /** --------------------- USERS --------------------- **/
 
 function getUsersData(setCB) {
-  const q = query(collection(db, "users"), orderBy("joinDate", "asc"));
+  const q = createSortedQuery("users");
   return onSnapshot(q, (qSnap) => {
     const data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     setCB(data);
@@ -136,7 +146,7 @@ async function addOrderToUser(
 /** --------------------- CATEGORIES --------------------- **/
 
 function getCategoriesData(setCB) {
-  const q = query(collection(db, "categories"), orderBy("createDate", "asc"));
+  const q = createSortedQuery("categories");
   return onSnapshot(q, (qSnap) => {
     const data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     setCB(data);
@@ -145,10 +155,10 @@ function getCategoriesData(setCB) {
 
 async function addCategory(name) {
   if (!name) return;
-  const docRef = await addDoc(collection(db, "categories"), {
-    name,
-    createDate: serverTimestamp(),
-  });
+  const docRef = await addDoc(
+    collection(db, "categories"),
+    withCreateDate({ name }),
+  );
 
   return docRef.id;
 }
@@ -174,7 +184,7 @@ async function removeCategory(categoryId) {
 /** --------------------- PRODUCTS --------------------- **/
 
 function getProductsData(setCB) {
-  const q = query(collection(db, "products"), orderBy("createDate", "asc"));
+  const q = createSortedQuery("products");
   return onSnapshot(q, (qSnap) => {
     const data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     setCB(data);
@@ -182,7 +192,8 @@ function getProductsData(setCB) {
 }
 
 async function loadProductsOnce() {
-  const productsSnapshot = await getDocs(collection(db, "products"));
+  const q = createSortedQuery("products");
+  const productsSnapshot = await getDocs(q);
   return productsSnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
@@ -208,7 +219,7 @@ async function upsertProduct(id, fields, index) {
   data[LINK_TO_PIC] = linkToPic || "";
 
   if (!snap.exists()) {
-    data.createDate = serverTimestamp();
+    Object.assign(data, withCreateDate({}));
     data.color = COLORS[index % COLORS.length];
   }
   await setDoc(productRef, data, { merge: true });
@@ -254,6 +265,7 @@ const safeSetPublicOrders = safeAsync(setPublicOrders, "setPublicOrders");
 /** --------------------- EXPORTS --------------------- **/
 
 export {
+  withCreateDate,
   getUsersData,
   getUser,
   safeRemoveUser as removeUser,
