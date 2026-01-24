@@ -14,18 +14,26 @@ const Products = () => {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [titleFilter, setTitleFilter] = useState("");
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      const price = +product.price.replace(/^\D/, "");
-      const matchesCategory = categoryFilter
-        ? product.categoryId === categoryFilter
-        : true;
-      const matchesTitle = titleFilter
-        ? product.title.toLowerCase().includes(titleFilter.toLowerCase())
-        : true;
+  let filteredProducts = useMemo(() => {
+    return products
+      .filter((product) => {
+        const price = +product.price.replace(/^\D/, "");
+        const matchesCategory = categoryFilter
+          ? product.categoryId === categoryFilter
+          : true;
+        const matchesTitle = titleFilter
+          ? product.title.toLowerCase().includes(titleFilter.toLowerCase())
+          : true;
 
-      return price <= priceLimit && matchesCategory && matchesTitle;
-    });
+        return price <= priceLimit && matchesCategory && matchesTitle;
+      })
+      .sort((a, b) => {
+        return (
+          a.createDate.seconds * 1000 +
+          a.createDate.nanoseconds / 1e6 -
+          (b.createDate.seconds * 1000 + b.createDate.nanoseconds / 1e6)
+        );
+      });
   }, [products, priceLimit, categoryFilter, titleFilter]);
 
   return (
