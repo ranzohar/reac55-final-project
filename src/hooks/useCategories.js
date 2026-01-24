@@ -28,7 +28,12 @@ const useCategories = () => {
   };
 
   const categories = useMemo(
-    () => mapObjectToArray(categoriesMap),
+    () =>
+      mapObjectToArray(categoriesMap).sort((a, b) => {
+        const dateA = a.createDate?.toMillis ? a.createDate.toMillis() : 0;
+        const dateB = b.createDate?.toMillis ? b.createDate.toMillis() : 0;
+        return dateA - dateB;
+      }),
     [categoriesMap],
   );
 

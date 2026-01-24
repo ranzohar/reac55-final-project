@@ -11,12 +11,12 @@ const dataReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        products: payloadProducts?.length
+        products: payloadProducts
           ? Object.fromEntries(
               payloadProducts.map((product) => [product.id, { ...product }]),
             )
           : state.products,
-        categories: payloadCategories?.length
+        categories: payloadCategories
           ? Object.fromEntries(
               payloadCategories.map((category) => [
                 category.id,

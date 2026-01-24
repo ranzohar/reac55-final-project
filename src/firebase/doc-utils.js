@@ -138,6 +138,7 @@ async function addCategory(name) {
   if (!name) return;
   const docRef = await addDoc(collection(db, "categories"), {
     name,
+    createDate: serverTimestamp(),
   });
 
   return docRef.id;
