@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { LinksTab } from "@/components";
 import { useEffect } from "react";
-import { getUsersData, getCategoriesData, getProductsData } from "@/firebase";
+import { getUsersData, getCategoriesData, loadProductsOnce } from "@/firebase";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
@@ -16,14 +16,14 @@ const AdminPage = () => {
     const unsubscribeCategories = getCategoriesData((data) =>
       dispatch({ type: "LOAD", payload: { categories: data } }),
     );
-    const unsubscribeProducts = getProductsData((data) =>
-      dispatch({ type: "LOAD", payload: { products: data } }),
-    );
-    const unsubscribes = [
-      unsubscribeUsers,
-      unsubscribeCategories,
-      unsubscribeProducts,
-    ];
+
+    // Load products once without subscribing to realtime updates
+    // This prevents re-rendering when admin saves products
+    loadProductsOnce().then((productsData) => {
+      dispatch({ type: "LOAD", payload: { products: productsData } });
+    });
+
+    const unsubscribes = [unsubscribeUsers, unsubscribeCategories];
     return () => {
       unsubscribes.forEach((unsubscribe) => unsubscribe && unsubscribe());
     };

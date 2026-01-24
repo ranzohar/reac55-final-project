@@ -51,6 +51,24 @@ const ProductsBarChart = () => {
     const entry = sortedData[index];
     const OFFSET = 10;
 
+    const padding = 6;
+    const availableHeight = Math.max(0, height - padding * 2);
+    const lines = 2;
+    // compute a base font size from available height (conservative scale)
+    let fontSize = Math.floor(
+      Math.max(8, Math.min(14, (availableHeight / lines) * 0.7)),
+    );
+
+    // adjust fontSize to also consider width and text length (approximate)
+    const maxWidth = Math.max(20, width - padding * 2);
+    const valueText = String(entry?.value ?? "");
+    const nameText = entry?.name ?? "";
+    const longest = Math.max(valueText.length, nameText.length, 1);
+    const approxCharWidth = 0.6 * fontSize; // rough px per char
+    if (longest * approxCharWidth > maxWidth) {
+      fontSize = Math.max(8, Math.floor(maxWidth / longest / 0.6));
+    }
+
     return (
       <text
         x={x + width / 2}
@@ -58,13 +76,13 @@ const ProductsBarChart = () => {
         fill="black"
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize={12}
+        fontSize={fontSize}
       >
         <tspan x={x + width / 2} dy={0}>
-          {entry?.value}
+          {valueText}
         </tspan>
         <tspan x={x + width / 2} dy="1.2em">
-          {entry?.name}
+          {nameText}
         </tspan>
       </text>
     );

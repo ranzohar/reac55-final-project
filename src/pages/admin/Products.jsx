@@ -1,8 +1,8 @@
 import { ProductInfo } from "@/admin_components";
 import { useSelector, useDispatch } from "react-redux";
-import { useProducts } from "@/hooks";
-import { getFirebaseUniqueId } from "@/firebase";
-import { useEffect, useMemo } from "react";
+import { upsertProduct, getFirebaseUniqueId } from "@/firebase";
+import { useEffect, useMemo, useRef } from "react";
+import { mapObjectToArray } from "@/utils";
 
 // Products uses the local redux firebase
 // Any updates done by other admins or directly on firebase will not be seen
@@ -11,8 +11,8 @@ import { useEffect, useMemo } from "react";
 // For deleting products, access firebase->delete product->refresh the page
 
 const Products = () => {
-  const { products, addOrUpdateProduct } = useProducts();
   const dispatch = useDispatch();
+  const productsMap = useSelector((state) => state.data.products);
   const adminProducts = useSelector((state) => state.admin.products);
   const orders = useSelector((state) => {
     return state.admin.orders;
@@ -21,12 +21,18 @@ const Products = () => {
     return state.admin.users;
   });
 
+  const products = useMemo(() => mapObjectToArray(productsMap), [productsMap]);
+  const hasLoadedRef = useRef(false);
+
   useEffect(() => {
-    dispatch({
-      type: "LOAD_ADMIN_PRODUCTS",
-      payload: products,
-    });
-  }, [products]);
+    if (products.length > 0 && !hasLoadedRef.current) {
+      dispatch({
+        type: "LOAD_ADMIN_PRODUCTS",
+        payload: products,
+      });
+      hasLoadedRef.current = true;
+    }
+  }, [products, dispatch]);
 
   const sortedProductsWithStats = useMemo(() => {
     const ordersPerProduct = {};
@@ -70,6 +76,15 @@ const Products = () => {
     });
     return sortedProduct;
   }, [users, adminProducts]);
+
+  const addOrUpdateProduct = async (id, updatedData, index) => {
+    await upsertProduct(id, updatedData, index);
+    // Update Redux state locally to avoid re-fetching from Firebase
+    dispatch({
+      type: "UPDATE_PRODUCT",
+      payload: { id, data: updatedData },
+    });
+  };
 
   const addNew = async () => {
     const id = await getFirebaseUniqueId();

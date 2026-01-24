@@ -167,6 +167,14 @@ function getProductsData(setCB) {
   return setData(setCB, "products");
 }
 
+async function loadProductsOnce() {
+  const productsSnapshot = await getDocs(collection(db, "products"));
+  return productsSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+}
+
 async function upsertProduct(id, fields, index) {
   const { title, price, description, categoryId } = fields;
   const linkToPic = fields[LINK_TO_PIC];
@@ -241,6 +249,7 @@ export {
   safeUpdateCategory as updateCategory,
   safeRemoveCategory as removeCategory,
   getProductsData,
+  loadProductsOnce,
   safeUpsertProduct as upsertProduct,
   getFirebaseUniqueId,
   getPublicOrders,
