@@ -35,6 +35,7 @@ const adminReducer = (state = initialState, action) => {
                 fname,
                 lname,
                 joinDate: formattedJoinDate,
+                joinTimestamp: date ? date.getTime() : null,
                 orders: orders || [],
               };
               return acc;

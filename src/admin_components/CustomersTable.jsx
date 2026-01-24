@@ -24,10 +24,7 @@ const CustomersTable = () => {
       ...user,
     }));
     const sortedUsersArray = usersArray.sort((a, b) => {
-      const [dA, mA, yA] = a.joinDate.split("/").map(Number);
-      const [dB, mB, yB] = b.joinDate.split("/").map(Number);
-
-      return new Date(yA, mA - 1, dA) - new Date(yB, mB - 1, dB);
+      return a.joinTimestamp - b.joinTimestamp;
     });
     return sortedUsersArray?.map((user) => {
       const userOrders = ordersPerUser[user.id];
