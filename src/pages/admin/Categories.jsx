@@ -14,15 +14,19 @@ const Categories = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold">Categories:</h2>
-      {categories.map((category) => (
-        <Category
-          key={category.id}
-          id={category.id}
-          name={category.name}
-          updateExistingCategory={updateExistingCategory}
-          removeExistingCategory={removeExistingCategory}
-        />
-      ))}
+      {categories.length === 0 ? (
+        <div className="p-4 text-center text-gray-500">No categories yet</div>
+      ) : (
+        categories.map((category) => (
+          <Category
+            key={category.id}
+            id={category.id}
+            name={category.name}
+            updateExistingCategory={updateExistingCategory}
+            removeExistingCategory={removeExistingCategory}
+          />
+        ))
+      )}
 
       <input
         type="text"

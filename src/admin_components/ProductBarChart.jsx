@@ -74,20 +74,26 @@ const ProductsBarChart = () => {
     <>
       <h3 className="text-center">Products Quantity Per Customer</h3>
       <UserSelect userId={userId} setUserId={setUserId} />
-      <BarChart
-        width={500}
-        height={300}
-        data={sortedData}
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        fill="transparent"
-      >
-        <Bar dataKey="value" isAnimationActive={false}>
-          {sortedData.map((data, index) => (
-            <Cell key={`cell-${index}`} fill={data.color} />
-          ))}
-          <LabelList content={renderLabelInside} />
-        </Bar>
-      </BarChart>
+      {sortedData.length === 0 ? (
+        <div className="p-6 text-center text-gray-500">
+          No data for selected user
+        </div>
+      ) : (
+        <BarChart
+          width={500}
+          height={300}
+          data={sortedData}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          fill="transparent"
+        >
+          <Bar dataKey="value" isAnimationActive={false}>
+            {sortedData.map((data, index) => (
+              <Cell key={`cell-${index}`} fill={data.color} />
+            ))}
+            <LabelList content={renderLabelInside} />
+          </Bar>
+        </BarChart>
+      )}
     </>
   );
 };

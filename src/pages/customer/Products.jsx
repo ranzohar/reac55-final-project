@@ -38,15 +38,19 @@ const Products = () => {
         setTitleFilter={setTitleFilter}
       />
 
-      {filteredProducts.map((product, index) => {
-        return (
-          <ProductInfo
-            key={index}
-            product={product}
-            bought={publicOrders?.[product.id] ?? 0}
-          />
-        );
-      })}
+      {filteredProducts.length === 0 ? (
+        <div className="p-6 text-center text-gray-500">No products yet</div>
+      ) : (
+        filteredProducts.map((product, index) => {
+          return (
+            <ProductInfo
+              key={index}
+              product={product}
+              bought={publicOrders?.[product.id] ?? 0}
+            />
+          );
+        })
+      )}
     </div>
   );
 };

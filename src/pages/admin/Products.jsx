@@ -66,7 +66,9 @@ const Products = () => {
   };
   return (
     <div>
-      {sortedProductsWithStats.length > 0 &&
+      {sortedProductsWithStats.length === 0 ? (
+        <div className="p-6 text-center text-gray-500">No products yet</div>
+      ) : (
         sortedProductsWithStats.map((product, index) => {
           return (
             <ProductInfo
@@ -77,7 +79,8 @@ const Products = () => {
               }
             />
           );
-        })}
+        })
+      )}
       <button onClick={addNew}>Add new</button>
     </div>
   );

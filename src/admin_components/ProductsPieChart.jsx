@@ -92,21 +92,25 @@ const ProductsPieChart = () => {
   return (
     <>
       <h3>Total Sold Products</h3>
-      <PieChart width={600} height={500}>
-        <Pie
-          data={data}
-          labelLine={false}
-          dataKey="value"
-          nameKey="name"
-          label={renderCustomizedLabel}
-          isAnimationActive={false}
-          stroke="none"
-        >
-          {data.map(({ color }, index) => (
-            <Cell key={`cell-${index}`} fill={color} />
-          ))}
-        </Pie>
-      </PieChart>
+      {data.length === 0 ? (
+        <div className="p-6 text-center text-gray-500">No sales yet</div>
+      ) : (
+        <PieChart width={600} height={500}>
+          <Pie
+            data={data}
+            labelLine={false}
+            dataKey="value"
+            nameKey="name"
+            label={renderCustomizedLabel}
+            isAnimationActive={false}
+            stroke="none"
+          >
+            {data.map(({ color }, index) => (
+              <Cell key={`cell-${index}`} fill={color} />
+            ))}
+          </Pie>
+        </PieChart>
+      )}
     </>
   );
 };

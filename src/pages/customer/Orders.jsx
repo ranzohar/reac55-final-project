@@ -7,7 +7,8 @@ const Orders = () => {
   const orders = user?.orders ?? [];
   const products = useSelector((state) => state.data.products);
 
-  if (orders.length === 0) return;
+  if (orders.length === 0)
+    return <div className="p-6 text-center text-gray-500">No orders yet</div>;
 
   const headers = ["Title", "Qty", "Price", "Date"];
 
