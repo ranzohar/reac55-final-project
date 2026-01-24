@@ -22,10 +22,10 @@ const adminReducer = (state = initialState, action) => {
       const users =
         payloadUsers && payloadUsers.length > 0
           ? payloadUsers.reduce((acc, user) => {
-              const { id, username, fname, lname, joined, orders } = user;
-              const date = joined?.seconds
-                ? new Date(joined.seconds * 1000)
-                : joined;
+              const { id, username, fname, lname, joinDate, orders } = user;
+              const date = joinDate?.seconds
+                ? new Date(joinDate.seconds * 1000)
+                : joinDate;
               const formattedJoinDate = date
                 ? `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
                 : null;

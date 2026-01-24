@@ -7,9 +7,8 @@ const CustomersTable = () => {
   const usersMap = useSelector((state) => state.admin.users);
   const orders = useSelector((state) => state.admin.orders);
   const products = useSelector((state) => state.data.products);
-
   const tableData = useMemo(() => {
-    if (!usersMap || usersMap.size === 0) return [];
+    if (!usersMap || Object.keys(usersMap).length === 0) return [];
     const ordersPerUser = {};
 
     orders.forEach((order) => {
@@ -23,10 +22,7 @@ const CustomersTable = () => {
       id,
       ...user,
     }));
-    const sortedUsersArray = usersArray.sort((a, b) => {
-      return a.joinTimestamp - b.joinTimestamp;
-    });
-    return sortedUsersArray?.map((user) => {
+    return usersArray?.map((user) => {
       const userOrders = ordersPerUser[user.id];
       const ordersTableData = userOrders?.flatMap((order) => {
         return order.products.map((orderedProduct) => {

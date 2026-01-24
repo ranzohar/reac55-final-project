@@ -12,6 +12,7 @@ import {
   addDoc,
   serverTimestamp,
   arrayUnion,
+  orderBy,
 } from "firebase/firestore";
 import { safeAsync } from "@/utils";
 import { LINK_TO_PIC } from "@/firebase-key-constants";
@@ -50,7 +51,11 @@ function setData(setCB, collectionName) {
 /** --------------------- USERS --------------------- **/
 
 function getUsersData(setCB) {
-  return setData(setCB, "users");
+  const q = query(collection(db, "users"), orderBy("joinDate", "asc"));
+  return onSnapshot(q, (qSnap) => {
+    const data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setCB(data);
+  });
 }
 
 function getUser(uid, setCB) {
@@ -131,7 +136,11 @@ async function addOrderToUser(
 /** --------------------- CATEGORIES --------------------- **/
 
 function getCategoriesData(setCB) {
-  return setData(setCB, "categories");
+  const q = query(collection(db, "categories"), orderBy("createDate", "asc"));
+  return onSnapshot(q, (qSnap) => {
+    const data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setCB(data);
+  });
 }
 
 async function addCategory(name) {
@@ -165,7 +174,11 @@ async function removeCategory(categoryId) {
 /** --------------------- PRODUCTS --------------------- **/
 
 function getProductsData(setCB) {
-  return setData(setCB, "products");
+  const q = query(collection(db, "products"), orderBy("createDate", "asc"));
+  return onSnapshot(q, (qSnap) => {
+    const data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setCB(data);
+  });
 }
 
 async function loadProductsOnce() {

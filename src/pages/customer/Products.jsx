@@ -15,25 +15,17 @@ const Products = () => {
   const [titleFilter, setTitleFilter] = useState("");
 
   let filteredProducts = useMemo(() => {
-    return products
-      .filter((product) => {
-        const price = +product.price.replace(/^\D/, "");
-        const matchesCategory = categoryFilter
-          ? product.categoryId === categoryFilter
-          : true;
-        const matchesTitle = titleFilter
-          ? product.title.toLowerCase().includes(titleFilter.toLowerCase())
-          : true;
+    return products.filter((product) => {
+      const price = +product.price.replace(/^\D/, "");
+      const matchesCategory = categoryFilter
+        ? product.categoryId === categoryFilter
+        : true;
+      const matchesTitle = titleFilter
+        ? product.title.toLowerCase().includes(titleFilter.toLowerCase())
+        : true;
 
-        return price <= priceLimit && matchesCategory && matchesTitle;
-      })
-      .sort((a, b) => {
-        return (
-          a.createDate.seconds * 1000 +
-          a.createDate.nanoseconds / 1e6 -
-          (b.createDate.seconds * 1000 + b.createDate.nanoseconds / 1e6)
-        );
-      });
+      return price <= priceLimit && matchesCategory && matchesTitle;
+    });
   }, [products, priceLimit, categoryFilter, titleFilter]);
 
   return (

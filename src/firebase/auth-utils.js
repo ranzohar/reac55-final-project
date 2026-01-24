@@ -84,7 +84,7 @@ const firebaseSignUp = async (
       username: user.email.split("@")[0],
       fname,
       lname,
-      joined: new Date(),
+      joinDate: new Date(),
       [ALLOW_OTHERS]: allowOthers,
     });
   } catch (err) {

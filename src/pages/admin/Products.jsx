@@ -66,13 +66,7 @@ const Products = () => {
     });
 
     sortedProduct.forEach((product) => {
-      const list = ordersPerProduct[product.id] || [];
-      // ensure boughtBy is always an array and sorted by timestamp (4th item) or fallback
-      product.boughtBy = list.slice().sort((a, b) => {
-        const ta = Array.isArray(a) ? a[3] : a?.timestamp || 0;
-        const tb = Array.isArray(b) ? b[3] : b?.timestamp || 0;
-        return ta - tb;
-      });
+      product.boughtBy = ordersPerProduct[product.id] || [];
     });
     return sortedProduct;
   }, [users, adminProducts]);
