@@ -113,7 +113,13 @@ const Account = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            readOnly
           />
+
+          <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Changing username requires email verification and is not supported
+            from this page.
+          </div>
         </div>
 
         {/* Current Password */}
