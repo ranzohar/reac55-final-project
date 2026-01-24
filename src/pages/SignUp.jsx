@@ -15,7 +15,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (!user || loading) return;
-    navigate(`/${user.uid}`);
+    navigate(`/customer/${user.uid}`);
   }, [user, loading, navigate]);
 
   const submitSignUp = (e) => {
