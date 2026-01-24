@@ -18,8 +18,8 @@ const FilterTab = ({
     if (entries.length === 0) return 0;
     return Math.max(
       ...entries.map(
-        ([_, product]) => Number(product.price?.replace(/^\D/, "")) || 0
-      )
+        ([_, product]) => Number(product.price?.replace(/^\D/, "")) || 0,
+      ),
     );
   }, [products]);
 
@@ -42,6 +42,8 @@ const FilterTab = ({
       <div className="flex flex-col">
         <label className="text-xs">Category</label>
         <select
+          id="categoryFilter"
+          name="categoryFilter"
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
           className="
@@ -64,6 +66,8 @@ const FilterTab = ({
       <div className="flex flex-col flex-1 min-w-[150px]">
         <label className="text-xs">Max Price: {priceLimit.toFixed(2)}</label>
         <input
+          id="priceLimit"
+          name="priceLimit"
           type="range"
           min="0"
           max={maxPrice}
@@ -78,6 +82,8 @@ const FilterTab = ({
       <div className="flex flex-col flex-1 min-w-[150px]">
         <label className="text-xs">Search Title</label>
         <input
+          id="titleFilter"
+          name="titleFilter"
           type="text"
           value={titleFilter}
           onChange={(e) => setTitleFilter(e.target.value)}

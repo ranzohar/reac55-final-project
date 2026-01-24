@@ -100,6 +100,8 @@ const SignUp = () => {
           <input
             type="checkbox"
             checked={allowOthers}
+            id="allowOthers"
+            name="allowOthers"
             onChange={(e) => setAllowOthers(e.target.checked)}
             className="form-checkbox h-5 w-5 text-blue-600"
           />

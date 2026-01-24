@@ -40,14 +40,16 @@ const CustomersTable = () => {
           ];
         });
       });
-      let ordersTable = [];
-      if (ordersTableData) {
+      let ordersTable;
+      if (ordersTableData && ordersTableData.length > 0) {
         ordersTable = (
           <WebpageTable
             headers={["Product", "Qty", "Date"]}
-            data={ordersTableData || []}
+            data={ordersTableData}
           />
         );
+      } else {
+        ordersTable = <div className="text-gray-500">no orders yet</div>;
       }
       return [`${user.fname} ${user.lname}`, user.joinDate, ordersTable];
     });

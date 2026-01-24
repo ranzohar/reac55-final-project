@@ -15,7 +15,7 @@ function CategorySelect({ categoryId, setCategoryId }) {
 
   return (
     <select
-      defaultValue={defaultKey}
+      defaultValue={defaultKey || ""}
       onChange={(e) => setCategoryId(e.target.value)}
       className="
         bg-white text-black
@@ -24,11 +24,17 @@ function CategorySelect({ categoryId, setCategoryId }) {
         rounded px-2 py-1
       "
     >
-      {entries.map(([key, category]) => (
-        <option key={key} value={key}>
-          {category.name}
+      {entries.length === 0 ? (
+        <option value="" disabled>
+          no categories available
         </option>
-      ))}
+      ) : (
+        entries.map(([key, category]) => (
+          <option key={key} value={key}>
+            {category.name}
+          </option>
+        ))
+      )}
     </select>
   );
 }

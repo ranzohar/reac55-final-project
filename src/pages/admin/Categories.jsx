@@ -29,6 +29,8 @@ const Categories = () => {
       )}
 
       <input
+        id="newCategory"
+        name="newCategory"
         type="text"
         value={newCategory}
         onChange={(e) => setNewCategory(e.target.value)}

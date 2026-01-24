@@ -15,7 +15,7 @@ function UserSelect({ userId, setUserId }) {
 
   return (
     <select
-      defaultValue={defaultKey}
+      defaultValue={defaultKey || ""}
       onChange={(e) => {
         setUserId(e.target.value);
       }}
@@ -26,11 +26,17 @@ function UserSelect({ userId, setUserId }) {
         rounded px-2 py-1
       "
     >
-      {entries.map(([key, user]) => (
-        <option key={key} value={key}>
-          {user.fname}
+      {entries.length === 0 ? (
+        <option value="" disabled>
+          no users available
         </option>
-      ))}
+      ) : (
+        entries.map(([key, user]) => (
+          <option key={key} value={key}>
+            {user.fname}
+          </option>
+        ))
+      )}
     </select>
   );
 }

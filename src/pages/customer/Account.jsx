@@ -153,6 +153,8 @@ const Account = () => {
           <input
             type="checkbox"
             checked={allowOthers}
+            id="allowOthers"
+            name="allowOthers"
             onChange={(e) => setAllowOthers(e.target.checked)}
           />
           Allow others to see my orders

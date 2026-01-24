@@ -32,6 +32,8 @@ const Category = ({
       {editMode && (
         <input
           type="text"
+          id={`category-edit-${id}`}
+          name={`category-${id}`}
           value={nameUpdate}
           onChange={(e) => setNameUpdate(e.target.value)}
           style={{ width: `${Math.max(nameUpdate.length + 2, 1)}ch` }}

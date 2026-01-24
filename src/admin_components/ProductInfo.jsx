@@ -59,6 +59,7 @@ const ProductInfo = ({ product, onUpdate }) => {
           <span>Title:</span>
           <input
             className="input-base"
+            name="title"
             value={changeProduct.title}
             onChange={(e) => handleChange("title", e.target.value)}
             required
@@ -69,6 +70,7 @@ const ProductInfo = ({ product, onUpdate }) => {
           Price:
           <input
             className="input-base"
+            name="price"
             value={changeProduct.price}
             onChange={(e) => handleChange("price", e.target.value)}
             required
@@ -79,6 +81,7 @@ const ProductInfo = ({ product, onUpdate }) => {
           Category:
           <select
             className="input-base"
+            name="categoryId"
             value={changeProduct.categoryId}
             onChange={(e) => handleChange("categoryId", e.target.value)}
           >
@@ -95,6 +98,7 @@ const ProductInfo = ({ product, onUpdate }) => {
           Link to pic:
           <input
             className="input-base"
+            name={LINK_TO_PIC}
             value={changeProduct[LINK_TO_PIC]}
             onChange={(e) => handleChange(LINK_TO_PIC, e.target.value)}
           />
@@ -104,6 +108,7 @@ const ProductInfo = ({ product, onUpdate }) => {
           Description:
           <textarea
             className="input-base h-full"
+            name="description"
             value={changeProduct.description}
             onChange={(e) => handleChange("description", e.target.value)}
           />
