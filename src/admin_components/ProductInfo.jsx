@@ -85,12 +85,20 @@ const ProductInfo = ({ product, onUpdate }) => {
             value={changeProduct.categoryId}
             onChange={(e) => handleChange("categoryId", e.target.value)}
           >
-            <option value="">No category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
+            {!categories || categories.length === 0 ? (
+              <option value="" disabled>
+                no categories available
               </option>
-            ))}
+            ) : (
+              <>
+                <option value="">No category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </>
+            )}
           </select>
         </label>
 
@@ -123,10 +131,14 @@ const ProductInfo = ({ product, onUpdate }) => {
 
       <div className="flex flex-col col-span-2">
         Bought By:
-        <WebpageTable
-          headers={["Name", "Qty", "date"]}
-          data={product.boughtBy || []}
-        />
+        {product.boughtBy && product.boughtBy.length > 0 ? (
+          <WebpageTable
+            headers={["Name", "Qty", "date"]}
+            data={product.boughtBy}
+          />
+        ) : (
+          <div className="text-gray-500">No sales yet</div>
+        )}
       </div>
     </div>
   );

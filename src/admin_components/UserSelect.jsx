@@ -4,11 +4,18 @@ import { useEffect } from "react";
 function UserSelect({ userId, setUserId }) {
   const users = useSelector((state) => state.admin.users);
 
-  const entries = Object.entries(users);
+  const usersArray = Object.entries(users || {}).map(([id, user]) => ({
+    id,
+    ...user,
+  }));
+  const sortedUsersArray = usersArray.sort((a, b) => {
+    return a.joinTimestamp - b.joinTimestamp;
+  });
+  const entries = sortedUsersArray.map((u) => [u.id, u]);
   const defaultKey = entries[0]?.[0];
 
   useEffect(() => {
-    if (!userId || !(userId in users)) {
+    if (!userId || !(userId in (users || {}))) {
       setUserId(defaultKey || "");
     }
   }, [users, setUserId]);
