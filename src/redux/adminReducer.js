@@ -49,6 +49,7 @@ const adminReducer = (state = initialState, action) => {
               ...order,
               userId,
               date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
+              timestamp: date ? date.getTime() : null,
             };
           });
         })

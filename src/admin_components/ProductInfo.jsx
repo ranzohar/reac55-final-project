@@ -46,6 +46,12 @@ const ProductInfo = ({ product, onUpdate }) => {
 
   if (!product) return null;
 
+  const boughtByRows = (product.boughtBy || []).map((row) => {
+    if (Array.isArray(row)) return row.slice(0, 3);
+    if (row && typeof row === "object") return Object.values(row).slice(0, 3);
+    return row;
+  });
+
   return (
     <div className="grid grid-cols-2 gap-4 max-w-xl border border-gray-300 dark:border-gray-700 rounded-xl p-4 mb-4 bg-white dark:bg-gray-900 shadow-sm">
       <form
@@ -132,10 +138,7 @@ const ProductInfo = ({ product, onUpdate }) => {
       <div className="flex flex-col col-span-2">
         Bought By:
         {product.boughtBy && product.boughtBy.length > 0 ? (
-          <WebpageTable
-            headers={["Name", "Qty", "date"]}
-            data={product.boughtBy}
-          />
+          <WebpageTable headers={["Name", "Qty", "date"]} data={boughtByRows} />
         ) : (
           <div className="text-gray-500">No sales yet</div>
         )}

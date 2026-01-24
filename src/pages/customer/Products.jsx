@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
+
 import { ProductInfo } from "@/customer_components";
 import { useProducts } from "@/hooks";
 import FilterTab from "./FilterTab";
 import { useSelector } from "react-redux";
+
 const Products = () => {
   const { products } = useProducts();
   const publicOrders = useSelector((state) => {
-    // TODO - check if doc doesn't exist nothing breaks
     return state.customer.publicOrders;
   });
   const [priceLimit, setPriceLimit] = useState(0);

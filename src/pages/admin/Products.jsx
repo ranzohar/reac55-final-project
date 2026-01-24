@@ -31,11 +31,19 @@ const Products = () => {
   const sortedProductsWithStats = useMemo(() => {
     const ordersPerProduct = {};
     orders?.forEach((order) => {
-      order.products.forEach(({ quantity, id }) => {
-        ordersPerProduct[id] = [
-          ...(ordersPerProduct[id] || []),
-          [users[order.userId].fname, quantity, order.date],
+      (order.products || []).forEach(({ quantity, id }) => {
+        const user = users?.[order.userId];
+        const entry = [
+          user ? user.fname : "Unknown",
+          quantity,
+          order.date,
+          order.timestamp,
         ];
+        ordersPerProduct[id] = ordersPerProduct[id] || [];
+        ordersPerProduct[id].push(entry);
+        ordersPerProduct[id].sort((a, b) => {
+          return (a[3] || 0) - (b[3] || 0);
+        });
       });
     });
     const sortedProduct = Object.values(adminProducts).sort((a, b) => {
@@ -52,7 +60,13 @@ const Products = () => {
     });
 
     sortedProduct.forEach((product) => {
-      product.boughtBy = ordersPerProduct[product.id];
+      const list = ordersPerProduct[product.id] || [];
+      // ensure boughtBy is always an array and sorted by timestamp (4th item) or fallback
+      product.boughtBy = list.slice().sort((a, b) => {
+        const ta = Array.isArray(a) ? a[3] : a?.timestamp || 0;
+        const tb = Array.isArray(b) ? b[3] : b?.timestamp || 0;
+        return ta - tb;
+      });
     });
     return sortedProduct;
   }, [users, adminProducts]);
