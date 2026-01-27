@@ -29,7 +29,11 @@ const WebpageTable = ({ headers, data, size = "md", striped = false }) => {
             return (
               <tr
                 key={index}
-                className={striped ? "odd:bg-gray-800 even:bg-grey-500" : ""}
+                className={
+                  striped
+                    ? "odd:bg-white odd:dark:bg-gray-900 even:bg-gray-300 even:dark:bg-gray-600"
+                    : ""
+                }
               >
                 {row.map((component, index) => {
                   return <td key={index}>{component}</td>;

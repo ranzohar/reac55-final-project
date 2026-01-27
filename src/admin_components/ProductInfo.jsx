@@ -83,8 +83,8 @@ const ProductInfo = ({ product, onUpdate }) => {
           />
         </label>
 
-        <label className="flex flex-col">
-          Category:
+        <label className="flex items-center gap-2">
+          <span>Category:</span>
           <select
             className="input-base"
             name="categoryId"

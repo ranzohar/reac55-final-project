@@ -60,7 +60,7 @@ const ProductInfo = ({ product, bought }) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="w-6 h-6 cursor-pointer text-white"
+          className="w-6 h-6 cursor-pointer text-gray-800 dark:text-white"
         >
           <rect x="4" y="11" width="16" height="2" />
         </svg>
@@ -75,7 +75,7 @@ const ProductInfo = ({ product, bought }) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="w-6 h-6 cursor-pointer text-white"
+          className="w-6 h-6 cursor-pointer text-gray-800 dark:text-white"
         >
           <rect x="11" y="4" width="2" height="16" />
           <rect x="4" y="11" width="16" height="2" />

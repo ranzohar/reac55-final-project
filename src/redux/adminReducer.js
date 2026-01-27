@@ -1,6 +1,6 @@
 const initialState = {
   orders: [], // flattened array of all orders, sorted by date
-  users: {}, // { [userId]: { username, fname, lname, joinDate, orders } }
+  users: {}, // { [userId]: { username, fname, lname, orders } }
   products: {},
   // This adds a layer of new products on top of firebase existing product. They
 };
@@ -22,10 +22,10 @@ const adminReducer = (state = initialState, action) => {
       const users =
         payloadUsers && payloadUsers.length > 0
           ? payloadUsers.reduce((acc, user) => {
-              const { id, username, fname, lname, joinDate, orders } = user;
-              const date = joinDate?.seconds
-                ? new Date(joinDate.seconds * 1000)
-                : joinDate;
+              const { id, username, fname, lname, createDate, orders } = user;
+              const date = createDate?.seconds
+                ? new Date(createDate.seconds * 1000)
+                : createDate;
               const formattedJoinDate = date
                 ? `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
                 : null;
@@ -40,7 +40,7 @@ const adminReducer = (state = initialState, action) => {
               };
               return acc;
             }, {})
-          : state.users;
+          : {};
       const orders = Object.entries(users)
         .flatMap(([userId, user]) => {
           return (user.orders || []).map((order) => {
