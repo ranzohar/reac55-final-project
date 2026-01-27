@@ -38,11 +38,9 @@ const AdminPage = () => {
 
   return (
     <div className="shrink-0 p-4 flex flex-col">
-      <div className="shrink-0 p-4 ">
-        <h3>Hello, Admin</h3>
-        <div className="my-2">
-          <LinksTab items={links} />
-        </div>
+      <h3 className="text-center">Hello, Admin</h3>
+      <div className="my-2">
+        <LinksTab items={links} />
       </div>
 
       <div className="flex-1 overflow-auto p-4">

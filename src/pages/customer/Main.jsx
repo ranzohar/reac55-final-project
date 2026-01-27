@@ -48,17 +48,11 @@ const CustomerPage = () => {
   return (
     <div className="flex">
       <SlidingWindow component={<Cart />} />
-
-      <div className="flex flex-col items-center w-full min-h-screen ml-32">
-        <div className="flex flex-col items-center w-full max-w-4xl mx-auto py-6 grow">
-          <div className="text-center mb-4">Hello, {user.fname}</div>
-
-          <LinksTab items={links} />
-
-          {/* Products and other content */}
-          <div className="w-full mt-6">
-            <Outlet />
-          </div>
+      <div className="flex flex-col items-center w-full min-h-screen ml-32 max-w-4xl mx-auto py-6 grow">
+        <h3 className="text-center">Hello, {user.fname}</h3>
+        <LinksTab items={links} />
+        <div className="w-full mt-6">
+          <Outlet />
         </div>
       </div>
     </div>
