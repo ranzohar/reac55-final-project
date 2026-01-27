@@ -248,7 +248,7 @@ async function setPublicOrders(totalsObj) {
     await setDoc(docRef, totalsObj, { merge: true });
     return docRef.id;
   } else {
-    const docRef = await addDoc(colRef, totalsObj);
+    const docRef = await addDoc(colRef, withCreateDate(totalsObj));
     return docRef.id;
   }
 }

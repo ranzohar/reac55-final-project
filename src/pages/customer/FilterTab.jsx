@@ -63,7 +63,7 @@ const FilterTab = ({
       </div>
 
       {/* Price Filter */}
-      <div className="flex flex-col flex-1 min-w-[150px]">
+      <div className="flex flex-col flex-1 min-w-[37.5]">
         <label className="text-xs">Max Price: {priceLimit.toFixed(2)}</label>
         <input
           id="priceLimit"
@@ -79,7 +79,7 @@ const FilterTab = ({
       </div>
 
       {/* Title Filter */}
-      <div className="flex flex-col flex-1 min-w-[150px]">
+      <div className="flex flex-col flex-1 min-w-[37.5]">
         <label className="text-xs">Search Title</label>
         <input
           id="titleFilter"
@@ -88,7 +88,7 @@ const FilterTab = ({
           value={titleFilter}
           onChange={(e) => setTitleFilter(e.target.value)}
           placeholder="Type to search..."
-          className="px-2 py-1 border rounded text-sm"
+          className="input-base"
         />
       </div>
 
