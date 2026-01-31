@@ -33,7 +33,6 @@
     align-items: stretch;
     padding: 1rem;
     max-width: var(--card-login-max-width, "");
-    width: 50%;
   }
 
   &-categories {
@@ -82,7 +81,7 @@
   &-product-info {
     display: grid;
     @include colors.card-bg-step(3);
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) minmax(0, 2fr);
     gap: 1rem;
     width: 100%;
     align-items: center;

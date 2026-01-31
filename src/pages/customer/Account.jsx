@@ -59,35 +59,22 @@ const Account = () => {
   if (!user) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col max-w-md mx-auto">
-      <h3 className="mb-4 text-xl font-semibold">Edit Account Information</h3>
-      <form onSubmit={submitEdit} className="flex flex-col gap-4">
+    <div className="card-login">
+      <form onSubmit={submitEdit}>
         {/* First Name */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="fname"
-            className="font-medium text-gray-700 dark:text-gray-300"
-          >
-            First Name
-          </label>
-          <input
-            id="fname"
-            type="text"
-            className="input-base"
-            value={fname}
-            onChange={(e) => setFname(e.target.value)}
-            required
-          />
-        </div>
+        <label htmlFor="fname">First Name</label>
+        <input
+          id="fname"
+          type="text"
+          className="input-base"
+          value={fname}
+          onChange={(e) => setFname(e.target.value)}
+          required
+        />
 
         {/* Last Name */}
         <div className="flex flex-col">
-          <label
-            htmlFor="lname"
-            className="font-medium text-gray-700 dark:text-gray-300"
-          >
-            Last Name
-          </label>
+          <label htmlFor="lname">Last Name</label>
           <input
             id="lname"
             type="text"
@@ -100,12 +87,7 @@ const Account = () => {
 
         {/* Username */}
         <div className="flex flex-col">
-          <label
-            htmlFor="username"
-            className="font-medium text-gray-700 dark:text-gray-300"
-          >
-            Username
-          </label>
+          <label htmlFor="username">Username</label>
           <input
             id="username"
             type="text"
@@ -116,18 +98,15 @@ const Account = () => {
             readOnly
           />
 
-          <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          {/* <div>
             Changing username requires email verification and is not supported
             from this page.
-          </div>
+          </div> */}
         </div>
 
         {/* Current Password */}
         <div className="flex flex-col">
-          <label
-            htmlFor="currentPassword"
-            className="font-medium text-gray-700 dark:text-gray-300"
-          >
+          <label htmlFor="currentPassword">
             Current Password (leave empty to keep current)
           </label>
           <PasswordInput
@@ -140,12 +119,7 @@ const Account = () => {
 
         {/* New Password */}
         <div className="flex flex-col">
-          <label
-            htmlFor="newPassword"
-            className="font-medium text-gray-700 dark:text-gray-300"
-          >
-            New Password
-          </label>
+          <label htmlFor="newPassword">New Password</label>
           <PasswordInput
             id="newPassword"
             value={newPassword}
@@ -155,7 +129,7 @@ const Account = () => {
         </div>
 
         {/* Allow others checkbox */}
-        <label className="inline-flex items-center gap-2 mt-2">
+        <label className="inline">
           <input
             type="checkbox"
             checked={allowOthers}
@@ -171,10 +145,7 @@ const Account = () => {
         {success && <div className="success">{success}</div>}
 
         {/* Submit */}
-        <button
-          type="submit"
-          className="mt-2 w-full bg-green-700 text-white py-2 rounded"
-        >
+        <button type="submit" className="btn-green">
           Save
         </button>
       </form>
