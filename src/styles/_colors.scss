@@ -1,0 +1,41 @@
+@use "sass:color";
+
+$base-blue: color.adjust(#6b7280, $lightness: -35%);
+
+$darken-step: 2.5%;
+
+@mixin card-inset-shadow() {
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.6);
+}
+
+@function card-color($level) {
+  @return color.adjust($base-blue, $lightness: -($darken-step * $level));
+}
+
+@mixin card-bg-step($level) {
+  @if $level < 1 or $level > 4 {
+    @error "card-bg-step only supports levels 1 through 4.";
+  }
+
+  background-color: card-color($level);
+}
+
+.background-1 {
+  @include card-bg-step(1);
+}
+
+.background-2 {
+  @include card-bg-step(2);
+}
+
+.background-3 {
+  @include card-bg-step(3);
+  padding: 0.1rem;
+  border-radius: 0.5rem;
+}
+
+.background-4 {
+  @include card-bg-step(4);
+}

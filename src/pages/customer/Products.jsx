@@ -30,7 +30,7 @@ const Products = () => {
   }, [products, priceLimit, categoryFilter, titleFilter]);
 
   return (
-    <div>
+    <div className="card-subpage">
       <FilterTab
         priceLimit={priceLimit}
         setPriceLimit={setPriceLimit}
@@ -41,7 +41,7 @@ const Products = () => {
       />
 
       {filteredProducts.length === 0 ? (
-        <div className="p-6 text-center text-gray-500">No products yet</div>
+        <div className="message-text">No products yet</div>
       ) : (
         filteredProducts.map((product, index) => {
           return (

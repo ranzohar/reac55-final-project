@@ -37,50 +37,39 @@ const FilterTab = ({
   };
 
   return (
-    <div className="flex items-center space-x-2 p-2 mb-4 border rounded shadow flex-wrap">
+    <div className="inline background-3">
       {/* Category Select */}
-      <div className="flex flex-col">
-        <label className="text-xs">Category</label>
-        <select
-          id="categoryFilter"
-          name="categoryFilter"
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="
-    px-2 py-1 border rounded text-sm
-    bg-white text-black
-    dark:bg-gray-700 dark:text-white
-    appearance-none
-  "
-        >
-          <option value="">All</option>
-          {Object.entries(categories).map(([id, cat]) => (
-            <option key={id} value={id}>
-              {cat.name || id}
-            </option>
-          ))}
-        </select>
-      </div>
+      <label className="text-xs">Category</label>
+      <select
+        id="categoryFilter"
+        name="categoryFilter"
+        value={categoryFilter}
+        onChange={(e) => setCategoryFilter(e.target.value)}
+      >
+        <option value="">All</option>
+        {Object.entries(categories).map(([id, cat]) => (
+          <option key={id} value={id}>
+            {cat.name || id}
+          </option>
+        ))}
+      </select>
 
       {/* Price Filter */}
-      <div className="flex flex-col flex-1 min-w-[37.5]">
-        <label className="text-xs">Max Price: {priceLimit.toFixed(2)}</label>
-        <input
-          id="priceLimit"
-          name="priceLimit"
-          type="range"
-          min="0"
-          max={maxPrice}
-          step="0.01"
-          value={priceLimit}
-          onChange={(e) => setPriceLimit(Number(e.target.value))}
-          className="w-full"
-        />
-      </div>
+      <label>Max Price: {priceLimit.toFixed(2)}</label>
+      <input
+        id="priceLimit"
+        name="priceLimit"
+        type="range"
+        min="0"
+        max={maxPrice}
+        step="0.01"
+        value={priceLimit}
+        onChange={(e) => setPriceLimit(Number(e.target.value))}
+      />
 
       {/* Title Filter */}
-      <div className="flex flex-col flex-1 min-w-[37.5]">
-        <label className="text-xs">Search Title</label>
+      <div className="inline">
+        <label>Title:</label>
         <input
           id="titleFilter"
           name="titleFilter"
@@ -96,7 +85,7 @@ const FilterTab = ({
       <button
         type="button"
         onClick={clearFilters}
-        className="px-3 py-1 bg-gray-200 dark:bg-gray-400 dark:text-white rounded text-sm hover:bg-gray-300 dark:hover:bg-gray-600"
+        className="btn-small btn-grey"
       >
         Clear
       </button>

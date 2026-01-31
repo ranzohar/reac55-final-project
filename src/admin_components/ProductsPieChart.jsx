@@ -93,7 +93,7 @@ const ProductsPieChart = () => {
     <div className="chart-wrapper">
       <h4 className="text-center">Total Sold Products</h4>
       {data.length === 0 ? (
-        <div className="p-6 text-center text-gray-500">No sales yet</div>
+        <div className="message-text">No sales yet</div>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

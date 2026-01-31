@@ -46,10 +46,10 @@ const CustomerPage = () => {
     { name: "My Account", path: "account" },
   ];
   return (
-    <div className="flex">
+    <div>
       <SlidingWindow component={<Cart />} />
-      <div className="flex flex-col items-center w-full min-h-screen ml-32 max-w-4xl mx-auto py-6 grow">
-        <h3 className="text-center">Hello, {user.fname}</h3>
+      <div className="card-main">
+        <h4 className="text-center">Hello, {user.fname}</h4>
         <LinksTab items={links} />
         <div className="w-full mt-6">
           <Outlet />

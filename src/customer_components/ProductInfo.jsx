@@ -27,60 +27,55 @@ const ProductInfo = ({ product, bought }) => {
   };
 
   return (
-    <div className="max-w-xl border border-gray-300 dark:border-gray-700 rounded-xl p-4 mb-4 bg-white dark:bg-gray-900 shadow-sm">
-      <div className="grid grid-cols-3 gap-4">
-        {/* Product Info */}
-        <div className="flex flex-col justify-center gap-3 col-span-1">
-          <h3 className="text-2xl font-bold">{product.title}</h3>
-          <span>{product.description}</span>
-          <span>Price: {product.price}</span>
-          <span>In stock: ???</span>
-        </div>
+    <div className="card-product-info">
+      {/* Product Info */}
+      <div className="flex-column">
+        <h4>{product.title}</h4>
+        <span>{product.description}</span>
+        <span>Price: {product.price}</span>
+        <span>In stock: ???</span>
+        {/* Counter */}
+        <div className="inline">
+          {/* Minus icon */}
+          <svg
+            onClick={decrement}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="quantity-icon"
+          >
+            <rect x="4" y="11" width="16" height="2" />
+          </svg>
 
-        {/* Image */}
-        <div className="flex justify-center">
-          <img
-            src={product[LINK_TO_PIC] || null}
-            alt={product.title}
-            className="h-48 w-auto object-cover rounded-lg"
-          />
-        </div>
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-600 text-lg font-medium">
+            {quantity}
+          </div>
 
-        {/* Bought */}
-        <div className="flex items-center justify-center text-lg font-semibold">
-          Bought: {bought}
+          {/* Plus icon */}
+          <svg
+            onClick={increment}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="quantity-icon"
+          >
+            <rect x="11" y="4" width="2" height="16" />
+            <rect x="4" y="11" width="16" height="2" />
+          </svg>
         </div>
       </div>
 
-      {/* Counter */}
-      <div className="flex mt-4 gap-2 items-center">
-        {/* Minus icon */}
-        <svg
-          onClick={decrement}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-6 h-6 cursor-pointer text-gray-800 dark:text-white"
-        >
-          <rect x="4" y="11" width="16" height="2" />
-        </svg>
-
-        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-600 text-lg font-medium">
-          {quantity}
-        </div>
-
-        {/* Plus icon */}
-        <svg
-          onClick={increment}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-6 h-6 cursor-pointer text-gray-800 dark:text-white"
-        >
-          <rect x="11" y="4" width="2" height="16" />
-          <rect x="4" y="11" width="16" height="2" />
-        </svg>
+      {/* Image */}
+      <div className="flex-column product-image-cell">
+        <img
+          src={product[LINK_TO_PIC] || null}
+          alt={product.title}
+          className=""
+        />
       </div>
+
+      {/* Bought */}
+      <div>Bought: {bought}</div>
     </div>
   );
 };

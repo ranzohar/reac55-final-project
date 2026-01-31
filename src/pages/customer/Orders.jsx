@@ -8,7 +8,7 @@ const Orders = () => {
   const products = useSelector((state) => state.data.products);
 
   if (orders.length === 0)
-    return <div className="p-6 text-center text-gray-500">No orders yet</div>;
+    return <div className="message-text">No orders yet</div>;
 
   const headers = ["Title", "Qty", "Price", "Date"];
 

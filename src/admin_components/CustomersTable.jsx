@@ -50,9 +50,7 @@ const CustomersTable = () => {
   }, [usersMap, orders, products]);
 
   if (!tableData.length)
-    return (
-      <div className="p-6 text-center text-gray-500">No customers yet</div>
-    );
+    return <div className="message-text">No customers yet</div>;
 
   return (
     <WebpageTable
