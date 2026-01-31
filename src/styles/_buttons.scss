@@ -2,10 +2,16 @@
 
 $category-font-size: 1rem;
 
-@mixin button($color: blue, $small: false) {
+@mixin button-base {
   font-weight: 600;
-  border-radius: 0.25rem;
 
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-size($small: false) {
   @if $small {
     width: auto;
     display: inline-block;
@@ -17,7 +23,9 @@ $category-font-size: 1rem;
     padding: 0.5rem 1rem;
     margin-top: 1rem;
   }
+}
 
+@mixin button-color($color: blue) {
   @if $color == blue {
     $base-blue: #3b82f6;
     background-color: color.adjust($base-blue, $lightness: -5%);
@@ -78,30 +86,60 @@ $category-font-size: 1rem;
         background-color: color.adjust($base-grey, $lightness: -15%);
       }
     }
-  }
+  } @else if $color == teal {
+    $base-teal: #14b8a6;
+    background-color: color.adjust($base-teal, $lightness: 5%);
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    &:hover:not(:disabled) {
+      background-color: $base-teal;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: color.adjust($base-teal, $lightness: -15%);
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust($base-teal, $lightness: -20%);
+      }
+    }
   }
 }
 
 .btn-blue {
-  @include button(blue);
+  @include button-base;
+  @include button-size(false);
+  @include button-color(blue);
 }
 
 .btn-green {
-  @include button(green);
+  @include button-base;
+  @include button-size(false);
+  @include button-color(green);
 }
 
 .btn-red {
-  @include button(red);
+  @include button-base;
+  @include button-size(false);
+  @include button-color(red);
 }
 
 .btn-grey {
-  @include button(grey);
+  @include button-base;
+  @include button-size(false);
+  @include button-color(grey);
 }
 
 .btn-grey-small {
-  @include button(grey, true);
+  @include button-base;
+  @include button-size(true);
+  @include button-color(grey);
+}
+
+.btn-teal {
+  @include button-base;
+  @include button-size(false);
+  @include button-color(teal);
+}
+
+.btn-small {
+  @include button-size(true);
 }

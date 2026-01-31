@@ -37,7 +37,7 @@ const AdminPage = () => {
   ];
 
   return (
-    <div className="card">
+    <div className="card-main">
       <h3 className="text-center">Hello, Admin</h3>
       <LinksTab items={links} />
       <Outlet />

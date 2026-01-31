@@ -53,15 +53,14 @@ const ProductInfo = ({ product, onUpdate }) => {
   });
 
   return (
-    <div className="grid grid-cols-2 gap-4 max-w-xl border border-gray-300 dark:border-gray-700 rounded-xl p-4 mb-4 bg-white dark:bg-gray-900 shadow-sm">
+    <div className="card-product">
       <form
-        className="col-span-2 grid grid-cols-2 gap-4"
         onSubmit={(e) => {
           e.preventDefault();
           update();
         }}
       >
-        <label className="flex items-center gap-2">
+        <label className="grid-t">
           <span>Title:</span>
           <input
             className="input-base"
@@ -72,7 +71,7 @@ const ProductInfo = ({ product, onUpdate }) => {
           />
         </label>
 
-        <label className="flex flex-col">
+        <label className="grid-p">
           Price:
           <input
             className="input-base"
@@ -83,7 +82,7 @@ const ProductInfo = ({ product, onUpdate }) => {
           />
         </label>
 
-        <label className="flex items-center gap-2">
+        <label className="grid-c">
           <span>Category:</span>
           <select
             className="input-base"
@@ -108,7 +107,7 @@ const ProductInfo = ({ product, onUpdate }) => {
           </select>
         </label>
 
-        <label className="flex flex-col">
+        <label className="grid-l">
           Link to pic:
           <input
             className="input-base"
@@ -118,29 +117,29 @@ const ProductInfo = ({ product, onUpdate }) => {
           />
         </label>
 
-        <label className="flex flex-col col-span-2">
+        <label className="grid-d">
           Description:
           <textarea
-            className="input-base h-full"
+            className="input-base"
             name="description"
             value={changeProduct.description}
             onChange={(e) => handleChange("description", e.target.value)}
           />
         </label>
 
-        <div className="flex gap-2 mt-2 col-span-2">
-          <button type="submit" className="bg-green-400 dark:bg-green-600 w-20">
+        <div className="grid-s">
+          <button type="submit" className="btn-green btn-small">
             Save
           </button>
         </div>
       </form>
 
-      <div className="flex flex-col col-span-2">
+      <div className="grid-b">
         Bought By:
         {product.boughtBy && product.boughtBy.length > 0 ? (
           <WebpageTable headers={["Name", "Qty", "date"]} data={boughtByRows} />
         ) : (
-          <div className="text-gray-500">No sales yet</div>
+          <div className="message-text">No sales yet</div>
         )}
       </div>
     </div>

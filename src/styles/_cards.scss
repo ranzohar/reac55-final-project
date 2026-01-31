@@ -12,45 +12,101 @@ $darken-step: 2.5%;
 .card,
 [class^="card-"],
 [class*=" card-"] {
-  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
   background-color: card-color(1);
+  align-items: center;
+  border-radius: 0.5rem;
   padding-inline: 0.5rem;
-  padding-top: 1rem;
+  padding-block: 1rem;
+  box-sizing: border-box;
 }
 
 .card {
+  &-main {
+    gap: 1rem;
+  }
+
+  &-subpage {
+    align-items: start;
+    background-color: card-color(2);
+  }
+
   &-login {
     background-color: color.adjust($base-blue, $lightness: -45%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     padding: 2rem;
   }
+
   &-categories {
     background-color: card-color(3);
-    display: flex;
-    flex-direction: column;
-    padding: 0.5rem;
-    padding-top: 0rem;
+    align-items: stretch;
+    padding-block: 0.1rem;
     > * {
-      margin: 0.5rem;
+      margin: 0.1rem;
     }
   }
   &-category {
+    flex-direction: row;
     background-color: card-color(4);
-    display: flex;
-    align-items: center;
     gap: 0.5rem;
     padding: 0.5rem;
-    // margin: 0.5rem;
   }
+
   &-links {
-    background-color: card-color(3);
-    display: flex;
+    width: 100%;
+    background-color: card-color(2);
     flex-direction: row;
     gap: 0.5rem;
-    padding-top: 0rem;
+    padding-block: 0rem;
+    justify-content: space-around;
   }
+
+  &-product {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "t p"
+      "c l"
+      "d b"
+      "s .";
+    gap: 1rem;
+    width: 100%;
+    > form {
+      display: contents;
+    }
+    textarea {
+      min-height: 100%;
+    }
+  }
+}
+
+.grid-t {
+  grid-area: t;
+}
+
+.grid-p {
+  grid-area: p;
+}
+
+.grid-c {
+  grid-area: c;
+}
+
+.grid-l {
+  grid-area: l;
+}
+
+.grid-d {
+  grid-area: d;
+  align-self: stretch;
+}
+
+.grid-b {
+  grid-area: b;
+}
+
+.grid-s {
+  grid-area: s;
 }
 
 .center-screen {

@@ -88,9 +88,9 @@ const Products = () => {
     });
   };
   return (
-    <div className="card">
+    <div className="card-subpage">
       {sortedProductsWithStats.length === 0 ? (
-        <div className="p-6 text-center text-gray-500">No products yet</div>
+        <div className="message-text">No products yet</div>
       ) : (
         sortedProductsWithStats.map((product, index) => {
           return (
@@ -104,7 +104,9 @@ const Products = () => {
           );
         })
       )}
-      <button onClick={addNew}>Add new</button>
+      <button className="btn-teal btn-small" onClick={addNew}>
+        Add New
+      </button>
     </div>
   );
 };

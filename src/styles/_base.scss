@@ -13,11 +13,12 @@ body {
 .input-base {
   width: 100%;
   max-width: 100%;
-  box-sizing: border-box;
   border: 1px solid #d1d5db;
   border-radius: 0.25rem;
   background: #ffffff;
   color: #000000;
+  box-sizing: border-box;
+  display: block;
 }
 
 .input-base:focus {
@@ -42,6 +43,12 @@ body {
   width: 100vw;
 }
 
+.inline {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
 h3 {
   font-size: 1.5rem;
   font-weight: 700;
@@ -51,4 +58,8 @@ h3 {
 .navigate-link {
   text-decoration: underline;
   color: inherit;
+}
+
+.message-text {
+  color: #6b7280;
 }

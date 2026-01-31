@@ -12,8 +12,8 @@ const Categories = () => {
   const [newCategory, setNewCategory] = useState("");
 
   return (
-    <div className="card">
-      <h2 className="text-2xl font-bold">Categories:</h2>
+    <div className="card-subpage">
+      <h3 className="text-2xl font-bold">Categories:</h3>
       <div className="card-categories">
         {categories.length === 0 ? (
           <div className="card-category">No categories yet</div>
@@ -29,7 +29,7 @@ const Categories = () => {
           ))
         )}
 
-        <div className="flex gap-2">
+        <div className="inline">
           <input
             id="newCategory"
             name="newCategory"
@@ -40,7 +40,7 @@ const Categories = () => {
             placeholder="Add new category"
           />
           <button
-            className="btn-green"
+            className="btn-small btn-green"
             onClick={() => {
               addNewCategory(newCategory);
               setNewCategory("");
