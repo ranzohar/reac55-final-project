@@ -39,6 +39,7 @@ const CustomersTable = () => {
           <WebpageTable
             headers={["Product", "Qty", "Date"]}
             data={ordersTableData}
+            striped={true}
           />
         );
       } else {
@@ -55,6 +56,7 @@ const CustomersTable = () => {
 
   return (
     <WebpageTable
+      className="background-3"
       headers={["Full Name", "Joined At", "Products Bought"]}
       data={tableData}
     />

@@ -13,7 +13,7 @@ const Categories = () => {
 
   return (
     <div className="card-subpage">
-      <h3 className="text-2xl font-bold">Categories:</h3>
+      <h4 className="text-2xl font-bold">Categories:</h4>
       <div className="card-categories">
         {categories.length === 0 ? (
           <div className="card-category">No categories yet</div>

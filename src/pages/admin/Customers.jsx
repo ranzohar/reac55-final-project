@@ -2,17 +2,8 @@ import { CustomersTable } from "@/admin_components";
 
 const Customers = () => {
   return (
-    <div
-      className="
-      max-w-xl
-      border
-      border-gray-300
-      dark:border-gray-700
-      rounded-xl
-      bg-white
-      dark:bg-gray-900
-      shadow-sm"
-    >
+    <div className="card-subpage">
+      <h3 className="text-center">Customers</h3>
       <CustomersTable />
     </div>
   );

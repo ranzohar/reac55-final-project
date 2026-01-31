@@ -6,7 +6,7 @@ function PasswordInput({ id, value, onChange, required }) {
   const [visible, setVisible] = useState(false);
 
   return (
-    <div className="relative w-full">
+    <div className="password-input">
       <input
         id={id}
         type={visible ? "text" : "password"}
@@ -19,12 +19,7 @@ function PasswordInput({ id, value, onChange, required }) {
       <button
         type="button"
         onClick={() => setVisible((v) => !v)}
-        className="absolute inset-y-0 right-0 flex items-center justify-center p-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
-        style={{
-          background: "none",
-          border: "none",
-          outline: "none",
-        }}
+        className="show-password-icon"
       >
         {visible ? (
           <EyeSlashIcon className="h-5 w-5" />

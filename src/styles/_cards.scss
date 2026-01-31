@@ -1,4 +1,5 @@
 @use "sass:color";
+@use "base";
 
 $base-blue: color.adjust(#6b7280, $lightness: -35%);
 
@@ -8,18 +9,44 @@ $darken-step: 2.5%;
   @return color.adjust($base-blue, $lightness: -($darken-step * $level));
 }
 
+@mixin card-bg-step($level) {
+  @if $level < 1 or $level > 4 {
+    @error "card-bg-step only supports levels 1 through 4.";
+  }
+
+  background-color: card-color($level);
+}
+
+.background-1 {
+  @include card-bg-step(1);
+}
+
+.background-2 {
+  @include card-bg-step(2);
+}
+
+.background-3 {
+  @include card-bg-step(3);
+}
+
+.background-4 {
+  @include card-bg-step(4);
+}
+
 // Base card attributes
 .card,
 [class^="card-"],
 [class*=" card-"] {
   display: flex;
   flex-direction: column;
-  background-color: card-color(1);
+  @include card-bg-step(1);
   align-items: center;
   border-radius: 0.5rem;
   padding-inline: 0.5rem;
+
   padding-block: 1rem;
   box-sizing: border-box;
+  gap: 1rem;
 }
 
 .card {
@@ -29,32 +56,37 @@ $darken-step: 2.5%;
 
   &-subpage {
     align-items: start;
-    background-color: card-color(2);
+    @include card-bg-step(2);
   }
 
   &-login {
-    background-color: color.adjust($base-blue, $lightness: -45%);
-    padding: 2rem;
+    @include card-bg-step(2);
+    display: flex;
+    align-items: stretch;
+    padding: 1rem;
+    max-width: var(--card-login-max-width, "");
+    width: 50%;
   }
 
   &-categories {
-    background-color: card-color(3);
+    @include card-bg-step(3);
     align-items: stretch;
     padding-block: 0.1rem;
     > * {
       margin: 0.1rem;
     }
+    gap: 0.1rem;
   }
   &-category {
     flex-direction: row;
-    background-color: card-color(4);
+    @include card-bg-step(4);
     gap: 0.5rem;
     padding: 0.5rem;
   }
 
   &-links {
     width: 100%;
-    background-color: card-color(2);
+    @include card-bg-step(2);
     flex-direction: row;
     gap: 0.5rem;
     padding-block: 0rem;
@@ -63,6 +95,7 @@ $darken-step: 2.5%;
 
   &-product {
     display: grid;
+    @include card-bg-step(3);
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
       "t p"
@@ -74,14 +107,16 @@ $darken-step: 2.5%;
     > form {
       display: contents;
     }
-    textarea {
-      min-height: 100%;
-    }
   }
+}
+
+.extra-padding {
+  align-self: center;
 }
 
 .grid-t {
   grid-area: t;
+  @include base.inline;
 }
 
 .grid-p {
@@ -90,6 +125,7 @@ $darken-step: 2.5%;
 
 .grid-c {
   grid-area: c;
+  @include base.inline;
 }
 
 .grid-l {
@@ -99,10 +135,22 @@ $darken-step: 2.5%;
 .grid-d {
   grid-area: d;
   align-self: stretch;
+  display: flex;
+  flex-direction: column;
+
+  textarea {
+    flex-grow: 1;
+  }
 }
 
 .grid-b {
   grid-area: b;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  table {
+    flex-grow: 1;
+  }
 }
 
 .grid-s {

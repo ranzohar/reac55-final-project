@@ -4,46 +4,38 @@ const SIZE_CLASSES = {
   lg: "text-lg [&_th]:px-8 [&_th]:py-6 [&_td]:px-8 [&_td]:py-6",
 };
 
-const WebpageTable = ({ headers, data, size = "md", striped = false }) => {
+const WebpageTable = ({
+  headers,
+  data,
+  size = "md",
+  striped = false,
+  className = "",
+}) => {
   const sizeClasses = SIZE_CLASSES[size] ?? SIZE_CLASSES.md;
 
   return (
-    <>
-      <table
-        className={`border-collapse border border-black
-        [&_th]:border [&_td]:border
-        [&_th]:border-black [&_td]:border-black
-        [&_th]:text-center [&_td]:text-center
-        table-auto w-full
-        ${sizeClasses}`}
-      >
-        <thead>
-          <tr>
-            {headers.map((header, index) => {
-              return <th key={index}>{header}</th>;
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => {
-            return (
-              <tr
-                key={index}
-                className={
-                  striped
-                    ? "odd:bg-white odd:dark:bg-gray-900 even:bg-gray-300 even:dark:bg-gray-600"
-                    : ""
-                }
-              >
-                {row.map((component, index) => {
-                  return <td key={index}>{component}</td>;
-                })}
-              </tr>
-            );
+    <table
+      className={`${sizeClasses} ${striped ? "table-striped" : ""} ${className}`.trim()}
+    >
+      <thead>
+        <tr>
+          {headers.map((header, index) => {
+            return <th key={index}>{header}</th>;
           })}
-        </tbody>
-      </table>
-    </>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row, index) => {
+          return (
+            <tr key={index}>
+              {row.map((component, index) => {
+                return <td key={index}>{component}</td>;
+              })}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
   );
 };
 

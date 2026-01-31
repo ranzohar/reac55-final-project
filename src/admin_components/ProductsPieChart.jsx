@@ -90,8 +90,8 @@ const ProductsPieChart = () => {
   }, [orders, products]);
 
   return (
-    <>
-      <h3>Total Sold Products</h3>
+    <div className="card">
+      <h4 className="text-center">Total Sold Products</h4>
       {data.length === 0 ? (
         <div className="p-6 text-center text-gray-500">No sales yet</div>
       ) : (
@@ -111,7 +111,7 @@ const ProductsPieChart = () => {
           </Pie>
         </PieChart>
       )}
-    </>
+    </div>
   );
 };
 

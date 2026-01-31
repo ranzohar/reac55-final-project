@@ -26,12 +26,7 @@ function UserSelect({ userId, setUserId }) {
       onChange={(e) => {
         setUserId(e.target.value);
       }}
-      className="
-        bg-white text-black
-        dark:bg-gray-800 dark:text-white
-        border border-gray-300 dark:border-gray-600
-        rounded px-2 py-1
-      "
+      className="user-select"
     >
       {entries.length === 0 ? (
         <option value="" disabled>

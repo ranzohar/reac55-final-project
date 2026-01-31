@@ -34,8 +34,8 @@ const Login = () => {
 
   return (
     <div className="center-screen">
-      <div className="card-login">
-        <h3>Next Generation E-commerce</h3>
+      <div className="card-login" style={{ "--card-login-max-width": "28rem" }}>
+        <h4 className="text-center">Next Generation E-commerce</h4>
         <form onSubmit={onSubmitCb}>
           <label htmlFor="username">User Name:</label>
           <input
@@ -49,6 +49,7 @@ const Login = () => {
 
           <label htmlFor="password">Password:</label>
           <PasswordInput
+            className="password-input"
             id="password"
             value={password}
             onChange={setPassword}
@@ -60,7 +61,9 @@ const Login = () => {
             Login
           </button>
         </form>
-        New User? <Link to="/signup">Register</Link>
+        <div className="text-center">
+          <span>New User?</span> <Link to="/signup">Register</Link>
+        </div>
       </div>
     </div>
   );

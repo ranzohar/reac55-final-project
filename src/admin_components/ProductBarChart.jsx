@@ -89,8 +89,8 @@ const ProductsBarChart = () => {
   };
 
   return (
-    <>
-      <h3 className="text-center">Products Quantity Per Customer</h3>
+    <div className="card">
+      <h4>Products Quantity Per Customer</h4>
       <UserSelect userId={userId} setUserId={setUserId} />
       {sortedData.length === 0 ? (
         <div className="p-6 text-center text-gray-500">
@@ -112,7 +112,7 @@ const ProductsBarChart = () => {
           </Bar>
         </BarChart>
       )}
-    </>
+    </div>
   );
 };
 
