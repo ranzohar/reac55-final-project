@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 
-import { PieChart, Pie, Cell } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const renderCustomizedLabel = ({
   cx,
@@ -90,26 +90,28 @@ const ProductsPieChart = () => {
   }, [orders, products]);
 
   return (
-    <div className="card">
+    <div className="chart-wrapper">
       <h4 className="text-center">Total Sold Products</h4>
       {data.length === 0 ? (
         <div className="p-6 text-center text-gray-500">No sales yet</div>
       ) : (
-        <PieChart width={600} height={500}>
-          <Pie
-            data={data}
-            labelLine={false}
-            dataKey="value"
-            nameKey="name"
-            label={renderCustomizedLabel}
-            isAnimationActive={false}
-            stroke="none"
-          >
-            {data.map(({ color }, index) => (
-              <Cell key={`cell-${index}`} fill={color} />
-            ))}
-          </Pie>
-        </PieChart>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              labelLine={false}
+              dataKey="value"
+              nameKey="name"
+              label={renderCustomizedLabel}
+              isAnimationActive={false}
+              stroke="none"
+            >
+              {data.map(({ color }, index) => (
+                <Cell key={`cell-${index}`} fill={color} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
       )}
     </div>
   );

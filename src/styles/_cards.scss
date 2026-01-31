@@ -5,6 +5,12 @@ $base-blue: color.adjust(#6b7280, $lightness: -35%);
 
 $darken-step: 2.5%;
 
+@mixin card-inset-shadow() {
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.6);
+}
+
 @function card-color($level) {
   @return color.adjust($base-blue, $lightness: -($darken-step * $level));
 }
@@ -82,6 +88,7 @@ $darken-step: 2.5%;
     @include card-bg-step(4);
     gap: 0.5rem;
     padding: 0.5rem;
+    @include card-inset-shadow();
   }
 
   &-links {
@@ -107,11 +114,29 @@ $darken-step: 2.5%;
     > form {
       display: contents;
     }
+    @include card-inset-shadow();
+  }
+  &-statistics {
+    width: 100%;
+    height: 85vh;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-items: start;
+    gap: 1rem;
+    overflow: auto;
   }
 }
 
-.extra-padding {
-  align-self: center;
+.chart-wrapper {
+  @include card-bg-step(2);
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .grid-t {
@@ -155,12 +180,4 @@ $darken-step: 2.5%;
 
 .grid-s {
   grid-area: s;
-}
-
-.center-screen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
 }

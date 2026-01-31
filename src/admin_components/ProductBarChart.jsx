@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-import { BarChart, Bar, Cell, LabelList } from "recharts";
+import { BarChart, Bar, Cell, LabelList, ResponsiveContainer } from "recharts";
 
 import UserSelect from "./UserSelect";
 
@@ -89,28 +89,26 @@ const ProductsBarChart = () => {
   };
 
   return (
-    <div className="card">
+    <div className="chart-wrapper">
       <h4>Products Quantity Per Customer</h4>
       <UserSelect userId={userId} setUserId={setUserId} />
       {sortedData.length === 0 ? (
-        <div className="p-6 text-center text-gray-500">
-          No data for selected user
-        </div>
+        <div className="message-text">No data for selected user</div>
       ) : (
-        <BarChart
-          width={500}
-          height={300}
-          data={sortedData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          fill="transparent"
-        >
-          <Bar dataKey="value" isAnimationActive={false}>
-            {sortedData.map((data, index) => (
-              <Cell key={`cell-${index}`} fill={data.color} />
-            ))}
-            <LabelList content={renderLabelInside} />
-          </Bar>
-        </BarChart>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={sortedData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            fill="transparent"
+          >
+            <Bar dataKey="value" isAnimationActive={false}>
+              {sortedData.map((data, index) => (
+                <Cell key={`cell-${index}`} fill={data.color} />
+              ))}
+              <LabelList content={renderLabelInside} />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       )}
     </div>
   );
