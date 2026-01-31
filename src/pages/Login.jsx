@@ -33,34 +33,35 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col center-screen">
-      <h3>Next Generation E-commerce</h3>
-      <form onSubmit={onSubmitCb}>
-        <label htmlFor="username">User Name:</label>
-        <input
-          id="username"
-          type="text"
-          className="input-base"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
+    <div className="center-screen">
+      <div className="card-login">
+        <h3>Next Generation E-commerce</h3>
+        <form onSubmit={onSubmitCb}>
+          <label htmlFor="username">User Name:</label>
+          <input
+            id="username"
+            type="text"
+            className="input-base"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
 
-        <label htmlFor="password">Password:</label>
-        <PasswordInput id="password" value={password} onChange={setPassword} />
+          <label htmlFor="password">Password:</label>
+          <PasswordInput
+            id="password"
+            value={password}
+            onChange={setPassword}
+          />
 
-        {error && <div className="error">{error}</div>}
+          {error && <div className="error">{error}</div>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-400 dark:bg-blue-700 hover:bg-blue-500 dark:hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed mt-4"
-        >
-          Login
-        </button>
-      </form>
-      <br />
-      New User? <Link to="/signup">Register</Link>
+          <button type="submit" disabled={loading} className="btn-blue">
+            Login
+          </button>
+        </form>
+        New User? <Link to="/signup">Register</Link>
+      </div>
     </div>
   );
 };

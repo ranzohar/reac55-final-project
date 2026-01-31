@@ -1,0 +1,107 @@
+@use "sass:color";
+
+$category-font-size: 1rem;
+
+@mixin button($color: blue, $small: false) {
+  font-weight: 600;
+  border-radius: 0.25rem;
+
+  @if $small {
+    width: auto;
+    display: inline-block;
+    font-size: $category-font-size;
+    padding: 0.25rem 0.75rem;
+    margin-top: 0;
+  } @else {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+  }
+
+  @if $color == blue {
+    $base-blue: #3b82f6;
+    background-color: color.adjust($base-blue, $lightness: -5%);
+
+    &:hover:not(:disabled) {
+      background-color: color.adjust($base-blue, $lightness: -10%);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: color.adjust($base-blue, $lightness: -20%);
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust($base-blue, $lightness: -25%);
+      }
+    }
+  } @else if $color == green {
+    $base-green: #22c55e;
+    background-color: color.adjust($base-green, $lightness: 10%);
+
+    &:hover:not(:disabled) {
+      background-color: $base-green;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: color.adjust($base-green, $lightness: -15%);
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust($base-green, $lightness: -20%);
+      }
+    }
+  } @else if $color == red {
+    $base-red: #ef4444;
+    background-color: color.adjust($base-red, $lightness: 10%);
+
+    &:hover:not(:disabled) {
+      background-color: $base-red;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: color.adjust($base-red, $lightness: -15%);
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust($base-red, $lightness: -20%);
+      }
+    }
+  } @else if $color == grey {
+    $base-grey: #6b7280;
+    background-color: color.adjust($base-grey, $lightness: 10%);
+
+    &:hover:not(:disabled) {
+      background-color: $base-grey;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: color.adjust($base-grey, $lightness: -10%);
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust($base-grey, $lightness: -15%);
+      }
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-blue {
+  @include button(blue);
+}
+
+.btn-green {
+  @include button(green);
+}
+
+.btn-red {
+  @include button(red);
+}
+
+.btn-grey {
+  @include button(grey);
+}
+
+.btn-grey-small {
+  @include button(grey, true);
+}

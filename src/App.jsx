@@ -1,4 +1,4 @@
-import "./App.css";
+import "./styles/App.scss";
 
 import { Routes, Route, Navigate } from "react-router";
 

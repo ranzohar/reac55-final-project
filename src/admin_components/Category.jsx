@@ -27,7 +27,7 @@ const Category = ({
   };
 
   return (
-    <div className="flex flex-row max-w-xl border border-gray-300 dark:border-gray-700 rounded-xl p-4 mb-1 bg-white dark:bg-gray-900 shadow-sm gap-2">
+    <div className="card-category">
       {!editMode && <strong className="self-center">{nameUpdate}</strong>}
       {editMode && (
         <input
@@ -41,6 +41,7 @@ const Category = ({
         />
       )}
       <button
+        className="btn-grey-small"
         onClick={() => {
           if (editMode) {
             handleUpdate();
@@ -51,7 +52,9 @@ const Category = ({
       >
         {editMode ? "Save" : "Edit"}
       </button>
-      <button onClick={handleRemove}>Remove</button>
+      <button className="btn-grey-small" onClick={handleRemove}>
+        Remove
+      </button>
     </div>
   );
 };

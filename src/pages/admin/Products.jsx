@@ -88,7 +88,7 @@ const Products = () => {
     });
   };
   return (
-    <div>
+    <div className="card">
       {sortedProductsWithStats.length === 0 ? (
         <div className="p-6 text-center text-gray-500">No products yet</div>
       ) : (

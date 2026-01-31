@@ -18,12 +18,12 @@ const SignOut = () => {
     sessionStorage.clear();
   };
   return (
-    <span
-      className="text-blue-500 underline! text-sm cursor-pointer bg-transparent p-0"
+    <a
+      // className="navigate-link text-sm cursor-pointer"
       onClick={logOutFromFirebase}
     >
       Log Out
-    </span>
+    </a>
   );
 };
 
