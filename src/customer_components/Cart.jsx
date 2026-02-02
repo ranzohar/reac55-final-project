@@ -53,7 +53,7 @@ const Cart = () => {
   };
   return (
     <>
-      <h3>Cart:</h3>
+      <h4>Cart:</h4>
       <br />
       {Object.entries(cart).map(([productId, quantity]) => {
         if (!(productId in products)) {

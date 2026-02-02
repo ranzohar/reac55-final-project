@@ -12,43 +12,31 @@ const CartProduct = ({
   const decrement = () => updateCart(Math.max(0, quantity - 1));
 
   return (
-    <div key={productId} className="flex items-center gap-1 min-w-0">
+    <div key={productId} className="cart">
       {/* Name, can shrink and truncate */}
-      <span className="shrink truncate">{name} - </span>
+      <span className="textsize-s">{name} - </span>
 
       {/* Increment button */}
-      <button
-        onClick={increment}
-        className="inline-flex items-center justify-center text-[8px] leading-none p-0 m-0"
-        style={{ width: "10px", height: "10px" }}
-      >
+      <button onClick={increment} className="btn-small btn-grey">
         +
       </button>
 
       {/* Quantity */}
-      <span className="px-1 shrink-0">{quantity}</span>
+      <span className="textsize-s">{quantity}</span>
 
       {/* Decrement button */}
-      <button
-        onClick={decrement}
-        className="inline-flex items-center justify-center text-[8px] leading-none p-0 m-0"
-        style={{ width: "10px", height: "10px" }}
-      >
+      <button onClick={decrement} className="btn-small btn-grey">
         -
       </button>
 
       {/* Total, can shrink and truncate */}
-      <span className="ml-2 shrink truncate">
+      <span className="textsize-s">
         units - Total: {pricePrefix}
         {total}
       </span>
 
       {/* Remove button */}
-      <button
-        onClick={() => updateCart(0, true)}
-        className="inline-flex items-center justify-center text-[8px] leading-none p-0 m-0 text-red-800"
-        style={{ width: "10px", height: "10px" }}
-      >
+      <button onClick={() => updateCart(0, true)} className="btn-small btn-red">
         X
       </button>
     </div>

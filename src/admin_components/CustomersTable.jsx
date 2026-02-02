@@ -54,7 +54,7 @@ const CustomersTable = () => {
 
   return (
     <WebpageTable
-      className="background-3"
+      className="background-2"
       headers={["Full Name", "Joined At", "Products Bought"]}
       data={tableData}
     />

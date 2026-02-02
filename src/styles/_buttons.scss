@@ -15,8 +15,7 @@ $category-font-size: 1rem;
   @if $small {
     width: auto;
     display: inline-block;
-    font-size: $category-font-size;
-    padding: 0.25rem 0.75rem;
+    padding: 0.25em 0.75em;
     margin-top: 0;
   } @else {
     width: 100%;
@@ -145,8 +144,8 @@ $category-font-size: 1rem;
 }
 
 .card-product-info .quantity-icon {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 3rem;
+  height: 3rem;
   cursor: pointer;
   color: #1f2937;
   transition:

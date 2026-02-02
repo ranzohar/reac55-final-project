@@ -1,8 +1,51 @@
+:root {
+  --text-xl: 2.5rem;
+  --text-l: 1.5rem;
+  --text-m: 1.125rem;
+  --text-s: 0.875rem;
+}
+
+.textsize-xl {
+  font-size: var(--text-xl);
+}
+
+.textsize-l {
+  font-size: var(--text-l);
+}
+
+.textsize-m {
+  font-size: var(--text-m);
+}
+
+.textsize-s {
+  font-size: var(--text-s);
+}
+
 .navigate-link {
-  text-decoration: underline;
   color: inherit;
+}
+.current-navigate-link {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.sign-out {
+  text-decoration: underline;
+  color: blue;
 }
 
 .message-text {
-  color: #6b7280;
+  color: var(--text-muted);
+}
+
+.quantity-number {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: var(--card-bg-1);
+  font-size: var(--text-m);
+  font-weight: 500;
 }

@@ -1,8 +1,10 @@
 @use "sass:color";
 
-$base-blue: color.adjust(#6b7280, $lightness: -35%);
+$base-blue-light: #6b7280;
+$base-blue-dark: color.adjust(#6b7280, $lightness: -35%);
 
-$darken-step: 2.5%;
+$darken-step-light: 2.5%;
+$darken-step-dark: 3.5%;
 
 @mixin card-inset-shadow() {
   box-shadow:
@@ -10,8 +12,38 @@ $darken-step: 2.5%;
     inset 0 -2px 4px rgba(255, 255, 255, 0.6);
 }
 
-@function card-color($level) {
-  @return color.adjust($base-blue, $lightness: -($darken-step * $level));
+@function card-color($base, $level, $step) {
+  @return color.adjust($base, $lightness: -($step * $level));
+}
+
+:root {
+  --card-bg-1: #{card-color($base-blue-light, 1, $darken-step-light)};
+  --card-bg-2: #{card-color($base-blue-light, 2, $darken-step-light)};
+  --card-bg-3: #{card-color($base-blue-light, 3, $darken-step-light)};
+  --card-bg-4: #{card-color($base-blue-light, 4, $darken-step-light)};
+  --surface-plain: #ffffff;
+  --surface-muted: #f3f4f6;
+  --table-stripe: #{card-color($base-blue-light, 2, $darken-step-light)};
+  --text-primary: #000000;
+  --text-muted: #6b7280;
+  --text-inverse: #ffffff;
+  --control-border: #d1d5db;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-bg-1: #{card-color($base-blue-dark, 1, $darken-step-dark)};
+    --card-bg-2: #{card-color($base-blue-dark, 2, $darken-step-dark)};
+    --card-bg-3: #{card-color($base-blue-dark, 3, $darken-step-dark)};
+    --card-bg-4: #{card-color($base-blue-dark, 4, $darken-step-dark)};
+    --surface-plain: #1f2937;
+    --surface-muted: #374151;
+    --table-stripe: #{card-color($base-blue-dark, 2, $darken-step-dark)};
+    --text-primary: #f9fafb;
+    --text-muted: #cbd5f5;
+    --text-inverse: #0f172a;
+    --control-border: #4b5563;
+  }
 }
 
 @mixin card-bg-step($level) {
@@ -19,7 +51,7 @@ $darken-step: 2.5%;
     @error "card-bg-step only supports levels 1 through 4.";
   }
 
-  background-color: card-color($level);
+  background-color: var(--card-bg-#{$level});
 }
 
 .background-1 {

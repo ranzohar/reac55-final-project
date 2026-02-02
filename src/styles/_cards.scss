@@ -1,5 +1,10 @@
 @use "positions";
 @use "colors";
+@use "texts";
+
+.sliding-window {
+  --card-sliding-closed-width: 2.6rem;
+}
 
 // Base card attributes
 .card,
@@ -23,7 +28,7 @@
   }
 
   &-subpage {
-    align-items: start;
+    max-width: 700px;
     @include colors.card-bg-step(2);
   }
 
@@ -53,7 +58,7 @@
   }
 
   &-links {
-    width: 100%;
+    width: 500px;
     @include colors.card-bg-step(2);
     flex-direction: row;
     gap: 0.5rem;
@@ -96,11 +101,48 @@
     gap: 1rem;
     overflow: auto;
   }
+  &-sliding {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    min-width: var(--card-sliding-closed-width);
+    opacity: 0.9;
+    align-items: stretch;
+    transition: width 0.3s ease;
+    z-index: 1;
+  }
+
+  &-sliding.is-closed {
+    width: var(--card-sliding-closed-width);
+  }
+
+  &-sliding-content {
+    flex: 1;
+    overflow: auto;
+  }
 }
 
-.grid-t {
-  grid-area: t;
-  @include positions.inline;
+.cart {
+  @extend .background-3;
+  @extend .inline;
+
+  .span {
+    @extend .textsize-s;
+  }
+}
+
+.card-sliding.is-closed .card-sliding-content {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.card-sliding-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: auto;
 }
 
 .grid-p {
@@ -154,20 +196,9 @@
 }
 
 .card-product-info .product-image-cell {
-  min-height: 0;
   overflow: hidden;
-  position: relative;
 }
 
 .card-product-info .product-image-cell img {
-  width: 100%;
-  height: 100%;
   aspect-ratio: 1/1;
-  // max-width: 100%;
-  // max-height: 100%;
-  // object-fit: fill !important;
-  // object-fit: cover;
-  position: absolute;
-  // inset: 0;
-  // display: block;
 }

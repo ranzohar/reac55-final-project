@@ -10,6 +10,7 @@ body {
   min-height: 100vh;
   box-sizing: border-box;
   padding-top: 1rem;
+  color: var(--text-primary);
 }
 
 table {
@@ -25,17 +26,17 @@ td {
 }
 
 .table-striped tbody tr:nth-child(odd) {
-  background: #475569;
+  background: var(--table-stripe);
 }
 
 h3 {
-  font-size: 2.5rem;
+  font-size: var(--text-xl);
   font-weight: 700;
   margin: 0;
 }
 
 h4 {
-  font-size: 1.5rem;
+  font-size: var(--text-l);
   font-weight: 700;
   margin: 0;
   align-self: start;
@@ -43,17 +44,8 @@ h4 {
 
 select {
   padding: 0.25rem 0.5rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--control-border);
   border-radius: 0.25rem;
-  font-size: 0.875rem;
-  background: #ffffff;
-  color: #000000;
-}
-
-@media (prefers-color-scheme: dark) {
-  select {
-    background: #374151;
-    color: #ffffff;
-    border-color: #4b5563;
-  }
+  font-size: var(--text-s);
+  background: var(--surface-plain);
 }

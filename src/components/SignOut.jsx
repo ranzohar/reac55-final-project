@@ -18,10 +18,7 @@ const SignOut = () => {
     sessionStorage.clear();
   };
   return (
-    <a
-      // className="navigate-link text-sm cursor-pointer"
-      onClick={logOutFromFirebase}
-    >
+    <a className="sign-out" onClick={logOutFromFirebase}>
       Log Out
     </a>
   );

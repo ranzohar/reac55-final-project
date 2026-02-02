@@ -31,7 +31,7 @@ const ProductInfo = ({ product, bought }) => {
       {/* Product Info */}
       <div className="flex-column">
         <h4>{product.title}</h4>
-        <span>{product.description}</span>
+        <span className="textsize-s">{product.description}</span>
         <span>Price: {product.price}</span>
         <span>In stock: ???</span>
         {/* Counter */}
@@ -47,9 +47,7 @@ const ProductInfo = ({ product, bought }) => {
             <rect x="4" y="11" width="16" height="2" />
           </svg>
 
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-600 text-lg font-medium">
-            {quantity}
-          </div>
+          <div className="quantity-number">{quantity}</div>
 
           {/* Plus icon */}
           <svg

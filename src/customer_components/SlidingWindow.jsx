@@ -2,39 +2,22 @@ import { useState, useEffect } from "react";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
-import Cart from "./Cart";
-
-export default function SlidingWindow({ children }) {
+export default function SlidingWindow({ children, className = "", component }) {
   const [isOpen, setIsOpen] = useState(() => {
     const stored = sessionStorage.getItem("cartOpen");
     return stored ? JSON.parse(stored) : false;
   });
-  const [showContent, setShowContent] = useState(false);
-  const transitionDuration = 300;
 
   useEffect(() => {
     sessionStorage.setItem("cartOpen", JSON.stringify(isOpen));
-
-    let timeout;
-    if (isOpen) {
-      timeout = setTimeout(() => setShowContent(true), transitionDuration);
-    } else {
-      setShowContent(false);
-    }
-    return () => clearTimeout(timeout);
   }, [isOpen]);
 
   return (
-    <div className="relative">
-      {/* Fixed Sidebar */}
-      <div
-        className={`fixed top-0 left-0 h-full bg-gray-300 dark:bg-gray-800 text-white
-          transition-[width] duration-300 ease-in-out
-          ${isOpen ? "w-92" : "w-16"} p-4 z-20`}
-      >
-        {showContent && <Cart />}
+    <div className="sliding-window">
+      <div className={`card-sliding ${isOpen ? "" : "is-closed"} ${className}`}>
+        <div className="card-sliding-content">{component}</div>
         <button
-          className="absolute top-1/2 right-0 transform -translate-y-1/2"
+          className="btn-grey btn-small card-sliding-toggle"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
@@ -42,10 +25,7 @@ export default function SlidingWindow({ children }) {
       </div>
 
       {/* Main content with dynamic margin */}
-      <div
-        className="transition-[margin-left] duration-300"
-        style={{ marginLeft: isOpen ? "16rem" : "4rem" }}
-      >
+      <div style={{ marginLeft: "var(--card-sliding-closed-width)" }}>
         {children}
       </div>
     </div>

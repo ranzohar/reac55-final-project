@@ -46,16 +46,13 @@ const CustomerPage = () => {
     { name: "My Account", path: "account" },
   ];
   return (
-    <div>
-      <SlidingWindow component={<Cart />} />
+    <SlidingWindow component={<Cart />}>
       <div className="card-main">
         <h4 className="text-center">Hello, {user.fname}</h4>
         <LinksTab items={links} />
-        <div className="w-full mt-6">
-          <Outlet />
-        </div>
+        <Outlet />
       </div>
-    </div>
+    </SlidingWindow>
   );
 };
 

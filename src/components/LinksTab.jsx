@@ -13,11 +13,17 @@ const LinksTab = ({ items }) => {
         const isActive = resolvedPath === pathname;
 
         return !isActive ? (
-          <Link key={item.path} to={item.path} className="navigate-link">
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`navigate-link${isActive ? " current" : ""}`}
+          >
             {item.name}
           </Link>
         ) : (
-          <span key={item.path}>{item.name}</span>
+          <span key={item.path} className="current-navigate-link">
+            {item.name}
+          </span>
         );
       })}
       <SignOut />
