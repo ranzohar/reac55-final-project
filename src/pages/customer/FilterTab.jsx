@@ -11,7 +11,8 @@ const FilterTab = ({
   titleFilter,
   setTitleFilter,
 }) => {
-  const [currentCoinSign] = useContext(coinSign);
+  const [{ current: currentCoinSign, options }] = useContext(coinSign);
+  const rate = options?.[currentCoinSign] ?? 1;
   const products = useSelector((state) => state.data.products);
   const categories = useSelector((state) => state.data.categories);
   const initialized = useRef(false);
@@ -56,7 +57,7 @@ const FilterTab = ({
       {/* Price Filter */}
       <label>
         Max Price: {currentCoinSign}
-        {priceLimit.toFixed(2)}
+        {(priceLimit * rate).toFixed(2)}
       </label>
       <input
         id="priceLimit"

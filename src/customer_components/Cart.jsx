@@ -8,13 +8,12 @@ import { useContext } from "react";
 import { coinSign } from "@/ContextWrapper";
 
 const Cart = () => {
-  const [currentCoinSign] = useContext(coinSign);
+  const [{ current: currentCoinSign, options }] = useContext(coinSign);
+  const rate = options?.[currentCoinSign] ?? 1;
 
   const dispatch = useDispatch();
   const { customerId } = useParams();
   const { cart, publicOrders } = useSelector((state) => state.customer);
-  console.log(publicOrders);
-
   const products = useSelector((state) => state.data.products);
   const allowOthersToSeeOrders = useSelector((state) =>
     state.customer.user ? state.customer.user[ALLOW_OTHERS] : false,
@@ -79,7 +78,10 @@ const Cart = () => {
       })}
       <br />
       <br />
-      <strong>Total: {currentCoinSign + cart.price ?? 0}</strong>
+      <strong>
+        Total: {currentCoinSign}
+        {(Number(cart.price ?? 0) * rate).toFixed(2)}
+      </strong>
       <br />
       <button className="btn-green" onClick={order}>
         {" "}

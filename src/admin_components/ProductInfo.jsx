@@ -1,11 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { useCategories } from "../hooks";
 import { WebpageTable } from "../components";
 import { LINK_TO_PIC } from "@/firebase-key-constants";
+import { coinSign } from "@/ContextWrapper";
 
 const ProductInfo = ({ product, onUpdate }) => {
   const { categories } = useCategories();
+  const [{ current: currentCoinSign, options }] = useContext(coinSign);
+  const rate = options?.[currentCoinSign] ?? 1;
 
   const [changeProduct, setChangeProduct] = useState({
     title: "",
@@ -17,27 +20,43 @@ const ProductInfo = ({ product, onUpdate }) => {
 
   useEffect(() => {
     if (product && categories) {
+      const convertedPrice =
+        product.price || product.price === 0
+          ? (Number(product.price) * rate).toFixed(2)
+          : "";
+
       setChangeProduct({
         title: product.title || "",
         categoryId: product.categoryId || "",
         description: product.description || "",
-        price: product.price || "",
+        price: convertedPrice,
         [LINK_TO_PIC]: product[LINK_TO_PIC] || "",
       });
     }
-  }, [product, categories]);
+  }, [product, categories, rate]);
 
   const handleChange = (key, value) => {
     setChangeProduct((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const sanitizePriceInput = (value) => {
+    const cleaned = value.replace(/[^0-9.]/g, "");
+    const [whole, ...rest] = cleaned.split(".");
+    const decimals = rest.join("").slice(0, 2);
+    return decimals.length > 0 ? `${whole}.${decimals}` : whole;
   };
 
   const update = () => {
     if (!changeProduct.title || !changeProduct.price) {
       return;
     }
+    const normalizedPrice = (Number(changeProduct.price || 0) / rate).toFixed(
+      2,
+    );
+
     onUpdate({
       title: changeProduct.title,
-      price: changeProduct.price,
+      price: normalizedPrice,
       [LINK_TO_PIC]: changeProduct[LINK_TO_PIC],
       description: changeProduct.description,
       categoryId: changeProduct.categoryId,
@@ -72,14 +91,21 @@ const ProductInfo = ({ product, onUpdate }) => {
         </label>
 
         <label className="grid-p">
-          Price:
-          <input
-            className="input-base"
-            name="price"
-            value={changeProduct.price}
-            onChange={(e) => handleChange("price", e.target.value)}
-            required
-          />
+          <span>Price:</span>
+          <div className="inline">
+            <span>{currentCoinSign}</span>
+            <input
+              className="input-base"
+              name="price"
+              type="text"
+              inputMode="decimal"
+              value={changeProduct.price}
+              onChange={(e) =>
+                handleChange("price", sanitizePriceInput(e.target.value))
+              }
+              required
+            />
+          </div>
         </label>
 
         <label className="grid-c">

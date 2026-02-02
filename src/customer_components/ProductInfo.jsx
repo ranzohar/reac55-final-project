@@ -4,7 +4,8 @@ import { useContext } from "react";
 import { coinSign } from "@/ContextWrapper";
 
 const ProductInfo = ({ product, bought }) => {
-  const [currentCoinSign] = useContext(coinSign);
+  const [{ current: currentCoinSign, options }] = useContext(coinSign);
+  const rate = options?.[currentCoinSign] ?? 1;
 
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.customer.cart);
@@ -38,7 +39,7 @@ const ProductInfo = ({ product, bought }) => {
         <span className="textsize-s">{product.description}</span>
         <span>
           Price: {currentCoinSign}
-          {product.price}
+          {(Number(product.price) * rate).toFixed(2)}
         </span>
         <span>In stock: ???</span>
         {/* Counter */}

@@ -2,9 +2,10 @@ import { useContext } from "react";
 import { coinSign } from "@/ContextWrapper";
 
 const CartProduct = ({ name, productId, quantity, price, updateCart }) => {
-  const [currentCoinSign] = useContext(coinSign);
+  const [{ current: currentCoinSign, options }] = useContext(coinSign);
+  const rate = options?.[currentCoinSign] ?? 1;
 
-  const total = +quantity * +price;
+  const total = +quantity * +price * rate;
 
   const increment = () => updateCart(quantity + 1);
   const decrement = () => updateCart(Math.max(0, quantity - 1));
@@ -30,7 +31,7 @@ const CartProduct = ({ name, productId, quantity, price, updateCart }) => {
       {/* Total, can shrink and truncate */}
       <span className="textsize-s">
         units - Total:{currentCoinSign}
-        {total}
+        {total.toFixed(2)}
       </span>
 
       {/* Remove button */}

@@ -55,4 +55,11 @@
   background: var(--card-bg-2);
   color: var(--text-primary);
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--control-border);
+  cursor: pointer;
+  text-align: center;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 0;
 }

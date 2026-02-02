@@ -4,7 +4,8 @@ import { useContext } from "react";
 import { coinSign } from "@/ContextWrapper";
 
 const Orders = () => {
-  const [currentCoinSign] = useContext(coinSign);
+  const [{ current: currentCoinSign, options }] = useContext(coinSign);
+  const rate = options?.[currentCoinSign] ?? 1;
   const user = useSelector((state) => state.customer.user);
   const orders = user?.orders ?? [];
   const products = useSelector((state) => state.data.products);
@@ -25,7 +26,7 @@ const Orders = () => {
 
         const unitPrice = productData.price;
 
-        const totalPrice = unitPrice * quantity;
+        const totalPrice = unitPrice * quantity * rate;
 
         const orderDate =
           order.date?.toDate?.()?.toLocaleDateString() ??
@@ -33,7 +34,12 @@ const Orders = () => {
             ? new Date(order.date.seconds * 1000).toLocaleDateString()
             : "-");
 
-        return [title, quantity, `${currentCoinSign}${totalPrice}`, orderDate];
+        return [
+          title,
+          quantity,
+          `${currentCoinSign}${totalPrice.toFixed(2)}`,
+          orderDate,
+        ];
       })
       .filter(Boolean),
   );
