@@ -6,6 +6,18 @@
   --card-sliding-closed-width: 2.6rem;
 }
 
+.sliding-window-main {
+  margin-left: calc(var(--card-sliding-closed-width) + 0.5rem) !important;
+}
+
+@media (max-width: 800px) {
+  #root [class^="card-"]:not(.card-sliding),
+  [class^="card-"]:not(.card-sliding),
+  .filter-tab {
+    width: 95%;
+  }
+}
+
 // Base card attributes
 .card,
 [class^="card-"],
@@ -132,6 +144,11 @@
   }
 }
 
+.filter-tab {
+  @extend .inline;
+  @extend .background-3;
+  overflow: auto;
+}
 .card-sliding.is-closed .card-sliding-content {
   opacity: 0;
   visibility: hidden;

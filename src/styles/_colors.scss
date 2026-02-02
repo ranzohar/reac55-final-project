@@ -3,7 +3,7 @@
 $base-blue-light: #6b7280;
 $base-blue-dark: color.adjust(#6b7280, $lightness: -35%);
 
-$darken-step-light: 2.5%;
+$darken-step-light: -3.5%;
 $darken-step-dark: 3.5%;
 
 @mixin card-inset-shadow() {

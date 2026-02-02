@@ -1,11 +1,9 @@
-const CartProduct = ({
-  name,
-  productId,
-  quantity,
-  price,
-  pricePrefix,
-  updateCart,
-}) => {
+import { useContext } from "react";
+import { coinSign } from "@/ContextWrapper";
+
+const CartProduct = ({ name, productId, quantity, price, updateCart }) => {
+  const [currentCoinSign] = useContext(coinSign);
+
   const total = +quantity * +price;
 
   const increment = () => updateCart(quantity + 1);
@@ -31,7 +29,7 @@ const CartProduct = ({
 
       {/* Total, can shrink and truncate */}
       <span className="textsize-s">
-        units - Total: {pricePrefix}
+        units - Total:{currentCoinSign}
         {total}
       </span>
 

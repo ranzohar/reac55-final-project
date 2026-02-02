@@ -25,7 +25,7 @@ export default function SlidingWindow({ children, className = "", component }) {
       </div>
 
       {/* Main content with dynamic margin */}
-      <div style={{ marginLeft: "var(--card-sliding-closed-width)" }}>
+      <div className="sliding-window-main">
         {children}
       </div>
     </div>

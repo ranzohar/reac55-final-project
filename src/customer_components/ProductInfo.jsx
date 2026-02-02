@@ -1,7 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { LINK_TO_PIC } from "@/firebase-key-constants";
+import { useContext } from "react";
+import { coinSign } from "@/ContextWrapper";
 
 const ProductInfo = ({ product, bought }) => {
+  const [currentCoinSign] = useContext(coinSign);
+
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.customer.cart);
   const quantity = cart[product.id] ?? 0;
@@ -12,7 +16,7 @@ const ProductInfo = ({ product, bought }) => {
       payload: {
         productId: product.id,
         quantity: updatedQuantity,
-        price: +product.price.replace(/^\D/, ""),
+        price: +product.price,
         removeFromCart: updatedQuantity === 0,
       },
     });
@@ -32,7 +36,10 @@ const ProductInfo = ({ product, bought }) => {
       <div className="flex-column">
         <h4>{product.title}</h4>
         <span className="textsize-s">{product.description}</span>
-        <span>Price: {product.price}</span>
+        <span>
+          Price: {currentCoinSign}
+          {product.price}
+        </span>
         <span>In stock: ???</span>
         {/* Counter */}
         <div className="inline">

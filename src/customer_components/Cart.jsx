@@ -3,10 +3,13 @@ import { useParams } from "react-router-dom";
 
 import CartProduct from "./CartProduct";
 import { addOrderToUser } from "@/firebase";
-import { parsePrice } from "@/utils";
 import { ALLOW_OTHERS } from "@/firebase-key-constants";
+import { useContext } from "react";
+import { coinSign } from "@/ContextWrapper";
 
 const Cart = () => {
+  const [currentCoinSign] = useContext(coinSign);
+
   const dispatch = useDispatch();
   const { customerId } = useParams();
   const { cart, publicOrders } = useSelector((state) => state.customer);
@@ -59,8 +62,7 @@ const Cart = () => {
         if (!(productId in products)) {
           return null;
         }
-        const rawPrice = products[productId].price;
-        const { pricePrefix, price } = parsePrice(rawPrice);
+        const price = products[productId].price;
 
         return (
           <CartProduct
@@ -71,16 +73,15 @@ const Cart = () => {
             updateCart={(quantity, removeFromCart) =>
               updateCart(productId, quantity, price, removeFromCart)
             }
-            pricePrefix={pricePrefix}
             productId={productId}
           />
         );
       })}
       <br />
       <br />
-      <strong>Total: {cart.price ?? 0}</strong>
+      <strong>Total: {currentCoinSign + cart.price ?? 0}</strong>
       <br />
-      <button className="bg-green-800 w-20" onClick={order}>
+      <button className="btn-green" onClick={order}>
         {" "}
         Order
       </button>

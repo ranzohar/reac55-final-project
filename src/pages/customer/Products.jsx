@@ -4,7 +4,6 @@ import { ProductInfo } from "@/customer_components";
 import { useProducts } from "@/hooks";
 import FilterTab from "./FilterTab";
 import { useSelector } from "react-redux";
-import { parsePrice } from "@/utils";
 
 const Products = () => {
   const { products } = useProducts();
@@ -17,7 +16,7 @@ const Products = () => {
 
   let filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const { price } = parsePrice(product.price);
+      const price = product.price;
       const matchesCategory = categoryFilter
         ? product.categoryId === categoryFilter
         : true;

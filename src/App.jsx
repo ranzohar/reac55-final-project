@@ -13,29 +13,32 @@ import CustomerMain from "./pages/customer/Main";
 import CustomerProducts from "./pages/customer/Products";
 import CustomerOrders from "./pages/customer/Orders";
 import CustomerAccountDetails from "./pages/customer/Account";
+import { ContextWrapper } from "./ContextWrapper";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="login" replace />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
+    <ContextWrapper>
+      <Routes>
+        <Route path="/" element={<Navigate to="login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
 
-      <Route path="/admin/:adminId" element={<AdminMain />}>
-        <Route index element={<Navigate to="categories" replace />} />
-        <Route path="categories" element={<AdminCategories />} />
-        <Route path="statistics" element={<AdminStatistics />} />
-        <Route path="products" element={<AdminProducts />} />
-        <Route path="customers" element={<AdminCustomers />} />
-      </Route>
+        <Route path="/admin/:adminId" element={<AdminMain />}>
+          <Route index element={<Navigate to="categories" replace />} />
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="statistics" element={<AdminStatistics />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="customers" element={<AdminCustomers />} />
+        </Route>
 
-      <Route path="/customer/:customerId" element={<CustomerMain />}>
-        <Route index element={<Navigate to="products" replace />} />
-        <Route path="products" element={<CustomerProducts />} />
-        <Route path="orders" element={<CustomerOrders />} />
-        <Route path="account" element={<CustomerAccountDetails />} />
-      </Route>
-    </Routes>
+        <Route path="/customer/:customerId" element={<CustomerMain />}>
+          <Route index element={<Navigate to="products" replace />} />
+          <Route path="products" element={<CustomerProducts />} />
+          <Route path="orders" element={<CustomerOrders />} />
+          <Route path="account" element={<CustomerAccountDetails />} />
+        </Route>
+      </Routes>
+    </ContextWrapper>
   );
 }
 

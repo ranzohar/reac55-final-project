@@ -1,8 +1,10 @@
 import { useSelector } from "react-redux";
 import { WebpageTable } from "@/components";
-import { parsePrice } from "@/utils";
+import { useContext } from "react";
+import { coinSign } from "@/ContextWrapper";
 
 const Orders = () => {
+  const [currentCoinSign] = useContext(coinSign);
   const user = useSelector((state) => state.customer.user);
   const orders = user?.orders ?? [];
   const products = useSelector((state) => state.data.products);
@@ -21,8 +23,7 @@ const Orders = () => {
         const title = productData.title;
         const quantity = product.quantity;
 
-        const rawPrice = productData.price;
-        const { pricePrefix, price: unitPrice } = parsePrice(rawPrice);
+        const unitPrice = productData.price;
 
         const totalPrice = unitPrice * quantity;
 
@@ -32,7 +33,7 @@ const Orders = () => {
             ? new Date(order.date.seconds * 1000).toLocaleDateString()
             : "-");
 
-        return [title, quantity, `${pricePrefix}${totalPrice}`, orderDate];
+        return [title, quantity, `${currentCoinSign}${totalPrice}`, orderDate];
       })
       .filter(Boolean),
   );

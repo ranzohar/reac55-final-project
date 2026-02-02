@@ -7,7 +7,7 @@ import {
   getCategoriesData,
   getPublicOrders,
 } from "@/firebase";
-import { LinksTab } from "@/components";
+import { CurrencyOverlay, LinksTab } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerPage = () => {
@@ -46,13 +46,15 @@ const CustomerPage = () => {
     { name: "My Account", path: "account" },
   ];
   return (
-    <SlidingWindow component={<Cart />}>
-      <div className="card-main">
-        <h4 className="text-center">Hello, {user.fname}</h4>
-        <LinksTab items={links} />
-        <Outlet />
-      </div>
-    </SlidingWindow>
+    <CurrencyOverlay>
+      <SlidingWindow component={<Cart />}>
+        <div className="card-main">
+          <h4 className="text-center">Hello, {user.fname}</h4>
+          <LinksTab items={links} />
+          <Outlet />
+        </div>
+      </SlidingWindow>
+    </CurrencyOverlay>
   );
 };
 

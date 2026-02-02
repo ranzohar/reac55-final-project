@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { LinksTab } from "@/components";
+import { CurrencyOverlay, LinksTab } from "@/components";
 import { useEffect } from "react";
 import { getUsersData, getCategoriesData, loadProductsOnce } from "@/firebase";
 import { useParams } from "react-router-dom";
@@ -37,11 +37,13 @@ const AdminPage = () => {
   ];
 
   return (
-    <div className="card-main">
-      <h4 className="text-center">Hello, Admin</h4>
-      <LinksTab items={links} />
-      <Outlet />
-    </div>
+    <CurrencyOverlay>
+      <div className="card-main">
+        <h4 className="text-center">Hello, Admin</h4>
+        <LinksTab items={links} />
+        <Outlet />
+      </div>
+    </CurrencyOverlay>
   );
 };
 
