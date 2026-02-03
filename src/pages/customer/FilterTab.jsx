@@ -1,7 +1,6 @@
 import { useMemo, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { useContext } from "react";
-import { coinSign } from "@/ContextWrapper";
+import { Price } from "@/components";
 
 const FilterTab = ({
   priceLimit,
@@ -11,8 +10,6 @@ const FilterTab = ({
   titleFilter,
   setTitleFilter,
 }) => {
-  const [{ current: currentCoinSign, options }] = useContext(coinSign);
-  const rate = options?.[currentCoinSign] ?? 1;
   const products = useSelector((state) => state.data.products);
   const categories = useSelector((state) => state.data.categories);
   const initialized = useRef(false);
@@ -56,8 +53,7 @@ const FilterTab = ({
 
       {/* Price Filter */}
       <label>
-        Max Price: {currentCoinSign}
-        {(priceLimit * rate).toFixed(2)}
+        Max Price: <Price amount={priceLimit} />
       </label>
       <input
         id="priceLimit"

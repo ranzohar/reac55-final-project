@@ -1,8 +1,7 @@
-import { useContext } from "react";
-import { coinSign } from "@/ContextWrapper";
+import { useCurrencies } from "@/hooks";
 
 const CurrencyOverlay = ({ children }) => {
-  const [currencies, setCurrencies] = useContext(coinSign);
+  const { currencies, setCurrencies } = useCurrencies();
   const current = currencies.current;
 
   function changeCurrency(nextSymbol) {

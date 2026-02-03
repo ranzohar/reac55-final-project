@@ -1,14 +1,12 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 
-import { useCategories } from "../hooks";
+import { useCategories, useCurrencies } from "@/hooks";
 import { WebpageTable } from "../components";
 import { LINK_TO_PIC } from "@/firebase-key-constants";
-import { coinSign } from "@/ContextWrapper";
 
 const ProductInfo = ({ product, onUpdate }) => {
   const { categories } = useCategories();
-  const [{ current: currentCoinSign, options }] = useContext(coinSign);
-  const rate = options?.[currentCoinSign] ?? 1;
+  const { rate, currentCoinSign } = useCurrencies();
 
   const [changeProduct, setChangeProduct] = useState({
     title: "",

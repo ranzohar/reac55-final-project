@@ -4,13 +4,9 @@ import { useParams } from "react-router-dom";
 import CartProduct from "./CartProduct";
 import { addOrderToUser } from "@/firebase";
 import { ALLOW_OTHERS } from "@/firebase-key-constants";
-import { useContext } from "react";
-import { coinSign } from "@/ContextWrapper";
+import { Price } from "@/components";
 
 const Cart = () => {
-  const [{ current: currentCoinSign, options }] = useContext(coinSign);
-  const rate = options?.[currentCoinSign] ?? 1;
-
   const dispatch = useDispatch();
   const { customerId } = useParams();
   const { cart, publicOrders } = useSelector((state) => state.customer);
@@ -79,8 +75,7 @@ const Cart = () => {
       <br />
       <br />
       <strong>
-        Total: {currentCoinSign}
-        {(Number(cart.price ?? 0) * rate).toFixed(2)}
+        Total: <Price amount={Number(cart.price ?? 0)} />
       </strong>
       <br />
       <button className="btn-green" onClick={order}>

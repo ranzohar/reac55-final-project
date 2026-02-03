@@ -1,12 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { LINK_TO_PIC } from "@/firebase-key-constants";
-import { useContext } from "react";
-import { coinSign } from "@/ContextWrapper";
+import { Price } from "@/components";
 
 const ProductInfo = ({ product, bought }) => {
-  const [{ current: currentCoinSign, options }] = useContext(coinSign);
-  const rate = options?.[currentCoinSign] ?? 1;
-
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.customer.cart);
   const quantity = cart[product.id] ?? 0;
@@ -38,8 +34,7 @@ const ProductInfo = ({ product, bought }) => {
         <h4>{product.title}</h4>
         <span className="textsize-s">{product.description}</span>
         <span>
-          Price: {currentCoinSign}
-          {(Number(product.price) * rate).toFixed(2)}
+          Price: <Price amount={product.price} />
         </span>
         <span>In stock: ???</span>
         {/* Counter */}
