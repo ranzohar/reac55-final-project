@@ -2,10 +2,11 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import CartProduct from "./CartProduct";
 import { addOrderToUser } from "@/firebase";
 import { ALLOW_OTHERS } from "@/firebase-key-constants";
 import { Price } from "@/components";
+
+import CartProduct from "./CartProduct";
 
 const Cart = () => {
   const dispatch = useDispatch();

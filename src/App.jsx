@@ -1,8 +1,8 @@
 import React from "react";
-import "./styles/App.scss";
 
 import { Routes, Route, Navigate } from "react-router";
 
+import "./styles/App.scss";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import AdminMain from "./pages/admin/Main";

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { LINK_TO_PIC } from "@/firebase-key-constants";
 import { Price } from "@/components";
+
 import ProductImage from "./ProductImage";
 
 const ProductInfo = ({ product, bought }) => {

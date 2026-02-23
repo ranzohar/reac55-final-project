@@ -2,8 +2,9 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 import { useCategories, useCurrencies } from "@/hooks";
-import { WebpageTable } from "../components";
 import { LINK_TO_PIC } from "@/firebase-key-constants";
+
+import { WebpageTable } from "../components";
 
 const ProductInfo = ({ product, onUpdate }) => {
   const { categories } = useCategories();
