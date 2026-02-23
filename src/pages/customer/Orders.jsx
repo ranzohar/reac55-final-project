@@ -1,3 +1,4 @@
+import React from "react";
 import { useSelector } from "react-redux";
 import { WebpageTable, Price } from "@/components";
 
@@ -30,12 +31,7 @@ const Orders = () => {
             ? new Date(order.date.seconds * 1000).toLocaleDateString()
             : "-");
 
-        return [
-          title,
-          quantity,
-          <Price amount={totalPrice} />,
-          orderDate,
-        ];
+        return [title, quantity, <Price amount={totalPrice} />, orderDate];
       })
       .filter(Boolean),
   );

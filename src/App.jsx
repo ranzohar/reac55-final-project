@@ -1,3 +1,4 @@
+import React from "react";
 import "./styles/App.scss";
 
 import { Routes, Route, Navigate } from "react-router";

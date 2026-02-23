@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Price } from "@/components";
+import React from "react";
 
 const FilterTab = ({
   priceLimit,

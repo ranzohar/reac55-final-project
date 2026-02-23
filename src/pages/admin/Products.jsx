@@ -1,3 +1,5 @@
+import React from "react";
+
 import { ProductInfo } from "@/admin_components";
 import { useSelector, useDispatch } from "react-redux";
 import { upsertProduct, getFirebaseUniqueId } from "@/firebase";

@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Category } from "@/admin_components";
 import { useCategories } from "@/hooks";
 import { useState } from "react";

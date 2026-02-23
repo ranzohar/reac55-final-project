@@ -143,6 +143,12 @@ $category-font-size: 1rem;
   @include button-size(true);
 }
 
+.btn-order {
+  @extend .btn-green;
+  max-width: 50%;
+  min-width: fit-content;
+}
+
 .card-product-info .quantity-icon {
   width: var(--text-xl);
   height: var(--text-xl);

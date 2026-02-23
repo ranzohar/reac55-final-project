@@ -1,6 +1,9 @@
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import { LINK_TO_PIC } from "@/firebase-key-constants";
 import { Price } from "@/components";
+import ProductImage from "./ProductImage";
 
 const ProductInfo = ({ product, bought }) => {
   const dispatch = useDispatch();
@@ -29,7 +32,6 @@ const ProductInfo = ({ product, bought }) => {
 
   return (
     <div className="card-product-info">
-      {/* Product Info */}
       <div className="flex-column">
         <h4>{product.title}</h4>
         <span className="textsize-s">{product.description}</span>
@@ -37,9 +39,7 @@ const ProductInfo = ({ product, bought }) => {
           Price: <Price amount={product.price} />
         </span>
         <span>In stock: ???</span>
-        {/* Counter */}
         <div className="inline">
-          {/* Minus icon */}
           <svg
             onClick={decrement}
             xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +52,6 @@ const ProductInfo = ({ product, bought }) => {
 
           <div className="quantity-number">{quantity}</div>
 
-          {/* Plus icon */}
           <svg
             onClick={increment}
             xmlns="http://www.w3.org/2000/svg"
@@ -66,16 +65,8 @@ const ProductInfo = ({ product, bought }) => {
         </div>
       </div>
 
-      {/* Image */}
-      <div className="flex-column product-image-cell">
-        <img
-          src={product[LINK_TO_PIC] || null}
-          alt={product.title}
-          className=""
-        />
-      </div>
+      <ProductImage src={product[LINK_TO_PIC]} />
 
-      {/* Bought */}
       <div>Bought: {bought}</div>
     </div>
   );

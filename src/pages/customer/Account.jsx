@@ -4,6 +4,7 @@ import { PasswordInput } from "@/components";
 import { useParams } from "react-router-dom";
 import { updateUserInfo, updateUserPassword } from "@/firebase";
 import { ALLOW_OTHERS } from "@/firebase-key-constants";
+import React from "react";
 
 const Account = () => {
   const user = useSelector((state) => state.customer.user);

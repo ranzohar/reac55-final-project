@@ -1,3 +1,4 @@
+import React from "react";
 import { CustomersTable } from "@/admin_components";
 
 const Customers = () => {

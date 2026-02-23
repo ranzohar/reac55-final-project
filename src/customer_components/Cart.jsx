@@ -1,3 +1,4 @@
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -78,7 +79,7 @@ const Cart = () => {
         Total: <Price amount={Number(cart.price ?? 0)} />
       </strong>
       <br />
-      <button className="btn-green" onClick={order}>
+      <button className="btn-order" onClick={order}>
         {" "}
         Order
       </button>

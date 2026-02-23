@@ -1,3 +1,4 @@
+import React from "react";
 import { useCurrencies } from "@/hooks";
 
 const CurrencyOverlay = ({ children }) => {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import React from "react";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import SliderButton from "./SliderButton";
 
 export default function SlidingWindow({ children, className = "", component }) {
   const [isOpen, setIsOpen] = useState(() => {
@@ -16,18 +17,11 @@ export default function SlidingWindow({ children, className = "", component }) {
     <div className="sliding-window">
       <div className={`card-sliding ${isOpen ? "" : "is-closed"} ${className}`}>
         <div className="card-sliding-content">{component}</div>
-        <button
-          className="btn-grey btn-small card-sliding-toggle"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </button>
+        <SliderButton slideIn={isOpen} onClick={() => setIsOpen(!isOpen)} />
       </div>
 
       {/* Main content with dynamic margin */}
-      <div className="sliding-window-main">
-        {children}
-      </div>
+      <div className="sliding-window-main">{children}</div>
     </div>
   );
 }

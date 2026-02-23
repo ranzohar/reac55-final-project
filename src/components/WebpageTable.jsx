@@ -1,3 +1,5 @@
+import React from "react";
+
 const SIZE_CLASSES = {
   sm: "text-sm [&_th]:px-2 [&_th]:py-1 [&_td]:px-2 [&_td]:py-1",
   md: "text-base [&_th]:px-3 [&_th]:py-2 [&_td]:px-3 [&_td]:py-2",

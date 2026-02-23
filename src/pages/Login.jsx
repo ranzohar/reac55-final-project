@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { PasswordInput } from "@/components";
@@ -37,7 +38,7 @@ const Login = () => {
       <div className="card-login" style={{ "--card-login-max-width": "28rem" }}>
         <h4 className="text-center">Next Generation E-commerce</h4>
         <form onSubmit={onSubmitCb}>
-          <label htmlFor="username">User Name:</label>
+          <label htmlFor="username">Username:</label>
           <input
             id="username"
             type="text"

@@ -1,3 +1,4 @@
+import React from "react";
 import { Price } from "@/components";
 
 const CartProduct = ({ name, productId, quantity, price, updateCart }) => {
