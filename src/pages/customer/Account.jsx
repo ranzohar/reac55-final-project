@@ -1,10 +1,11 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { PasswordInput } from "@/components";
 import { useParams } from "react-router-dom";
+
 import { updateUserInfo, updateUserPassword } from "@/firebase";
 import { ALLOW_OTHERS } from "@/firebase-key-constants";
-import React from "react";
+import { PasswordInput } from "@/components";
 
 const Account = () => {
   const user = useSelector((state) => state.customer.user);

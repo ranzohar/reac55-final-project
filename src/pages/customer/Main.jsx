@@ -1,7 +1,8 @@
-import { Cart, SlidingWindow } from "@/customer_components";
-import { useParams, Outlet } from "react-router-dom";
-import { useEffect } from "react";
 import React from "react";
+import { useParams, Outlet } from "react-router-dom";
+
+import { Cart, SlidingWindow } from "@/customer_components";
+import { useEffect } from "react";
 import {
   getUser,
   getProductsData,

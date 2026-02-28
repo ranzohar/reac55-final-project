@@ -1,6 +1,5 @@
 import React from "react";
-
-import { Routes, Route, Navigate } from "react-router";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import "./styles/App.scss";
 import Login from "./pages/Login";
