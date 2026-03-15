@@ -1,5 +1,6 @@
 describe("Admin Login E2E", () => {
   it("logs in and routes to admin main page", () => {
+    cy.clearCookies();
     cy.visit("http://localhost:5173/login"); // Change port if needed
 
     cy.get("input#username").type("admin-test");

@@ -23,3 +23,13 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// Custom command for case-insensitive contains
+Cypress.Commands.add('containsCI', (text, options = {}) => {
+  return cy.contains(text, { matchCase: false, ...options });
+});
+
+// Custom command for case-insensitive URL include
+Cypress.Commands.add('urlShouldIncludeCI', (path) => {
+  return cy.url().then(url => expect(url.toLowerCase()).to.include(path.toLowerCase()));
+});

@@ -6,6 +6,8 @@ Never repeat logic for example: use type def for types like: "sm" | "md" | "lg",
 When asked to do a specific task, never change, rename, or refactor any variable, function, or identifier names, or alter code structure, even if you believe it would improve clarity or quality. Only suggest that there are improvements that could be make, but do not implement them without explicit instructions to do so. Always follow the instructions as closely as possible, and only make changes that are explicitly requested. If you have suggestions for improvements, provide them in a separate message and ask for confirmation before implementing any changes.
 You are never allowed to push code to the remote repository in git.
 
+We are using Windows CMD syntax.
+
 # planning
 
 Create a plan folder with a CONSECUTIVE_NUM-NAME.md (example: plan/001-add-theme-toggle.md) file for each plan. The file should contain the following sections:

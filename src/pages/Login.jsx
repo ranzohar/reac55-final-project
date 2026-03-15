@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { PasswordInput } from "@/components";
-import { firebaseLogin, checkIfAdmin, useAuth } from "@/firebase";
+import { login, isAdmin, useAuth } from "@/adapters";
 
 const Login = () => {
   const { user, loading } = useAuth();
@@ -15,7 +15,7 @@ const Login = () => {
     if (!user || loading) return;
 
     (async () => {
-      const path = (await checkIfAdmin(user))
+      const path = (await isAdmin(user))
         ? `/admin/${user.uid}`
         : `/customer/${user.uid}`;
       navigate(path);
@@ -27,7 +27,7 @@ const Login = () => {
     setError(null);
 
     try {
-      await firebaseLogin(username.trim(), password);
+      await login(username.trim(), password);
     } catch (err) {
       setError(err.message);
     }
