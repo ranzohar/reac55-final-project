@@ -12,8 +12,9 @@ const selectedAuthAdapter =
 const selectedDataAdapter =
   BACKEND_TYPE === "firebase" ? firebaseDataAdapter : restDataAdapter;
 
-export const useAuth =
-  BACKEND_TYPE === "firebase" ? useFirebaseAuth : restUseAuth;
+const useAuth = BACKEND_TYPE === "firebase" ? useFirebaseAuth : restUseAuth;
+
+export { useAuth };
 
 export const { isAdmin, signup, updateUser, updatePassword } =
   selectedAuthAdapter;

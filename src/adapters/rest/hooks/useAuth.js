@@ -1,24 +1,43 @@
-import axios from "axios";
-import { BACKEND_CONFIG } from "@/config/backend";
+import { api } from "../api";
 
-import { useState } from "react";
-
-// Create axios instance with REST API base URL
-const api = axios.create({
-  baseURL: BACKEND_CONFIG.rest.baseUrl,
-  withCredentials: true,
-});
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Skip session check on public pages (login, signup, home)
+    const publicPaths = ["/", "/login", "/signup"];
+    if (publicPaths.includes(location.pathname)) {
+      setUser(null);
+      return;
+    }
+
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await api.get("/user/me");
+        setUser(response.data);
+      } catch (error) {
+        setUser(null);
+        if (error.response?.status === 401) {
+          navigate("/");
+        }
+      }
+    };
+    fetchCurrentUser();
+  }, [location.pathname, navigate]);
 
   const login = async (username, password) => {
     setLoading(true);
     try {
       const response = await api.post("/user/login", { username, password });
       const data = response.data;
-      setUser(data.user || { username });
+      console.log("User:", data);
+      setUser(data);
       setLoading(false);
       return data;
     } catch (err) {
@@ -28,7 +47,6 @@ const useAuth = () => {
     }
   };
 
-  // REST logout: clears user
   const logout = async () => {
     setLoading(true);
     try {

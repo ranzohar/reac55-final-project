@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 import { useCategories, useCurrencies } from "@/hooks";
-import { LINK_TO_PIC } from "@/firebase-key-constants";
+import { LINK_TO_PIC } from "@/key-constants";
 
 import { WebpageTable } from "@/components";
 

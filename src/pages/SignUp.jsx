@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { PasswordInput } from "@/components";
 import { signup, useAuth } from "@/adapters";
+import { BACKEND_TYPE } from "@/config/backend";
 
 const SignUp = () => {
   const { user, loading } = useAuth();
@@ -15,6 +16,7 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (BACKEND_TYPE === "rest") return; // REST handles navigation directly
     if (!user || loading) return;
     navigate(`/customer/${user.uid}`);
   }, [user, loading, navigate]);
@@ -22,8 +24,17 @@ const SignUp = () => {
   const submitSignUp = async (e) => {
     e.preventDefault();
     try {
-      await signup(fname, lname, username, password, allowOthers);
-      setError(null);
+      const result = await signup(
+        fname,
+        lname,
+        username,
+        password,
+        allowOthers,
+      );
+      if (BACKEND_TYPE === "rest") {
+        navigate(`/customer/${result.uid}`);
+      }
+      // TODO - add real time user updates via rest as well to allow the same logic
     } catch (err) {
       setError(err.message || "Signup failed");
     }

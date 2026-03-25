@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { addOrderToUser } from "@/firebase";
-import { ALLOW_OTHERS } from "@/firebase-key-constants";
+import { ALLOW_OTHERS } from "@/key-constants";
 import { Price } from "@/components";
 
 import CartProduct from "./CartProduct";

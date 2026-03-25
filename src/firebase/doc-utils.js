@@ -15,7 +15,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { safeAsync } from "@/utils";
-import { LINK_TO_PIC } from "@/firebase-key-constants";
+import { LINK_TO_PIC } from "@/key-constants";
 
 // Utility function to ensure createDate is added to all documents
 const withCreateDate = (data) => ({

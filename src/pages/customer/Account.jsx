@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import { updateUserInfo, updateUserPassword } from "@/firebase";
-import { ALLOW_OTHERS } from "@/firebase-key-constants";
+import { updateUser, updatePassword } from "@/adapters";
+import { ALLOW_OTHERS } from "@/key-constants";
 import { PasswordInput } from "@/components";
 
 const Account = () => {
@@ -33,7 +33,7 @@ const Account = () => {
     setSuccess(null);
 
     try {
-      await updateUserInfo(customerId, {
+      await updateUser(customerId, {
         fname,
         lname,
         username,
@@ -46,7 +46,7 @@ const Account = () => {
             "Current password is required to change your password.",
           );
         }
-        await updateUserPassword(newPassword, currentPassword);
+        await updatePassword(newPassword, currentPassword);
       }
 
       setSuccess("Account updated successfully!");

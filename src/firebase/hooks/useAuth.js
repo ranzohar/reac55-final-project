@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseLogin, firebaseLogout } from "../auth-utils";
 
-
 const useAuth = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -10,18 +9,17 @@ const useAuth = () => {
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log("User:", user);
       setUser(user);
       setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
-  // Provide login/logout for compatibility with REST useAuth
   const login = async (username, password) => {
     setLoading(true);
     try {
       await firebaseLogin(username, password);
-      // user state will be updated by onAuthStateChanged
     } finally {
       setLoading(false);
     }
@@ -31,7 +29,6 @@ const useAuth = () => {
     setLoading(true);
     try {
       await firebaseLogout();
-      // user state will be updated by onAuthStateChanged
     } finally {
       setLoading(false);
     }

@@ -12,7 +12,7 @@ import { setDoc, doc, updateDoc } from "firebase/firestore";
 import { removeUser, withCreateDate } from "./doc-utils";
 
 import { db, app } from "./firebase";
-import { ALLOW_OTHERS } from "@/firebase-key-constants";
+import { ALLOW_OTHERS } from "@/key-constants";
 
 const firebaseLogin = async (username, password) => {
   const email = username + "@admin.admin";
