@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import Login from "../../src/pages/Login.jsx";
+import Login from "@/pages/Login.jsx";
 import { BrowserRouter } from "react-router-dom";
 
 describe("Login component", () => {

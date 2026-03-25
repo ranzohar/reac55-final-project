@@ -2,10 +2,10 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { PasswordInput } from "@/components";
-import { login, isAdmin, useAuth } from "@/adapters";
+import { isAdmin, useAuth } from "@/adapters";
 
 const Login = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);

@@ -3,8 +3,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import App from "../../src/App.jsx";
-import { store } from "../../src/redux/store.js";
+import App from "@/App.jsx";
+import { store } from "@/redux/store.js";
 
 // This test assumes a test admin user exists with credentials:
 // username: admin@test.com, password: admin123

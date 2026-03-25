@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import Cart from "../../src/customer_components/Cart.jsx";
-import { ContextWrapper } from "../../src/ContextWrapper.jsx";
+import Cart from "@/customer_components/Cart.jsx";
+import { ContextWrapper } from "@/ContextWrapper.jsx";
 import { Provider } from "react-redux";
-import { store } from "../../src/redux/store.js";
-import SlidingWindow from "../../src/customer_components/SlidingWindow.jsx";
+import { store } from "@/redux/store.js";
+import SlidingWindow from "@/customer_components/SlidingWindow.jsx";
 
 describe("SlidingWindow Component", () => {
   it("toggles sliderButton slideIn attribute on click", async () => {

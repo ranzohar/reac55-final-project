@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { PasswordInput } from "@/components";
-import { firebaseSignUp, useAuth } from "@/firebase";
+import { signup, useAuth } from "@/adapters";
 
 const SignUp = () => {
   const { user, loading } = useAuth();
@@ -19,9 +19,14 @@ const SignUp = () => {
     navigate(`/customer/${user.uid}`);
   }, [user, loading, navigate]);
 
-  const submitSignUp = (e) => {
+  const submitSignUp = async (e) => {
     e.preventDefault();
-    firebaseSignUp(fname, lname, username, password, setError, allowOthers);
+    try {
+      await signup(fname, lname, username, password, allowOthers);
+      setError(null);
+    } catch (err) {
+      setError(err.message || "Signup failed");
+    }
   };
 
   return (

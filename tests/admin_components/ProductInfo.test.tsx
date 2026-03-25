@@ -1,9 +1,9 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import ProductInfo from "../../src/admin_components/ProductInfo.jsx";
+import ProductInfo from "@/admin_components/ProductInfo.jsx";
 import { Provider } from "react-redux";
-import { store } from "../../src/redux/store.js";
-import { ContextWrapper } from "../../src/ContextWrapper.jsx";
+import { store } from "@/redux/store.js";
+import { ContextWrapper } from "@/ContextWrapper.jsx";
 
 describe("ProductInfo component", () => {
   const mockProduct = {

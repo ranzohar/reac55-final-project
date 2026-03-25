@@ -18,7 +18,7 @@ const firebaseLogin = async (username, password) => {
   const email = username + "@admin.admin";
   const auth = getAuth(app);
 
-  await firebaseLogout(auth);
+  // await firebaseLogout(auth);
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
@@ -44,8 +44,8 @@ const checkIfAdmin = async (user) => {
   }
 };
 
-const firebaseLogout = async (authInstance) => {
-  const auth = authInstance || getAuth(app);
+const firebaseLogout = async () => {
+  const auth = getAuth(app);
   if (!auth) {
     return;
   }
@@ -62,14 +62,13 @@ const firebaseSignUp = async (
   lname,
   username,
   password,
-  setError,
   allowOthers,
 ) => {
   const email = username + "@admin.admin";
   const auth = getAuth(app);
   let user = null;
 
-  await firebaseLogout(auth);
+  // await firebaseLogout(auth);
 
   try {
     const userCredential = await createUserWithEmailAndPassword(
@@ -92,11 +91,15 @@ const firebaseSignUp = async (
   } catch (err) {
     console.log(err);
 
-    setError(err.message);
-
     if (user) {
       await removeUser(user.uid);
+      try {
+        await user.delete();
+      } catch (deleteErr) {
+        console.error("Error deleting user from Firebase Auth:", deleteErr);
+      }
     }
+    throw new Error(err.message || "Signup failed");
   }
 };
 

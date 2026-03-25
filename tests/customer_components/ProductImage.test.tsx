@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import ProductImage from "../../src/customer_components/ProductImage";
+import ProductImage from "@/customer_components/ProductImage";
 
 describe("Customer product info component", () => {
   const src = "http://example.com/pic.jpg";

@@ -145,7 +145,7 @@ async function addOrderToUser(
 
 /** --------------------- CATEGORIES --------------------- **/
 
-function getCategoriesData(setCB) {
+function getCategories(setCB) {
   const q = createSortedQuery("categories");
   return onSnapshot(q, (qSnap) => {
     const data = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -270,7 +270,7 @@ export {
   getUser,
   safeRemoveUser as removeUser,
   safeAddOrderToUser as addOrderToUser,
-  getCategoriesData,
+  getCategories,
   safeAddCategory as addCategory,
   safeUpdateCategory as updateCategory,
   safeRemoveCategory as removeCategory,
