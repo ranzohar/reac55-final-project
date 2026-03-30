@@ -1,35 +1,22 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { updateUser, updatePassword } from "@/adapters";
 import { ALLOW_OTHERS } from "@/key-constants";
 import { PasswordInput } from "@/components";
 
-const Account = () => {
-  const user = useSelector((state) => state.customer.user);
-  const { customerId } = useParams();
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [username, setUsername] = useState("");
+const AccountForm = ({ user, customerId }) => {
+  const dispatch = useDispatch();
+  const [fname, setFname] = useState(user.fname || "");
+  const [lname, setLname] = useState(user.lname || "");
+  const [username, setUsername] = useState(user.username || "");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [allowOthers, setAllowOthers] = useState(false);
+  const [allowOthers, setAllowOthers] = useState(!!user[ALLOW_OTHERS]);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [initialized, setInitialized] = useState(false);
-
-  useEffect(() => {
-    console.log("Use effect is called: ", initialized);
-    if (!user || initialized) return;
-    console.log("user data:", user);
-    setFname(user.fname ?? "");
-    setLname(user.lname ?? "");
-    setUsername(user.username ?? "");
-    setAllowOthers(!!user[ALLOW_OTHERS]);
-    setInitialized(true);
-  }, [user, initialized]);
 
   const submitEdit = async (e) => {
     e.preventDefault();
@@ -53,16 +40,22 @@ const Account = () => {
         await updatePassword(newPassword, currentPassword);
       }
 
+      dispatch({
+        type: "CUSTOMER_LOAD",
+        payload: { user: { ...user, fname, lname, username, [ALLOW_OTHERS]: allowOthers } },
+      });
       setSuccess("Account updated successfully!");
       setCurrentPassword("");
       setNewPassword("");
     } catch (err) {
       console.error(err);
       setError(err.message ?? "Failed to update account.");
+      setFname(user.fname || "");
+      setLname(user.lname || "");
+      setUsername(user.username || "");
+      setAllowOthers(!!user[ALLOW_OTHERS]);
     }
   };
-
-  if (!user) return <div>Loading...</div>;
 
   return (
     <div className="card-login">
@@ -103,11 +96,6 @@ const Account = () => {
             required
             readOnly
           />
-
-          {/* <div>
-            Changing username requires email verification and is not supported
-            from this page.
-          </div> */}
         </div>
 
         {/* Current Password */}
@@ -157,6 +145,15 @@ const Account = () => {
       </form>
     </div>
   );
+};
+
+const Account = () => {
+  const user = useSelector((state) => state.customer.user);
+  const { customerId } = useParams();
+
+  if (!Object.keys(user).length) return <div>Loading...</div>;
+
+  return <AccountForm user={user} customerId={customerId} />;
 };
 
 export default Account;

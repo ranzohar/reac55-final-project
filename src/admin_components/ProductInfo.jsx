@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { useCategories, useCurrencies } from "@/hooks";
 import { LINK_TO_PIC } from "@/key-constants";
@@ -10,30 +10,24 @@ const ProductInfo = ({ product, onUpdate }) => {
   const { categories } = useCategories();
   const { rate, currentCoinSign } = useCurrencies();
 
+  const convertedPrice =
+    product.price || product.price === 0
+      ? (Number(product.price) * rate).toFixed(2)
+      : "";
+
   const [changeProduct, setChangeProduct] = useState({
-    title: "",
-    categoryId: "",
-    description: "",
-    price: "",
-    [LINK_TO_PIC]: "",
+    title: product.title || "",
+    categoryId: product.categoryId || "",
+    description: product.description || "",
+    price: convertedPrice,
+    [LINK_TO_PIC]: product[LINK_TO_PIC] || "",
   });
 
-  useEffect(() => {
-    if (product && categories) {
-      const convertedPrice =
-        product.price || product.price === 0
-          ? (Number(product.price) * rate).toFixed(2)
-          : "";
-
-      setChangeProduct({
-        title: product.title || "",
-        categoryId: product.categoryId || "",
-        description: product.description || "",
-        price: convertedPrice,
-        [LINK_TO_PIC]: product[LINK_TO_PIC] || "",
-      });
-    }
-  }, [product, categories, rate]);
+  const activeCategoryId = categories?.some(
+    (c) => c.id === changeProduct.categoryId,
+  )
+    ? changeProduct.categoryId
+    : "";
 
   const handleChange = (key, value) => {
     setChangeProduct((prev) => ({ ...prev, [key]: value }));
@@ -117,23 +111,17 @@ const ProductInfo = ({ product, onUpdate }) => {
           <select
             className="input-base"
             name="categoryId"
-            value={changeProduct.categoryId}
+            value={activeCategoryId}
             onChange={(e) => handleChange("categoryId", e.target.value)}
           >
-            {!categories || categories.length === 0 ? (
-              <option value="" disabled>
-                no categories available
-              </option>
-            ) : (
-              <>
-                <option value="">No category</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </>
-            )}
+            <>
+              <option value="">No category</option>
+              {(categories || []).map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </>
           </select>
         </label>
 

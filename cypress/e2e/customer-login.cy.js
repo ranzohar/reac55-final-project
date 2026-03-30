@@ -82,5 +82,6 @@ describe("Customer Login E2E", () => {
     cy.urlShouldIncludeCI("/customers");
     cy.containsCI(TEST_USER.newFname).should("be.visible");
     cy.containsCI(TEST_USER.newLname).should("be.visible");
+    cy.get("table.background-2 tbody tr").should("have.length", 1);
   });
 });

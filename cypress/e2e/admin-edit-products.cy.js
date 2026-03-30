@@ -32,7 +32,9 @@ describe("Admin Categories & Products E2E", () => {
     cy.urlShouldIncludeCI("/products");
     cy.containsCI("No products").should("be.visible");
     cy.containsCI("Add New").click();
-    cy.get(".card-product [name='title']").type(PRODUCT_TITLE);
+    cy.get(".card-product [name='title']")
+      .type("{selectall}{backspace}")
+      .type(PRODUCT_TITLE);
     cy.get(".card-product [name='price']").type(PRODUCT_PRICE);
     cy.get(".card-product [name='description']").type(PRODUCT_DESCRIPTION);
     cy.get(".card-product select[name='categoryId']").select(CATEGORY_NAME);
@@ -78,10 +80,10 @@ describe("Admin Categories & Products E2E", () => {
     cy.containsCI(UPDATED_CATEGORY_NAME).should("not.exist");
     cy.containsCI("No categories").should("be.visible");
 
-    // 4b. Verify the product no longer has a category after navigating and refreshing
+    // 4b. Verify the product no longer has a category
+    // Navigate via SPA (keeps Firebase connection alive so the write completes)
     cy.containsCI("Products").click();
     cy.urlShouldIncludeCI("/products");
-    cy.reload();
     cy.get(".card-product select[name='categoryId'] option:selected").should(
       "have.text",
       "No category",

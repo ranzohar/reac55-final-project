@@ -6,17 +6,16 @@ function CategorySelect({ categoryId, setCategoryId }) {
   const categories = useSelector((state) => state.admin.categories);
 
   const entries = Object.entries(categories);
-  const defaultKey = entries[0]?.[0];
 
   useEffect(() => {
-    if (!categoryId || !(categoryId in categories)) {
-      setCategoryId(defaultKey || "");
+    if (categoryId && !(categoryId in categories)) {
+      setCategoryId("");
     }
   }, [categories, setCategoryId]);
 
   return (
     <select
-      defaultValue={defaultKey || ""}
+      defaultValue={categoryId || ""}
       onChange={(e) => setCategoryId(e.target.value)}
       className="
         bg-white text-black
@@ -25,17 +24,12 @@ function CategorySelect({ categoryId, setCategoryId }) {
         rounded px-2 py-1
       "
     >
-      {entries.length === 0 ? (
-        <option value="" disabled>
-          no categories available
+      <option value="">No category</option>
+      {entries.map(([key, category]) => (
+        <option key={key} value={key}>
+          {category.name}
         </option>
-      ) : (
-        entries.map(([key, category]) => (
-          <option key={key} value={key}>
-            {category.name}
-          </option>
-        ))
-      )}
+      ))}
     </select>
   );
 }
