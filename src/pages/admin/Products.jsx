@@ -2,41 +2,28 @@ import React from "react";
 
 import { ProductInfo } from "@/admin_components";
 import { useSelector, useDispatch } from "react-redux";
-import { upsertProduct, getFirebaseUniqueId } from "@/firebase";
+import { upsertProduct } from "@/adapters";
 import { useEffect, useMemo, useRef } from "react";
 import { mapObjectToArray } from "@/utils";
-
-// Products uses the local redux firebase
-// Any updates done by other admins or directly on firebase will not be seen
-// untill refreshing the site. This is acceptable as products shuold only
-// be added/edits by a single admin
-// For deleting products, access firebase->delete product->refresh the page
 
 const Products = () => {
   const dispatch = useDispatch();
   const productsMap = useSelector((state) => state.data.products);
   const adminProducts = useSelector((state) => state.admin.products);
-  const orders = useSelector((state) => {
-    return state.admin.orders;
-  });
-  const users = useSelector((state) => {
-    return state.admin.users;
-  });
+  const orders = useSelector((state) => state.admin.orders);
+  const users = useSelector((state) => state.admin.users);
 
   const products = useMemo(() => mapObjectToArray(productsMap), [productsMap]);
   const hasLoadedRef = useRef(false);
 
   useEffect(() => {
     if (products.length > 0 && !hasLoadedRef.current) {
-      dispatch({
-        type: "LOAD_ADMIN_PRODUCTS",
-        payload: products,
-      });
+      dispatch({ type: "LOAD_ADMIN_PRODUCTS", payload: products });
       hasLoadedRef.current = true;
     }
   }, [products, dispatch]);
 
-  const sortedProductsWithStats = useMemo(() => {
+  const productsWithStats = useMemo(() => {
     const ordersPerProduct = {};
     orders?.forEach((order) => {
       (order.products || []).forEach(({ quantity, id }) => {
@@ -49,62 +36,49 @@ const Products = () => {
         ];
         ordersPerProduct[id] = ordersPerProduct[id] || [];
         ordersPerProduct[id].push(entry);
-        ordersPerProduct[id].sort((a, b) => {
-          return (a[3] || 0) - (b[3] || 0);
-        });
+        ordersPerProduct[id].sort((a, b) => (a[3] || 0) - (b[3] || 0));
       });
+    }); // TODO - get directly from backend instead of calculating on the fly. RestAPI - /stats/product/:title. Firebase - implement this calculation in the adapter.
+    const productList = Object.values(adminProducts);
+    productList.forEach((product) => {
+      product.boughtBy = ordersPerProduct[product.title] || [];
     });
-    const sortedProduct = Object.values(adminProducts).sort((a, b) => {
-      const hasA = !!a.createDate;
-      const hasB = !!b.createDate;
-
-      if (!hasA && !hasB) return 0;
-      if (!hasA) return 1;
-      if (!hasB) return -1;
-
-      const ta = a.createDate.seconds * 1000 + a.createDate.nanoseconds / 1e6;
-      const tb = b.createDate.seconds * 1000 + b.createDate.nanoseconds / 1e6;
-      return ta - tb;
-    });
-
-    sortedProduct.forEach((product) => {
-      product.boughtBy = ordersPerProduct[product.id] || [];
-    });
-    return sortedProduct;
+    return productList;
   }, [users, adminProducts]);
 
-  const addOrUpdateProduct = async (id, updatedData, index) => {
-    await upsertProduct(id, updatedData, index);
-    // Update Redux state locally to avoid re-fetching from Firebase
+  const addOrUpdateProduct = async (oldTitle, updatedData, index) => {
+    const newTitle = updatedData.title;
+    if (newTitle !== oldTitle && adminProducts[newTitle]) return; // title already exists
+    await upsertProduct(updatedData, index);
     dispatch({
-      type: "UPDATE_PRODUCT",
-      payload: { id, data: updatedData },
+      type: "UPSERT_PRODUCT",
+      payload: { oldTitle, product: updatedData },
     });
   };
 
-  const addNew = async () => {
-    const id = await getFirebaseUniqueId();
-    dispatch({
-      type: "ADD_PRODUCT",
-      payload: id,
-    });
+  const addNew = () => {
+    let title = "New Product";
+    let counter = 1;
+    while (adminProducts[title]) {
+      title = `New Product (${counter++})`;
+    }
+    dispatch({ type: "ADD_PRODUCT", payload: { title } });
   };
+
   return (
     <div className="card-subpage">
-      {sortedProductsWithStats.length === 0 ? (
+      {productsWithStats.length === 0 ? (
         <div className="message-text">No products yet</div>
       ) : (
-        sortedProductsWithStats.map((product, index) => {
-          return (
-            <ProductInfo
-              key={product.id}
-              product={product}
-              onUpdate={(updatedData) =>
-                addOrUpdateProduct(product.id, updatedData, index)
-              }
-            />
-          );
-        })
+        productsWithStats.map((product, index) => (
+          <ProductInfo
+            key={product.title}
+            product={product}
+            onUpdate={(updatedData) =>
+              addOrUpdateProduct(product.title, updatedData, index)
+            }
+          />
+        ))
       )}
       <button className="btn-teal btn-small" onClick={addNew}>
         Add New

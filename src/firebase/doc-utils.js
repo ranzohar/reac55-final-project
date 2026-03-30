@@ -200,21 +200,20 @@ async function loadProductsOnce() {
   }));
 }
 
-async function upsertProduct(id, fields, index) {
+async function upsertProduct(fields, index) {
   const { title, price, description, categoryId } = fields;
   const linkToPic = fields[LINK_TO_PIC];
 
-  if (!id) throw new Error("productId is required");
   if (!title || !price) throw new Error("title and price are required");
 
-  const productRef = doc(db, "products", id);
+  const productRef = doc(db, "products", title);
   const snap = await getDoc(productRef);
 
   const data = {
     title,
     price,
     description: description || "",
-    categoryId: categoryId,
+    categoryId: categoryId || "",
   };
   data[LINK_TO_PIC] = linkToPic || "";
 
@@ -223,10 +222,6 @@ async function upsertProduct(id, fields, index) {
     data.color = COLORS[index % COLORS.length];
   }
   await setDoc(productRef, data, { merge: true });
-}
-
-async function getFirebaseUniqueId() {
-  return doc(collection(db, "products")).id;
 }
 
 /** --------------------- PUBLIC ORDERS --------------------- **/
@@ -277,7 +272,6 @@ export {
   getProductsData,
   loadProductsOnce,
   safeUpsertProduct as upsertProduct,
-  getFirebaseUniqueId,
   getPublicOrders,
   safeSetPublicOrders as setPublicOrders,
 };

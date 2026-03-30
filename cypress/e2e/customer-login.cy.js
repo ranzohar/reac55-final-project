@@ -39,8 +39,12 @@ describe("Customer Login E2E", () => {
     cy.get("input#username").should("have.value", TEST_USER.username);
 
     // 5. Edit details (fname, lname, password)
-    cy.get("input#fname").type("{selectall}{backspace}").type(TEST_USER.newFname);
-    cy.get("input#lname").type("{selectall}{backspace}").type(TEST_USER.newLname);
+    cy.get("input#fname")
+      .type("{selectall}{backspace}")
+      .type(TEST_USER.newFname);
+    cy.get("input#lname")
+      .type("{selectall}{backspace}")
+      .type(TEST_USER.newLname);
     cy.get("input#currentPassword").type(TEST_USER.password);
     cy.get("input#newPassword").type(TEST_USER.newPassword);
     cy.get('button[type="submit"]').click();
@@ -62,5 +66,21 @@ describe("Customer Login E2E", () => {
     cy.get("input#fname").should("have.value", TEST_USER.newFname);
     cy.get("input#lname").should("have.value", TEST_USER.newLname);
     cy.get("input#username").should("have.value", TEST_USER.username);
+
+    // 8. Logout and login as admin
+    cy.get(".sign-out").should("be.visible").click();
+    cy.url().should("match", /\/login$|\//);
+    cy.get("input#username").should("be.visible");
+    cy.get("input#username").type("admin-test");
+    cy.get("input#password").type("123123");
+    cy.get('button[type="submit"]').click();
+    cy.containsCI("Hello, Admin", { timeout: 10000 }).should("be.visible");
+    cy.urlShouldIncludeCI("/admin");
+
+    // 9. Navigate to Customers and verify the new user is listed with updated details
+    cy.containsCI("Customers").click();
+    cy.urlShouldIncludeCI("/customers");
+    cy.containsCI(TEST_USER.newFname).should("be.visible");
+    cy.containsCI(TEST_USER.newLname).should("be.visible");
   });
 });

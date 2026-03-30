@@ -1,6 +1,6 @@
 const initialState = {
   categories: {}, // { [categoryId]: { name } }
-  products: {}, // { [productId]: { title, price, link, category, description, createDate } }
+  products: {}, // { [title]: { title, price, link, category, description, createDate } }
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -13,7 +13,7 @@ const dataReducer = (state = initialState, action) => {
         ...state,
         products: payloadProducts
           ? Object.fromEntries(
-              payloadProducts.map((product) => [product.id, { ...product }]),
+              payloadProducts.map((product) => [product.title, { ...product }]),
             )
           : state.products,
         categories: payloadCategories
@@ -27,18 +27,42 @@ const dataReducer = (state = initialState, action) => {
       };
     }
 
-    case "UPDATE_PRODUCT": {
-      const { id, data } = action.payload;
+    case "ADD_CATEGORY": {
+      const { category } = action.payload;
       return {
         ...state,
-        products: {
-          ...state.products,
-          [id]: {
-            ...state.products[id],
-            ...data,
-          },
+        categories: {
+          ...state.categories,
+          [category.id]: { ...category },
         },
       };
+    }
+
+    case "REMOVE_CATEGORY": {
+      const { id } = action.payload;
+      const { [id]: _, ...rest } = state.categories;
+      return { ...state, categories: rest };
+    }
+
+    case "UPDATE_CATEGORY": {
+      const { category } = action.payload;
+      return {
+        ...state,
+        categories: {
+          ...state.categories,
+          [category.id]: { ...state.categories[category.id], ...category },
+        },
+      };
+    }
+
+    case "UPSERT_PRODUCT": {
+      const { oldTitle, product } = action.payload;
+      const products = Object.fromEntries(
+        Object.entries(state.products).map(([key, val]) =>
+          key === oldTitle ? [product.title, product] : [key, val]
+        )
+      );
+      return { ...state, products };
     }
 
     default:

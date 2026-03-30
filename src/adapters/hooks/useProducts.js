@@ -1,8 +1,22 @@
-import useProducts from "@/firebase/hooks/useProducts";
-// TODO implement REST useProducts
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+
+import { upsertProduct } from "@/adapters";
+import { mapObjectToArray } from "@/utils";
 
 const useProductsHook = () => {
-  return useProducts();
+  const productsMap = useSelector((state) => state.data.products);
+
+  const addOrUpdateProduct = (id, newProduct, index) => {
+    upsertProduct(id, newProduct, index);
+  };
+
+  const products = useMemo(() => mapObjectToArray(productsMap), [productsMap]);
+
+  return {
+    products,
+    addOrUpdateProduct,
+  };
 };
 
 export { useProductsHook as useProducts };

@@ -2,7 +2,6 @@ const initialState = {
   orders: [], // flattened array of all orders, sorted by date
   users: {}, // { [userId]: { username, fname, lname, orders } }
   products: {},
-  // This adds a layer of new products on top of firebase existing product. They
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -10,7 +9,7 @@ const adminReducer = (state = initialState, action) => {
     case "LOAD_ADMIN_PRODUCTS": {
       const updatedProducts = { ...state.products };
       action.payload.forEach((product) => {
-        updatedProducts[product.id] = { ...product };
+        updatedProducts[product.title] = { ...product };
       });
       return {
         ...state,
@@ -22,7 +21,14 @@ const adminReducer = (state = initialState, action) => {
       const users =
         payloadUsers && payloadUsers.length > 0
           ? payloadUsers.reduce((acc, user) => {
-              const { id, username, fname, lname, createDate, orders } = user;
+              const {
+                _id: id,
+                username,
+                fname,
+                lname,
+                createDate,
+                orders,
+              } = user;
               const date = createDate?.seconds
                 ? new Date(createDate.seconds * 1000)
                 : createDate;
@@ -61,14 +67,20 @@ const adminReducer = (state = initialState, action) => {
       return { ...state, users, orders };
     }
     case "ADD_PRODUCT": {
-      const updatedProducts = {
-        ...state.products,
-        [action.payload]: { id: action.payload },
-      };
+      const product = action.payload;
       return {
         ...state,
-        products: updatedProducts,
+        products: { ...state.products, [product.title]: product },
       };
+    }
+    case "UPSERT_PRODUCT": {
+      const { oldTitle, product } = action.payload;
+      const products = Object.fromEntries(
+        Object.entries(state.products).map(([key, val]) =>
+          key === oldTitle ? [product.title, product] : [key, val],
+        ),
+      );
+      return { ...state, products };
     }
     default:
       return state;

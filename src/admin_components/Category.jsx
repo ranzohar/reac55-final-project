@@ -12,13 +12,16 @@ const Category = ({
 
   if (!name) return null;
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!nameUpdate) {
       setNameUpdate(name);
       return;
     }
     if (nameUpdate !== name) {
-      updateExistingCategory(id, nameUpdate);
+      const success = await updateExistingCategory(id, nameUpdate);
+      if (!success) {
+        setNameUpdate(name);
+      }
     }
     setEditMode(false);
   };

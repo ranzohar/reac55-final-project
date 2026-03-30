@@ -54,12 +54,16 @@ const ProductInfo = ({ product, onUpdate }) => {
       2,
     );
 
+    const selectedCategory = categories.find(
+      (c) => c.id === changeProduct.categoryId,
+    );
     onUpdate({
       title: changeProduct.title,
       price: normalizedPrice,
       [LINK_TO_PIC]: changeProduct[LINK_TO_PIC],
       description: changeProduct.description,
       categoryId: changeProduct.categoryId,
+      category: selectedCategory?.name || "",
     });
   };
 

@@ -3,7 +3,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { CurrencyOverlay, LinksTab } from "@/components";
 import { useEffect } from "react";
-import { getUsers, getCategories } from "@/adapters";
+import { getUsers, getCategories, getProducts } from "@/adapters";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
@@ -18,8 +18,11 @@ const AdminPage = () => {
     const unsubscribeCategories = getCategories((data) =>
       dispatch({ type: "LOAD", payload: { categories: data } }),
     );
+    const unsubscribeProducts = getProducts((data) =>
+      dispatch({ type: "LOAD", payload: { products: data } }),
+    );
 
-    const unsubscribes = [unsubscribeUsers, unsubscribeCategories];
+    const unsubscribes = [unsubscribeUsers, unsubscribeCategories, unsubscribeProducts];
     return () => {
       unsubscribes.forEach((unsubscribe) => unsubscribe && unsubscribe());
     };

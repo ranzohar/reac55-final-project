@@ -9,7 +9,7 @@ import { useEffect } from "react";
 //   getCategoriesData,
 //   getPublicOrders,
 // } from "@/firebase";
-import { getUser } from "@/adapters";
+import { getUser, getProducts, getCategories } from "@/adapters";
 import { CurrencyOverlay, LinksTab } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,10 +21,20 @@ const CustomerPage = () => {
   // Fetch and listen to user data changes
   useEffect(() => {
     console.log("Get user is called for customerId:", customerId);
-    const unsubscribe = getUser(customerId, (data) => {
+    const unsubscribeUser = getUser(customerId, (data) => {
       dispatch({ type: "CUSTOMER_LOAD", payload: { user: data } });
     });
-    return unsubscribe;
+    const unsubscribeProducts = getProducts((data) =>
+      dispatch({ type: "LOAD", payload: { products: data } }),
+    );
+    const unsubscribeCategories = getCategories((data) =>
+      dispatch({ type: "LOAD", payload: { categories: data } }),
+    );
+    return () => {
+      unsubscribeUser && unsubscribeUser();
+      unsubscribeProducts && unsubscribeProducts();
+      unsubscribeCategories && unsubscribeCategories();
+    };
   }, [customerId, dispatch]);
 
   const links = [
