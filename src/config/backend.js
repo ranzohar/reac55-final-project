@@ -16,7 +16,7 @@
 
 // Backend type selection
 export const BACKEND_TYPE =
-  import.meta.env.VITE_REACT_APP_BACKEND || "firebase"; // 'firebase' | 'rest'
+  import.meta.env.VITE_BACKEND || "firebase"; // 'firebase' | 'rest'
 
 // Backend-specific configuration
 export const BACKEND_CONFIG = {
@@ -25,6 +25,6 @@ export const BACKEND_CONFIG = {
   },
   rest: {
     baseUrl:
-      import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:3000/api",
+      import.meta.env.VITE_API_URL || "http://localhost:3000/api",
   },
 };

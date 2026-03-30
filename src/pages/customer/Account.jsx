@@ -18,14 +18,18 @@ const Account = () => {
   const [allowOthers, setAllowOthers] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    console.log("Use effect is called: ", initialized);
+    if (!user || initialized) return;
+    console.log("user data:", user);
     setFname(user.fname ?? "");
     setLname(user.lname ?? "");
     setUsername(user.username ?? "");
     setAllowOthers(!!user[ALLOW_OTHERS]);
-  }, [user]);
+    setInitialized(true);
+  }, [user, initialized]);
 
   const submitEdit = async (e) => {
     e.preventDefault();

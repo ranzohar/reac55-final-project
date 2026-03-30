@@ -4,12 +4,19 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "set VITE_TEST_FIREBASE=true&&vite",
+    "dev": "vite",
+    "dev:firebase": "cross-env NODE_ENV=development VITE_BACKEND=firebase vite",
+    "dev:rest": "cross-env NODE_ENV=development VITE_BACKEND=rest vite",
+    "test": "vitest",
+    "test:firebase": "cross-env NODE_ENV=test VITE_BACKEND=firebase vitest",
+    "test:rest": "cross-env NODE_ENV=test VITE_BACKEND=rest vitest",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "cy:run": "cypress run",
+    "cy:open": "cypress open",
+    "e2e": "npm run cy:run"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -18,8 +25,8 @@
     "firebase": "^12.7.0",
     "firebase-admin": "^12.7.0",
     "lucide-react": "^0.562.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.11.0",
     "recharts": "^3.6.0",
@@ -27,6 +34,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "@eslint/js": "^9.39.1",
     "@testing-library/react": "^14.2.0",
     "@testing-library/user-event": "^14.6.1",

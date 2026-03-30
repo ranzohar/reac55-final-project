@@ -20,6 +20,7 @@ const CustomerPage = () => {
 
   // Fetch and listen to user data changes
   useEffect(() => {
+    console.log("Get user is called for customerId:", customerId);
     const unsubscribe = getUser(customerId, (data) => {
       dispatch({ type: "CUSTOMER_LOAD", payload: { user: data } });
     });

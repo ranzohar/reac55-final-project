@@ -36,7 +36,6 @@ const useAuth = () => {
     try {
       const response = await api.post("/user/login", { username, password });
       const data = response.data;
-      console.log("User:", data);
       setUser(data);
       setLoading(false);
       return data;

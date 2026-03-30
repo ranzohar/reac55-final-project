@@ -1,7 +1,9 @@
+
 describe("Admin Login E2E", () => {
+  // Before running this test, ensure the E2E database is set up by running the setup script manually or as a pre-test step.
+
   it("logs in and routes to admin main page", () => {
-    cy.clearCookies();
-    cy.visit("http://localhost:5173/login"); // Change port if needed
+    cy.resetApp();
 
     cy.get("input#username").type("admin-test");
     cy.get("input#password").type("123123");
@@ -48,5 +50,12 @@ describe("Admin Login E2E", () => {
       const text = $options.text().toLowerCase();
       expect(text).to.include("no users");
     });
+
+    // Logout test
+    cy.get(".sign-out").should("be.visible").click();
+    // Should redirect to login or home page after logout
+    cy.url().should("match", /\/login$|\/$/);
+    // Optionally, check that the login form is visible again
+    cy.get("input#username").should("be.visible");
   });
 });

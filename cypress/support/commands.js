@@ -24,6 +24,28 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+// Resets app state and navigates to the home page — use in beforeEach
+// The app redirects unauthenticated users to /login automatically
+Cypress.Commands.add('resetApp', () => {
+  cy.task('clearFirebaseCollections');
+  cy.clearCookies();
+  cy.clearLocalStorage();
+  cy.clearFirebaseAuth();
+  cy.visit('http://localhost:5173/');
+});
+
+// Clears Firebase auth session stored in IndexedDB (not affected by clearCookies/clearLocalStorage)
+Cypress.Commands.add('clearFirebaseAuth', () => {
+  cy.window().then((win) => {
+    return new Cypress.Promise((resolve) => {
+      const req = win.indexedDB.deleteDatabase('firebaseLocalStorageDb');
+      req.onsuccess = resolve;
+      req.onerror = resolve;
+      req.onblocked = resolve;
+    });
+  });
+});
+
 // Custom command for case-insensitive contains
 Cypress.Commands.add('containsCI', (text, options = {}) => {
   return cy.contains(text, { matchCase: false, ...options });

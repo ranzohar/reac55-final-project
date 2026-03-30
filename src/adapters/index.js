@@ -1,7 +1,7 @@
 import { BACKEND_TYPE } from "@/config/backend";
 import { firebaseAuthAdapter } from "./firebase/auth";
 import { restAuthAdapter, useAuth as restUseAuth } from "./rest/auth";
-import * as firebaseDataAdapter from "./firebase/data";
+import { firebaseDataAdapter } from "./firebase/data";
 import { restDataAdapter } from "./rest/data";
 import useFirebaseAuth from "../firebase/hooks/useAuth";
 export { useCategories } from "./hooks/useCategories";

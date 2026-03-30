@@ -10,7 +10,7 @@ We are using Windows CMD syntax.
 
 # planning
 
-Create a plan folder with a CONSECUTIVE_NUM-NAME.md (example: plan/001-add-theme-toggle.md) file for each plan. The file should contain the following sections:
+Create a plan file in a folder with a CONSECUTIVE_NUM-NAME.md (example: plan/001-add-theme-toggle.md. Next plans in the same theme will be 002-add-theme-toggle.md, 003-add-theme-toggle.md while new plans will have 001 again) file for each plan. Create the file, never present the content in the response. The file should contain the following sections:
 
 - Steps, a list of incremental steps to complete the plan, each step should be a single sentence. When user gives steps try to seperate it to smaller steps if possible.
 - Ask quesitions, a list of as many questions as you can think of with options and a suggested option with reason to ask the user to clarify the plan. Each option should have a description.

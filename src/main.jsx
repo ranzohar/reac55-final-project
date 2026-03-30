@@ -16,7 +16,7 @@ if (BACKEND_TYPE === "firebase") {
   try {
     // firebaseConfig is not exported, so fallback to known projectId
     projectId =
-      import.meta.env.VITE_TEST_FIREBASE === "true"
+      import.meta.env.VITE_USE_TEST_DB === "true"
         ? "e-commerc-test"
         : "react55-final-project-ran";
   } catch (e) {

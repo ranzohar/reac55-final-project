@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 let firebaseConfig;
-if (import.meta.env.VITE_TEST_FIREBASE === "true") {
+if (import.meta.env.VITE_USE_TEST_DB === "true") {
   firebaseConfig = {
     apiKey: "AIzaSyCjjdQbCi-9xTfWQBGpGrCwc3lgzPUngGA",
     authDomain: "e-commerc-test.firebaseapp.com",
