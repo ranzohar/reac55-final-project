@@ -4,7 +4,7 @@ describe("Admin Categories & Products E2E", () => {
   const CATEGORY_NAME = "Test Electronics";
   const UPDATED_CATEGORY_NAME = "Test Electronics Updated";
   const PRODUCT_TITLE = "Test Product";
-  const PRODUCT_PRICE = "99.99";
+  const PRODUCT_PRICE = "99";
   const PRODUCT_DESCRIPTION = "Test product description";
 
   beforeEach(() => {

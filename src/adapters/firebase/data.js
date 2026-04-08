@@ -1,11 +1,6 @@
 // data.js for firebase serverless backend
 // Import relevant data adapter functions for use in index.js
 
-// TODO - add get orders (as an aggregation from user orders)
-const notImplemented = () => {
-  throw new Error("Firebase data adapter not implemented yet");
-};
-
 import {
   getCategories,
   addCategory,
@@ -13,6 +8,9 @@ import {
   removeCategory,
   getUsersData as getUsers,
   getUser,
+  getOrders,
+  getAllOrders,
+  getPublicOrders,
   getProductsData as getProducts,
   upsertProduct,
   addOrderToUser as addOrder,
@@ -27,6 +25,8 @@ export const firebaseDataAdapter = {
   removeCategory,
   getUsers,
   getUser,
-  getOrders: notImplemented,
+  getOrders,
+  getAllOrders,
+  getPublicOrders,
   addOrder,
 };

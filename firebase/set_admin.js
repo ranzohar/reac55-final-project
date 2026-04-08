@@ -3,12 +3,12 @@ import { getAuth } from "firebase-admin/auth";
 import { readFileSync } from "fs";
 
 const serviceAccount = JSON.parse(
-  readFileSync("./firebase/serviceAccountKey.json", "utf-8"),
+  readFileSync("./test-serviceAccountKey.json", "utf-8"),
 );
 
 initializeApp({ credential: cert(serviceAccount) });
 
-const ADMIN_UID = "F8oNN0W6Cofu1d5MfeX4vYbiCuV2";
+const ADMIN_UID = "o0ThPimZtvbdl7pi5nDGwAHUbKp2";
 
 async function setAdmin(uid) {
   await getAuth().setCustomUserClaims(ADMIN_UID, { admin: true });
@@ -20,4 +20,7 @@ async function checkClaim(uid) {
   console.log("Admin claim on server:", userRecord.customClaims);
 }
 
-checkClaim(ADMIN_UID);
+(async () => {
+  await setAdmin(ADMIN_UID);
+  await checkClaim(ADMIN_UID);
+})();

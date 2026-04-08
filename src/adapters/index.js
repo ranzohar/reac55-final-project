@@ -29,5 +29,7 @@ export const {
   getUsers,
   getUser,
   getOrders,
+  getAllOrders,
+  getPublicOrders,
   addOrder,
 } = selectedDataAdapter;

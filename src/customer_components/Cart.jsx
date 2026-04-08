@@ -2,8 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import { addOrderToUser } from "@/firebase";
-import { ALLOW_OTHERS } from "@/key-constants";
+import { addOrder, getOrders } from "@/adapters";
 import { Price } from "@/components";
 
 import CartProduct from "./CartProduct";
@@ -11,11 +10,8 @@ import CartProduct from "./CartProduct";
 const Cart = () => {
   const dispatch = useDispatch();
   const { customerId } = useParams();
-  const { cart, publicOrders } = useSelector((state) => state.customer);
+  const { cart } = useSelector((state) => state.customer);
   const products = useSelector((state) => state.data.products);
-  const allowOthersToSeeOrders = useSelector((state) =>
-    state.customer.user ? state.customer.user[ALLOW_OTHERS] : false,
-  );
   const updateCart = (productId, quantity, price, removeFromCart) => {
     dispatch({
       type: "UPDATE_CART",
@@ -31,8 +27,8 @@ const Cart = () => {
   const orderDataFromCart = (cart) => {
     if (!cart || typeof cart !== "object") return { products: [] };
     const { price: _, ...orderMap } = cart;
-    const products = Object.entries(orderMap).map(([productId, quantity]) => ({
-      id: productId,
+    const products = Object.entries(orderMap).map(([title, quantity]) => ({
+      title,
       quantity,
     }));
     return { products };
@@ -41,14 +37,10 @@ const Cart = () => {
     if (Object.keys(cart).length === 0) {
       return;
     }
-    await addOrderToUser(
-      customerId,
-      orderDataFromCart(cart),
-      allowOthersToSeeOrders,
-      publicOrders,
-    );
-    dispatch({
-      type: "CLEAR_CART",
+    await addOrder(customerId, orderDataFromCart(cart));
+    dispatch({ type: "CLEAR_CART" });
+    getOrders(customerId, (data) => {
+      dispatch({ type: "CUSTOMER_LOAD", payload: { orders: data } });
     });
   };
   return (
@@ -60,7 +52,6 @@ const Cart = () => {
           return null;
         }
         const price = products[productId].price;
-
         return (
           <CartProduct
             key={productId}

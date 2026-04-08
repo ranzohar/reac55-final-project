@@ -48,7 +48,7 @@ const Products = () => {
             <ProductInfo
               key={index}
               product={product}
-              bought={publicOrders?.[product.id] ?? 0}
+              bought={publicOrders?.[product.title] ?? 0}
             />
           );
         })

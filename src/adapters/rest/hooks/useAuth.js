@@ -10,12 +10,8 @@ const useAuth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Skip session check on public pages (login, signup, home)
     const publicPaths = ["/", "/login", "/signup"];
-    if (publicPaths.includes(location.pathname)) {
-      setUser(null);
-      return;
-    }
+    if (publicPaths.includes(location.pathname)) return;
 
     const fetchCurrentUser = async () => {
       try {
@@ -37,12 +33,25 @@ const useAuth = () => {
       const response = await api.post("/user/login", { username, password });
       const data = response.data;
       setUser(data);
-      setLoading(false);
       return data;
     } catch (err) {
+      if (err.response?.data?.code === "ALREADY_LOGGED_IN") {
+        console.warn("Stale login cookie detected — clearing session and retrying login");
+        await api.post("/user/logout", {});
+        try {
+          const response = await api.post("/user/login", { username, password });
+          const data = response.data;
+          setUser(data);
+          return data;
+        } catch (retryErr) {
+          setUser(null);
+          throw retryErr;
+        }
+      }
       setUser(null);
-      setLoading(false);
       throw err;
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -1,16 +1,19 @@
 const INITIAL_STATE = {
   cart: { price: 0 },
   user: {},
+  orders: [],
   publicOrders: {},
 };
 
 const customerReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "CUSTOMER_LOAD": {
-      const { user, publicOrders } = action.payload;
+      const { user, orders, publicOrders } = action.payload;
+      console.log("Customer Load Action:", action.payload);
       return {
         ...state,
         user: user ?? state.user,
+        orders: orders ?? state.orders,
         publicOrders: publicOrders ?? state.publicOrders,
       };
     }

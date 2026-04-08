@@ -46,10 +46,10 @@ const Products = () => {
     return productList;
   }, [users, adminProducts]);
 
-  const addOrUpdateProduct = async (oldTitle, updatedData, index) => {
+  const addOrUpdateProduct = async (oldTitle, updatedData) => {
     const newTitle = updatedData.title;
     if (newTitle !== oldTitle && adminProducts[newTitle]) return; // title already exists
-    await upsertProduct(updatedData, index);
+    await upsertProduct(updatedData);
     dispatch({
       type: "UPSERT_PRODUCT",
       payload: { oldTitle, product: updatedData },
@@ -75,7 +75,7 @@ const Products = () => {
             key={product.title}
             product={product}
             onUpdate={(updatedData) =>
-              addOrUpdateProduct(product.title, updatedData, index)
+              addOrUpdateProduct(product.title, updatedData)
             }
           />
         ))

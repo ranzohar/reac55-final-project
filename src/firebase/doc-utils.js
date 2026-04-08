@@ -12,10 +12,11 @@ import {
   addDoc,
   serverTimestamp,
   arrayUnion,
+  increment,
   orderBy,
 } from "firebase/firestore";
 import { safeAsync } from "@/utils";
-import { LINK_TO_PIC } from "@/key-constants";
+import { LINK_TO_PIC, ALLOW_OTHERS } from "@/key-constants";
 
 // Utility function to ensure createDate is added to all documents
 const withCreateDate = (data) => ({
@@ -27,28 +28,6 @@ const withCreateDate = (data) => ({
 const createSortedQuery = (collectionName) =>
   query(collection(db, collectionName), orderBy("createDate", "asc"));
 
-const COLORS = [
-  "#1F77B4",
-  "#2CA02C",
-  "#D62728",
-  "#E377C2",
-  "#FF7F0E",
-  "#9467BD",
-  "#17BECF",
-  "#BCBD22",
-  "#8C564B",
-  "#AEC7E8",
-  "#98DF8A",
-  "#FF9896",
-  "#C5B0D5",
-  "#F7B6D2",
-  "#C49C94",
-  "#9EDAE5",
-  "#DBDB8D",
-  "#7F7F7F",
-  "#393B79",
-  "#637939",
-];
 
 function setData(setCB, collectionName) {
   const q = createSortedQuery(collectionName);
@@ -94,12 +73,7 @@ async function removeUser(uid) {
   await deleteDoc(userRef);
 }
 
-async function addOrderToUser(
-  uid,
-  orderData,
-  allowOthers,
-  currentPublicOrders = {},
-) {
+async function addOrderToUser(uid, orderData) {
   if (!uid) throw new Error("UID is required");
   if (!orderData || typeof orderData !== "object")
     throw new Error("orderData is required");
@@ -108,38 +82,40 @@ async function addOrderToUser(
 
   for (const product of orderData.products) {
     if (
-      !product.id ||
-      typeof product.id !== "string" ||
+      !product.title ||
+      typeof product.title !== "string" ||
       !product.quantity ||
       typeof product.quantity !== "number" ||
       product.quantity < 1
     ) {
       throw new Error(
-        "Each product must have a valid ref (string) and quantity (number >= 1)",
+        "Each product must have a valid title (string) and quantity (number >= 1)",
       );
     }
   }
 
   const userRef = doc(db, "users", uid);
-
-  const orderWithTimestamp = {
-    ...orderData,
-    date: new Date(),
-  };
+  const userSnap = await getDoc(userRef);
+  const allowOthers = userSnap.data()?.[ALLOW_OTHERS] ?? false;
 
   await updateDoc(userRef, {
-    orders: arrayUnion(orderWithTimestamp),
+    orders: arrayUnion({ ...orderData, date: new Date() }),
   });
 
   if (allowOthers) {
-    const updatedPublicOrders = { ...currentPublicOrders };
-    for (const product of orderData.products) {
-      const { id, quantity } = product;
-      console.log(`Updating: ${id}`, quantity);
-
-      updatedPublicOrders[id] = (updatedPublicOrders[id] || 0) + quantity;
+    const colRef = collection(db, "public-orders");
+    const snap = await getDocs(colRef);
+    const updates = Object.fromEntries(
+      orderData.products.map(({ title, quantity }) => [title, increment(quantity)])
+    );
+    if (!snap.empty) {
+      await updateDoc(doc(db, "public-orders", snap.docs[0].id), updates);
+    } else {
+      const initialValues = Object.fromEntries(
+        orderData.products.map(({ title, quantity }) => [title, quantity])
+      );
+      await addDoc(colRef, withCreateDate(initialValues));
     }
-    await setPublicOrders(updatedPublicOrders);
   }
 }
 
@@ -200,7 +176,7 @@ async function loadProductsOnce() {
   }));
 }
 
-async function upsertProduct(fields, index) {
+async function upsertProduct(fields) {
   const { title, price, description, categoryId } = fields;
   const linkToPic = fields[LINK_TO_PIC];
 
@@ -219,9 +195,38 @@ async function upsertProduct(fields, index) {
 
   if (!snap.exists()) {
     Object.assign(data, withCreateDate({}));
-    data.color = COLORS[index % COLORS.length];
   }
   await setDoc(productRef, data, { merge: true });
+}
+
+/** --------------------- ORDERS --------------------- **/
+
+function getOrders(uid, setCB) {
+  if (!uid) throw new Error("UID is required");
+
+  const userRef = doc(db, "users", uid);
+
+  return onSnapshot(userRef, (docSnap) => {
+    if (!docSnap.exists()) {
+      setCB([]);
+    } else {
+      setCB(docSnap.data().orders ?? []);
+    }
+  });
+}
+
+function getAllOrders(setCB) {
+  const q = createSortedQuery("users");
+  return onSnapshot(q, (qSnap) => {
+    const allOrders = qSnap.docs.flatMap((docSnap) => {
+      const user = { id: docSnap.id, ...docSnap.data() };
+      return (user.orders ?? []).map((order) => ({
+        ...order,
+        userId: user.id,
+      }));
+    });
+    setCB(allOrders);
+  });
 }
 
 /** --------------------- PUBLIC ORDERS --------------------- **/
@@ -263,6 +268,8 @@ export {
   withCreateDate,
   getUsersData,
   getUser,
+  getOrders,
+  getAllOrders,
   safeRemoveUser as removeUser,
   safeAddOrderToUser as addOrderToUser,
   getCategories,

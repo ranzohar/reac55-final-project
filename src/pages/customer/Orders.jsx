@@ -3,21 +3,19 @@ import { useSelector } from "react-redux";
 import { WebpageTable, Price } from "@/components";
 
 const Orders = () => {
-  const user = useSelector((state) => state.customer.user);
-  const orders = user?.orders ?? [];
+  const orders = useSelector((state) => state.customer.orders);
   const products = useSelector((state) => state.data.products);
 
   if (orders.length === 0)
     return <div className="message-text">No orders yet</div>;
 
   const headers = ["Title", "Qty", "Price", "Date"];
-
   const data = orders.flatMap((order) =>
     order.products
       .map((product) => {
-        if (!(product.id in products)) return null;
+        if (!(product.title in products)) return null;
 
-        const productData = products[product.id];
+        const productData = products[product.title];
         const title = productData.title;
         const quantity = product.quantity;
 
@@ -25,11 +23,16 @@ const Orders = () => {
 
         const totalPrice = unitPrice * quantity;
 
+        const rawDate = order.date ?? order.createdAt;
+        const parsedDate =
+          rawDate?.toDate?.() ??
+          (rawDate?.seconds
+            ? new Date(rawDate.seconds * 1000)
+            : new Date(rawDate));
         const orderDate =
-          order.date?.toDate?.()?.toLocaleDateString() ??
-          (order.date?.seconds
-            ? new Date(order.date.seconds * 1000).toLocaleDateString()
-            : "-");
+          parsedDate && !isNaN(parsedDate)
+            ? parsedDate.toLocaleDateString()
+            : "-";
 
         return [title, quantity, <Price amount={totalPrice} />, orderDate];
       })

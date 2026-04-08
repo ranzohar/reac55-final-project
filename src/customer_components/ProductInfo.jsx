@@ -9,13 +9,13 @@ import ProductImage from "./ProductImage";
 const ProductInfo = ({ product, bought }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.customer.cart);
-  const quantity = cart[product.id] ?? 0;
+  const quantity = cart[product.title] ?? 0;
 
   const updateCart = (updatedQuantity) => {
     dispatch({
       type: "UPDATE_CART",
       payload: {
-        productId: product.id,
+        productId: product.title,
         quantity: updatedQuantity,
         price: +product.price,
         removeFromCart: updatedQuantity === 0,

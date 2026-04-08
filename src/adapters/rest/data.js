@@ -1,9 +1,4 @@
-// REST Data Adapter (not implemented)
 import { api } from "./api";
-
-const notImplemented = () => {
-  throw new Error("REST data adapter not implemented yet");
-};
 
 export const restDataAdapter = {
   getCategories: (setCB) => {
@@ -72,9 +67,40 @@ export const restDataAdapter = {
       }
     };
     fetchUser();
-    return () => {}; // TODO - implement socket subcription for real-time updates and unsubscription
+    return () => {};
   },
-  updateUser: notImplemented,
-  getOrders: notImplemented,
-  addOrder: notImplemented,
+  getPublicOrders: (setCB) => {
+    // TODO - implement REST endpoint for public orders
+    setCB([]);
+    return () => {};
+  },
+  getOrders: (uid, setCB) => {
+    const fetchOrders = async () => {
+      try {
+        const response = await api.get("/order/");
+        setCB(response.data ?? []);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+        setCB([]);
+      }
+    };
+    fetchOrders();
+    return () => {};
+  },
+  getAllOrders: (setCB) => {
+    const fetchOrders = async () => {
+      try {
+        const response = await api.get("/order/all");
+        setCB(response.data ?? []);
+      } catch (error) {
+        console.error("Failed to fetch all orders:", error);
+        setCB([]);
+      }
+    };
+    fetchOrders();
+    return () => {};
+  },
+  addOrder: async (uid, orderData) => {
+    await api.post(`/order`, orderData);
+  },
 };

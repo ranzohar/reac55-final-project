@@ -7,8 +7,8 @@ import { mapObjectToArray } from "@/utils";
 const useProductsHook = () => {
   const productsMap = useSelector((state) => state.data.products);
 
-  const addOrUpdateProduct = (id, newProduct, index) => {
-    upsertProduct(id, newProduct, index);
+  const addOrUpdateProduct = (id, newProduct) => {
+    upsertProduct(id, newProduct);
   };
 
   const products = useMemo(() => mapObjectToArray(productsMap), [productsMap]);

@@ -28,7 +28,7 @@ const CustomersTable = () => {
       const ordersTableData = userOrders?.flatMap((order) => {
         return order.products.map((orderedProduct) => {
           return [
-            products[orderedProduct.id]?.title,
+            products[orderedProduct.title]?.title,
             orderedProduct.quantity,
             order.date,
           ];

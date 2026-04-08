@@ -4,16 +4,24 @@ import { api } from "./api";
 
 export const restAuthAdapter = {
   signup: async (fname, lname, username, password, allowOthers) => {
+    const doSignup = () =>
+      api.post("/user/signup", { fname, lname, username, password, allowOthers });
     try {
-      const response = await api.post("/user/signup", {
-        fname,
-        lname,
-        username,
-        password,
-        allowOthers,
-      });
+      const response = await doSignup();
       return response.data;
     } catch (error) {
+      if (error.response?.data?.code === "ALREADY_LOGGED_IN") {
+        console.warn("Stale login cookie detected — clearing session and retrying signup");
+        await api.post("/user/logout", {});
+        try {
+          const response = await doSignup();
+          return response.data;
+        } catch (retryErr) {
+          const message =
+            retryErr.response?.data?.message || retryErr.message || "Signup failed";
+          throw new Error(message);
+        }
+      }
       const message =
         error.response?.data?.message || error.message || "Signup failed";
       throw new Error(message);

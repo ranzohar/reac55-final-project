@@ -1,6 +1,21 @@
+const GOLDEN_ANGLE = 137.508;
+
+const hashTitle = (title) => {
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) {
+    hash = (hash * 31 + title.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+};
+
+const titleToColor = (title) => {
+  const hue = (hashTitle(title) * GOLDEN_ANGLE) % 360;
+  return `hsl(${hue.toFixed(1)}, 65%, 50%)`;
+};
+
 const initialState = {
   categories: {}, // { [categoryId]: { name } }
-  products: {}, // { [title]: { title, price, link, category, description, createDate } }
+  products: {}, // { [title]: { title, price, link, category, description, createDate, color } } — color derived from title via golden-ratio hash
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -13,7 +28,10 @@ const dataReducer = (state = initialState, action) => {
         ...state,
         products: payloadProducts
           ? Object.fromEntries(
-              payloadProducts.map((product) => [product.title, { ...product }]),
+              payloadProducts.map((product) => [
+                product.title,
+                { ...product, color: titleToColor(product.title) },
+              ]),
             )
           : state.products,
         categories: payloadCategories
@@ -57,12 +75,21 @@ const dataReducer = (state = initialState, action) => {
 
     case "UPSERT_PRODUCT": {
       const { oldTitle, product } = action.payload;
-      const products = Object.fromEntries(
-        Object.entries(state.products).map(([key, val]) =>
-          key === oldTitle ? [product.title, product] : [key, val]
-        )
-      );
-      return { ...state, products };
+      const existing = state.products[oldTitle];
+      const color = existing?.color ?? titleToColor(product.title);
+      const productWithColor = { ...product, color };
+      if (existing) {
+        const products = Object.fromEntries(
+          Object.entries(state.products).map(([key, val]) =>
+            key === oldTitle ? [product.title, productWithColor] : [key, val],
+          ),
+        );
+        return { ...state, products };
+      }
+      return {
+        ...state,
+        products: { ...state.products, [product.title]: productWithColor },
+      };
     }
 
     default:

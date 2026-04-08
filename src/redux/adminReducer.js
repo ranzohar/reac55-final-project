@@ -22,16 +22,19 @@ const adminReducer = (state = initialState, action) => {
         payloadUsers && payloadUsers.length > 0
           ? payloadUsers.reduce((acc, user) => {
               const {
-                _id: id,
+                _id,
+                id: firebaseId,
                 username,
                 fname,
                 lname,
                 createDate,
-                orders,
               } = user;
+              const id = _id ?? firebaseId;
               const date = createDate?.seconds
                 ? new Date(createDate.seconds * 1000)
-                : createDate;
+                : createDate
+                  ? new Date(createDate)
+                  : null;
               const formattedJoinDate = date
                 ? `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
                 : null;
@@ -42,29 +45,34 @@ const adminReducer = (state = initialState, action) => {
                 lname,
                 joinDate: formattedJoinDate,
                 joinTimestamp: date ? date.getTime() : null,
-                orders: orders || [],
               };
               return acc;
             }, {})
           : {};
-      const orders = Object.entries(users)
-        .flatMap(([userId, user]) => {
-          return (user.orders || []).map((order) => {
-            const date = new Date(order.date.seconds * 1000);
-            return {
-              ...order,
-              userId,
-              date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
-              timestamp: date ? date.getTime() : null,
-            };
-          });
+      return { ...state, users };
+    }
+    case "LOAD_ORDERS": {
+      const parseDate = (raw) => {
+        if (!raw) return null;
+        if (raw?.toDate) return raw.toDate();
+        if (raw?.seconds) return new Date(raw.seconds * 1000);
+        return new Date(raw);
+      };
+      const orders = (action.payload ?? [])
+        .map((order) => {
+          const d = parseDate(order.date);
+          const formatted =
+            d && !isNaN(d)
+              ? `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
+              : "-";
+          return {
+            ...order,
+            date: formatted,
+            timestamp: d && !isNaN(d) ? d.getTime() : 0,
+          };
         })
-        .sort((a, b) => {
-          const aTime = a.date instanceof Date ? a.date.getTime() : 0;
-          const bTime = b.date instanceof Date ? b.date.getTime() : 0;
-          return aTime - bTime;
-        });
-      return { ...state, users, orders };
+        .sort((a, b) => a.timestamp - b.timestamp);
+      return { ...state, orders };
     }
     case "ADD_PRODUCT": {
       const product = action.payload;
