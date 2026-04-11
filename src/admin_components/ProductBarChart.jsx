@@ -1,59 +1,32 @@
 import React from "react";
-import { useMemo } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDarkMode } from "@/hooks";
 import { titleToColor, getColorLightness } from "@/redux/dataReducer";
+import { getStatsByUser } from "@/adapters/index";
 
 import { BarChart, Bar, Cell, LabelList, ResponsiveContainer } from "recharts";
 
 import UserSelect from "./UserSelect";
 
 const ProductsBarChart = () => {
-  const orders = useSelector((state) => state.admin.orders);
-  const products = useSelector((state) => state.data.products);
+  const users = useSelector((state) => state.admin.users);
   const [userId, setUserId] = useState("");
+  const [data, setData] = useState([]);
   const isDark = useDarkMode();
   const colorLightness = getColorLightness(isDark);
-  const dataPerUser = useMemo(() => {
-    const dataPerUserObj = {};
-    orders.forEach((order) => {
-      if (Object.entries(orders).length === 0) {
-        return [];
-      }
-      const userId = order.userId;
-      if (!dataPerUserObj[userId]) {
-        dataPerUserObj[userId] = {};
-      }
-      order.products.forEach((orderedProduct) => {
-        if (orderedProduct.title in products) {
-          const product = products[orderedProduct.title];
-          const quantity = orderedProduct.quantity;
-          dataPerUserObj[userId][product.title] = {
-            qty: (dataPerUserObj[userId][product.title]?.qty ?? 0) + quantity,
-            color: product.color,
-          };
-        }
-      });
-    });
-    const dataPerUserLists = {};
-    Object.entries(dataPerUserObj).forEach(([userId, totals]) => {
-      dataPerUserLists[userId] = Object.entries(totals).map(([name, data]) => ({
-        name,
-        value: data.qty,
-        color: data.color,
-      }));
-    });
 
-    return dataPerUserLists;
-  }, [orders, products]);
-  const sortedData = useMemo(() => {
-    return [...(dataPerUser[userId] || [])].sort((a, b) => a.value - b.value);
-  }, [userId, dataPerUser]);
+  const username = users[userId]?.username ?? "";
+
+  useEffect(() => {
+    if (!username) return;
+    const unsubscribe = getStatsByUser(username, setData);
+    return unsubscribe;
+  }, [username]);
 
   const renderLabelInside = (props) => {
     const { x, y, width, height, index } = props;
-    const entry = sortedData[index];
+    const entry = data[index];
     const OFFSET = 10;
 
     const padding = 6;
@@ -97,17 +70,17 @@ const ProductsBarChart = () => {
     <div className="chart-wrapper">
       <h4>Products Quantity Per Customer</h4>
       <UserSelect userId={userId} setUserId={setUserId} />
-      {sortedData.length === 0 ? (
+      {data.length === 0 ? (
         <div className="message-text">No data for selected user</div>
       ) : (
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height={300}>
           <BarChart
-            data={sortedData}
+            data={data}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             fill="transparent"
           >
             <Bar dataKey="value" isAnimationActive={false}>
-              {sortedData.map((data, index) => (
+              {data.map((data, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={titleToColor(data.name, colorLightness)}

@@ -40,4 +40,5 @@ export const {
   getPublicOrders,
   addOrder,
   getProductStats,
+  getStatsByUser,
 } = selectedDataAdapter;

@@ -125,7 +125,8 @@ describe("Orders E2E", () => {
     cy.get(".card-product").eq(1).find("[name='price']").type(PRODUCT_2.price);
     cy.get(".card-product").eq(1).find("button[type='submit']").click();
 
-    cy.wait(2000); // Wait for async save operations to complete
+    cy.task("waitForFirebaseDoc", { collection: "products", id: PRODUCT_1.title });
+    cy.task("waitForFirebaseDoc", { collection: "products", id: PRODUCT_2.title });
 
     cy.reload();
 

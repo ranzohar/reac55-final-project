@@ -278,6 +278,46 @@ function getProductStats(setCB) {
   };
 }
 
+/** --------------------- STATS BY USER --------------------- **/
+
+function getStatsByUser(username, setCB) {
+  let latestOrders = null;
+  let latestUsers = null;
+
+  const compute = () => {
+    if (!latestOrders || !latestUsers) return;
+    const user = latestUsers.find((u) => u.username === username);
+    if (!user) {
+      setCB([]);
+      return;
+    }
+    const totals = {};
+    latestOrders
+      .filter((order) => order.userId === user.id)
+      .forEach((order) => {
+        order.products?.forEach(({ title, quantity }) => {
+          totals[title] = (totals[title] ?? 0) + quantity;
+        });
+      });
+    setCB(Object.entries(totals).map(([name, value]) => ({ name, value })));
+  };
+
+  const unsubOrders = getAllOrders((orders) => {
+    latestOrders = orders;
+    compute();
+  });
+
+  const unsubUsers = onSnapshot(createSortedQuery("users"), (snap) => {
+    latestUsers = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    compute();
+  });
+
+  return () => {
+    unsubOrders();
+    unsubUsers();
+  };
+}
+
 /** --------------------- PUBLIC ORDERS --------------------- **/
 
 function getPublicOrders(setCB) {
@@ -331,4 +371,5 @@ export {
   getPublicOrders,
   safeSetPublicOrders as setPublicOrders,
   getProductStats,
+  getStatsByUser,
 };

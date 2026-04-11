@@ -116,4 +116,18 @@ export const restDataAdapter = {
     fetchProductStats();
     return () => {};
   },
+  getStatsByUser: (username, setCB) => {
+    const fetchStatsByUser = async () => {
+      try {
+        const response = await api.get(`/order/stats/user/${encodeURIComponent(username)}`);
+        const data = Object.entries(response.data).map(([name, value]) => ({ name, value }));
+        setCB(data);
+      } catch (error) {
+        console.error("Failed to fetch stats by user:", error);
+        setCB([]);
+      }
+    };
+    fetchStatsByUser();
+    return () => {};
+  },
 };

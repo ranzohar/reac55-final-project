@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { useCategories, useCurrencies } from "@/hooks";
 import { LINK_TO_PIC } from "@/key-constants";
@@ -22,6 +22,21 @@ const ProductInfo = ({ product, onUpdate }) => {
     price: convertedPrice,
     [LINK_TO_PIC]: product[LINK_TO_PIC] || "",
   });
+
+  const prevRateRef = useRef(rate);
+  useEffect(() => {
+    const prevRate = prevRateRef.current;
+    if (prevRate !== rate) {
+      setChangeProduct((prev) => ({
+        ...prev,
+        price:
+          prev.price !== ""
+            ? ((Number(prev.price) / prevRate) * rate).toFixed(2)
+            : "",
+      }));
+      prevRateRef.current = rate;
+    }
+  }, [rate]);
 
   const activeCategoryId = categories?.some(
     (c) => c.id === changeProduct.categoryId,

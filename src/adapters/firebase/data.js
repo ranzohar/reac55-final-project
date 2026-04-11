@@ -15,6 +15,7 @@ import {
   upsertProduct,
   addOrderToUser as addOrder,
   getProductStats,
+  getStatsByUser,
 } from "@/firebase/doc-utils";
 
 export const firebaseDataAdapter = {
@@ -31,4 +32,5 @@ export const firebaseDataAdapter = {
   getPublicOrders,
   addOrder,
   getProductStats,
+  getStatsByUser,
 };

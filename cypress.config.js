@@ -2,6 +2,7 @@ import { readFileSync } from "fs";
 import {
   clearFirebaseCollections,
   deleteNonAdminFirebaseAuthUsers,
+  waitForFirebaseDoc,
 } from "./cypress/support/clearFirebaseCollections.js";
 
 function readEnvFile(path) {
@@ -12,7 +13,9 @@ function readEnvFile(path) {
         .filter((line) => /^[A-Z_]+=/.test(line.trim()))
         .map((line) => {
           const [key, ...rest] = line.split("=");
-          return [key.trim(), rest.join("=").trim()];
+          const raw = rest.join("=").trim();
+          const value = raw.split(/\s+#/)[0].trim(); // strip inline comments
+          return [key.trim(), value];
         }),
     );
   } catch {
@@ -30,7 +33,11 @@ export default {
       BACKEND: process.env.VITE_BACKEND ?? localEnv.VITE_BACKEND ?? "firebase",
     },
     setupNodeEvents(on, config) {
-      on("task", { clearFirebaseCollections, deleteNonAdminFirebaseAuthUsers });
+      on("task", {
+        clearFirebaseCollections,
+        deleteNonAdminFirebaseAuthUsers,
+        waitForFirebaseDoc,
+      });
     },
   },
 };

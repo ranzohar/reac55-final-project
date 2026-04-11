@@ -40,6 +40,18 @@ export async function clearFirebaseCollections() {
   return null;
 }
 
+export async function waitForFirebaseDoc({ collection, id, timeoutMs = 5000 }) {
+  const firestore = getDb();
+  const ref = firestore.collection(collection).doc(id);
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const snap = await ref.get();
+    if (snap.exists) return snap.data();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return null;
+}
+
 export async function deleteNonAdminFirebaseAuthUsers() {
   getDb(); // ensure app is initialized
   const auth = getAuth();

@@ -9,7 +9,6 @@ import App from "./App.jsx";
 import { store } from "./redux/store.js";
 import { BACKEND_TYPE, BACKEND_CONFIG } from "./config/backend";
 
-console.log(`backend type: ${BACKEND_TYPE}`);
 if (BACKEND_TYPE === "firebase") {
   // Try to get projectId from firebase config
   let projectId = undefined;
