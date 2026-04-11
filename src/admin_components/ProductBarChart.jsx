@@ -6,6 +6,7 @@ import { titleToColor, getColorLightness } from "@/redux/dataReducer";
 import { getStatsByUser } from "@/adapters/index";
 
 import { BarChart, Bar, Cell, LabelList, ResponsiveContainer } from "recharts";
+import { CHART_HEIGHT } from "./chartConfig";
 
 import UserSelect from "./UserSelect";
 
@@ -73,7 +74,7 @@ const ProductsBarChart = () => {
       {data.length === 0 ? (
         <div className="message-text">No data for selected user</div>
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
           <BarChart
             data={data}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

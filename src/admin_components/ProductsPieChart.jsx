@@ -4,6 +4,7 @@ import { useDarkMode } from "@/hooks";
 import { titleToColor, getColorLightness } from "@/redux/dataReducer";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { CHART_HEIGHT } from "./chartConfig";
 
 const renderCustomizedLabel = ({
   cx,
@@ -76,7 +77,7 @@ const ProductsPieChart = () => {
       {data.length === 0 ? (
         <div className="message-text">No sales yet</div>
       ) : (
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
           <PieChart>
             <Pie
               data={data}
