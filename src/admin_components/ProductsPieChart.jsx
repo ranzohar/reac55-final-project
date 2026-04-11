@@ -1,6 +1,7 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { useMemo } from "react";
+import React, { useState, useEffect } from "react";
+import { getProductStats } from "@/adapters/index";
+import { useDarkMode } from "@/hooks";
+import { titleToColor, getColorLightness } from "@/redux/dataReducer";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
@@ -38,7 +39,7 @@ const renderCustomizedLabel = ({
       <text
         x={xInside}
         y={yInside}
-        fill="black"
+        style={{ fill: "var(--text-primary)" }}
         textAnchor="middle"
         dominantBaseline="central"
       >
@@ -49,7 +50,7 @@ const renderCustomizedLabel = ({
       <text
         x={xOutside}
         y={yOutside}
-        fill="'black'"
+        style={{ fill: "var(--text-primary)" }}
         textAnchor={xOutside > ncx ? "start" : "end"}
         dominantBaseline="central"
       >
@@ -60,35 +61,14 @@ const renderCustomizedLabel = ({
 };
 
 const ProductsPieChart = () => {
-  const orders = useSelector((state) => state.admin.orders);
-  const products = useSelector((state) => state.data.products);
-  const data = useMemo(() => {
-    if (Object.entries(orders).length === 0) {
-      return [];
-    }
-    const totals = {};
+  const [data, setData] = useState([]);
+  const isDark = useDarkMode();
+  const colorLightness = getColorLightness(isDark);
 
-    orders.forEach((order) => {
-      order.products.forEach((orderedProduct) => {
-        if (orderedProduct.id in products) {
-          const product = products[orderedProduct.id];
-          const quantity = orderedProduct.quantity;
-          totals[product.title] = {
-            qty: (totals[product.title]?.qty ?? 0) + quantity,
-            color: product.color,
-          };
-        }
-      });
-    });
-
-    return Object.entries(totals).map(([name, product]) => {
-      return {
-        name,
-        value: product.qty,
-        color: product.color,
-      };
-    });
-  }, [orders, products]);
+  useEffect(() => {
+    const unsubscribe = getProductStats(setData);
+    return unsubscribe;
+  }, []);
 
   return (
     <div className="chart-wrapper">
@@ -107,8 +87,11 @@ const ProductsPieChart = () => {
               isAnimationActive={false}
               stroke="none"
             >
-              {data.map(({ color }, index) => (
-                <Cell key={`cell-${index}`} fill={color} />
+              {data.map(({ name }, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={titleToColor(name, colorLightness)}
+                />
               ))}
             </Pie>
           </PieChart>

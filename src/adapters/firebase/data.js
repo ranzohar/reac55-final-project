@@ -14,6 +14,7 @@ import {
   getProductsData as getProducts,
   upsertProduct,
   addOrderToUser as addOrder,
+  getProductStats,
 } from "@/firebase/doc-utils";
 
 export const firebaseDataAdapter = {
@@ -29,4 +30,5 @@ export const firebaseDataAdapter = {
   getAllOrders,
   getPublicOrders,
   addOrder,
+  getProductStats,
 };

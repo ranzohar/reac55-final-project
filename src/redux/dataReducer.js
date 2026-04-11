@@ -1,18 +1,20 @@
-const GOLDEN_ANGLE = 137.508;
-
 const hashTitle = (title) => {
-  let hash = 0;
+  let h = 0;
   for (let i = 0; i < title.length; i++) {
-    hash = (hash * 31 + title.charCodeAt(i)) >>> 0;
+    h = (h * 31 + title.charCodeAt(i)) >>> 0;
   }
-  return hash;
+  // Bit-mixing finalizer: ensures close hash inputs produce distant outputs
+  h ^= h >>> 16;
+  h = Math.imul(h, 0x45d9f3b);
+  h ^= h >>> 15;
+  return h >>> 0;
 };
 
-const titleToColor = (title) => {
-  const hue = (hashTitle(title) * GOLDEN_ANGLE) % 360;
-  return `hsl(${hue.toFixed(1)}, 65%, 50%)`;
+export const titleToColor = (title, lightness = 50) => {
+  const hue = hashTitle(title) % 360;
+  return `hsl(${hue}, 65%, ${lightness}%)`;
 };
-
+export const getColorLightness = (isDark) => (isDark ? 20 : 42);
 const initialState = {
   categories: {}, // { [categoryId]: { name } }
   products: {}, // { [title]: { title, price, link, category, description, createDate, color } } — color derived from title via golden-ratio hash

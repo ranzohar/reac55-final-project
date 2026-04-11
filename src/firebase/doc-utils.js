@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 import { safeAsync } from "@/utils";
 import { LINK_TO_PIC, ALLOW_OTHERS } from "@/key-constants";
+import { titleToColor } from "@/redux/dataReducer";
 
 // Utility function to ensure createDate is added to all documents
 const withCreateDate = (data) => ({
@@ -229,6 +230,54 @@ function getAllOrders(setCB) {
   });
 }
 
+/** --------------------- PRODUCT STATS --------------------- **/
+
+function getProductStats(setCB) {
+  let latestOrders = null;
+  let latestProducts = null;
+
+  const compute = () => {
+    if (!latestOrders || !latestProducts) return;
+    const productsMap = Object.fromEntries(
+      latestProducts.map((p) => [p.title, p])
+    );
+    const totals = {};
+    latestOrders.forEach((order) => {
+      order.products?.forEach((orderedProduct) => {
+        const product = productsMap[orderedProduct.title];
+        if (product) {
+          totals[product.title] = {
+            qty: (totals[product.title]?.qty ?? 0) + orderedProduct.quantity,
+            color: product.color ?? titleToColor(product.title),
+          };
+        }
+      });
+    });
+    setCB(
+      Object.entries(totals).map(([name, { qty, color }]) => ({
+        name,
+        value: qty,
+        color,
+      }))
+    );
+  };
+
+  const unsubOrders = getAllOrders((orders) => {
+    latestOrders = orders;
+    compute();
+  });
+
+  const unsubProducts = onSnapshot(createSortedQuery("products"), (snap) => {
+    latestProducts = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    compute();
+  });
+
+  return () => {
+    unsubOrders();
+    unsubProducts();
+  };
+}
+
 /** --------------------- PUBLIC ORDERS --------------------- **/
 
 function getPublicOrders(setCB) {
@@ -281,4 +330,5 @@ export {
   safeUpsertProduct as upsertProduct,
   getPublicOrders,
   safeSetPublicOrders as setPublicOrders,
+  getProductStats,
 };

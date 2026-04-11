@@ -1,21 +1,28 @@
 import { BACKEND_TYPE } from "@/config/backend";
-import { firebaseAuthAdapter } from "./firebase/auth";
-import { restAuthAdapter, useAuth as restUseAuth } from "./rest/auth";
-import { firebaseDataAdapter } from "./firebase/data";
-import { restDataAdapter } from "./rest/data";
-import useFirebaseAuth from "../firebase/hooks/useAuth";
 export { useCategories } from "./hooks/useCategories";
 export { useProducts } from "./hooks/useProducts";
 
-const selectedAuthAdapter =
-  BACKEND_TYPE === "firebase" ? firebaseAuthAdapter : restAuthAdapter;
-const selectedDataAdapter =
-  BACKEND_TYPE === "firebase" ? firebaseDataAdapter : restDataAdapter;
+// Dynamic imports ensure Firebase is never loaded when using the REST backend.
+// Static imports would execute firebase.js (initializeApp + getFirestore) eagerly,
+// opening a persistent Firestore connection even when it isn't needed.
+let selectedAuthAdapter, selectedDataAdapter, selectedUseAuth;
 
-const useAuth = BACKEND_TYPE === "firebase" ? useFirebaseAuth : restUseAuth;
+if (BACKEND_TYPE === "firebase") {
+  const { firebaseAuthAdapter } = await import("./firebase/auth");
+  const { firebaseDataAdapter } = await import("./firebase/data");
+  const { default: useFirebaseAuth } = await import("../firebase/hooks/useAuth");
+  selectedAuthAdapter = firebaseAuthAdapter;
+  selectedDataAdapter = firebaseDataAdapter;
+  selectedUseAuth = useFirebaseAuth;
+} else {
+  const { restAuthAdapter, useAuth: restUseAuth } = await import("./rest/auth");
+  const { restDataAdapter } = await import("./rest/data");
+  selectedAuthAdapter = restAuthAdapter;
+  selectedDataAdapter = restDataAdapter;
+  selectedUseAuth = restUseAuth;
+}
 
-export { useAuth };
-
+export const useAuth = selectedUseAuth;
 export const { isAdmin, signup, updateUser, updatePassword } =
   selectedAuthAdapter;
 
@@ -32,4 +39,5 @@ export const {
   getAllOrders,
   getPublicOrders,
   addOrder,
+  getProductStats,
 } = selectedDataAdapter;

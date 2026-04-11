@@ -2,6 +2,8 @@ import React from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useDarkMode } from "@/hooks";
+import { titleToColor, getColorLightness } from "@/redux/dataReducer";
 
 import { BarChart, Bar, Cell, LabelList, ResponsiveContainer } from "recharts";
 
@@ -11,6 +13,8 @@ const ProductsBarChart = () => {
   const orders = useSelector((state) => state.admin.orders);
   const products = useSelector((state) => state.data.products);
   const [userId, setUserId] = useState("");
+  const isDark = useDarkMode();
+  const colorLightness = getColorLightness(isDark);
   const dataPerUser = useMemo(() => {
     const dataPerUserObj = {};
     orders.forEach((order) => {
@@ -22,8 +26,8 @@ const ProductsBarChart = () => {
         dataPerUserObj[userId] = {};
       }
       order.products.forEach((orderedProduct) => {
-        if (orderedProduct.id in products) {
-          const product = products[orderedProduct.id];
+        if (orderedProduct.title in products) {
+          const product = products[orderedProduct.title];
           const quantity = orderedProduct.quantity;
           dataPerUserObj[userId][product.title] = {
             qty: (dataPerUserObj[userId][product.title]?.qty ?? 0) + quantity,
@@ -74,7 +78,7 @@ const ProductsBarChart = () => {
       <text
         x={x + width / 2}
         y={y + OFFSET}
-        fill="black"
+        style={{ fill: "var(--text-primary)" }}
         textAnchor="middle"
         dominantBaseline="middle"
         fontSize={fontSize}
@@ -104,7 +108,10 @@ const ProductsBarChart = () => {
           >
             <Bar dataKey="value" isAnimationActive={false}>
               {sortedData.map((data, index) => (
-                <Cell key={`cell-${index}`} fill={data.color} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={titleToColor(data.name, colorLightness)}
+                />
               ))}
               <LabelList content={renderLabelInside} />
             </Bar>

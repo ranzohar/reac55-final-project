@@ -1,5 +1,6 @@
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -12,7 +13,10 @@ function getDb() {
   if (!db) {
     if (!getApps().length) {
       const serviceAccount = JSON.parse(
-        readFileSync(resolve(__dirname, "../../firebase/test-serviceAccountKey.json"), "utf-8"),
+        readFileSync(
+          resolve(__dirname, "../../firebase/test-serviceAccountKey.json"),
+          "utf-8",
+        ),
       );
       initializeApp({ credential: cert(serviceAccount) });
     }
@@ -33,5 +37,28 @@ async function clearCollection(collectionName) {
 export async function clearFirebaseCollections() {
   const collections = ["categories", "products", "users", "public-orders"];
   await Promise.all(collections.map(clearCollection));
+  return null;
+}
+
+export async function deleteNonAdminFirebaseAuthUsers() {
+  getDb(); // ensure app is initialized
+  const auth = getAuth();
+  const uidsToDelete = [];
+  let nextPageToken;
+
+  do {
+    const result = await auth.listUsers(1000, nextPageToken);
+    for (const user of result.users) {
+      if (!user.customClaims?.admin) {
+        uidsToDelete.push(user.uid);
+      }
+    }
+    nextPageToken = result.pageToken;
+  } while (nextPageToken);
+
+  if (uidsToDelete.length > 0) {
+    await auth.deleteUsers(uidsToDelete);
+  }
+
   return null;
 }

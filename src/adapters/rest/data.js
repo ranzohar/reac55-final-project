@@ -103,4 +103,17 @@ export const restDataAdapter = {
   addOrder: async (uid, orderData) => {
     await api.post(`/order`, orderData);
   },
+  getProductStats: (setCB) => {
+    const fetchProductStats = async () => {
+      try {
+        const response = await api.get("/order/stats/products");
+        setCB(response.data);
+      } catch (error) {
+        console.error("Failed to fetch product stats:", error);
+        setCB([]);
+      }
+    };
+    fetchProductStats();
+    return () => {};
+  },
 };

@@ -9,7 +9,6 @@ const customerReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "CUSTOMER_LOAD": {
       const { user, orders, publicOrders } = action.payload;
-      console.log("Customer Load Action:", action.payload);
       return {
         ...state,
         user: user ?? state.user,
