@@ -3,7 +3,6 @@ import { useState } from "react";
 
 const Category = ({
   name,
-  id,
   updateExistingCategory,
   removeExistingCategory,
 }) => {
@@ -18,7 +17,7 @@ const Category = ({
       return;
     }
     if (nameUpdate !== name) {
-      const success = await updateExistingCategory(id, nameUpdate);
+      const success = await updateExistingCategory(name, nameUpdate);
       if (!success) {
         setNameUpdate(name);
       }
@@ -27,7 +26,7 @@ const Category = ({
   };
 
   const handleRemove = () => {
-    removeExistingCategory(id);
+    removeExistingCategory(name);
   };
 
   return (
@@ -36,8 +35,8 @@ const Category = ({
       {editMode && (
         <input
           type="text"
-          id={`category-edit-${id}`}
-          name={`category-${id}`}
+          id={`category-edit-${name}`}
+          name={`category-${name}`}
           value={nameUpdate}
           onChange={(e) => setNameUpdate(e.target.value)}
           style={{ width: `${Math.max(nameUpdate.length + 2, 1)}ch` }}

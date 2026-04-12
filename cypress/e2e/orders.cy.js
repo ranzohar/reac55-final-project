@@ -26,13 +26,19 @@ const CUSTOMER_A = {
   lname: "Tester",
   username: `alice_${ts}`,
   password: "alicepass123",
+  allowOthers: true,
 };
 const CUSTOMER_B = {
   fname: "Bob",
   lname: "Tester",
   username: `bob_${ts}`,
   password: "bobpass123",
+  allowOthers: false,
 };
+
+// Expected "Bought: X" counts — only Alice's orders (public) contribute
+const BOUGHT_P1 = BAR_A_P1; // 3
+const BOUGHT_P2 = BAR_A_P2; // 5
 
 const addToCart = (title, times) => {
   for (let i = 0; i < times; i++) {
@@ -73,15 +79,32 @@ const placeOrder = ({ p1, p2 }) => {
   cy.get(".card-sliding").should("have.class", "is-closed");
 };
 
-const signUpCustomer = ({ fname, lname, username, password }) => {
+const signUpCustomer = ({ fname, lname, username, password, allowOthers }) => {
   cy.containsCI("Register").click();
   cy.get("input#fname").type(fname);
   cy.get("input#lname").type(lname);
   cy.get("input#username").type(username);
   cy.get("input#password").type(password);
+  if (allowOthers) {
+    cy.get("input#allowOthers").check();
+  }
   cy.get('button[type="submit"]').click();
   cy.containsCI(`Hello, ${fname}`, { timeout: 10000 }).should("be.visible");
   cy.urlShouldIncludeCI("/customer");
+};
+
+const loginCustomer = ({ fname, username, password }) => {
+  cy.get("input#username").type(username);
+  cy.get("input#password").type(password);
+  cy.get('button[type="submit"]').click();
+  cy.containsCI(`Hello, ${fname}`, { timeout: 10000 }).should("be.visible");
+};
+
+const checkBoughtCount = (productTitle, expectedCount) => {
+  cy.contains(".card-product-info", productTitle)
+    .find("div")
+    .filter((_, el) => el.textContent.trim().startsWith("Bought:"))
+    .should("have.text", `Bought: ${expectedCount}`);
 };
 
 const logout = () => {
@@ -279,5 +302,28 @@ describe("Orders E2E", () => {
         cy.get("svg").should("contain.text", String(BAR_B_P1));
         cy.get("svg").should("contain.text", String(BAR_B_P2));
       });
+
+    logout();
+
+    // === CUSTOMER A (public): Bought count shows only her own public orders ===
+    loginCustomer(CUSTOMER_A);
+    cy.containsCI("Products").click();
+    cy.urlShouldIncludeCI("/products");
+    cy.contains(".card-product-info", PRODUCT_1.title, { timeout: 10000 });
+
+    checkBoughtCount(PRODUCT_1.title, BOUGHT_P1);
+    checkBoughtCount(PRODUCT_2.title, BOUGHT_P2);
+
+    logout();
+
+    // === CUSTOMER B (private): sees same Bought count — his orders don't contribute ===
+    loginCustomer(CUSTOMER_B);
+    cy.containsCI("Products").click();
+    cy.urlShouldIncludeCI("/products");
+    cy.contains(".card-product-info", PRODUCT_1.title, { timeout: 10000 });
+
+    checkBoughtCount(PRODUCT_1.title, BOUGHT_P1);
+    checkBoughtCount(PRODUCT_2.title, BOUGHT_P2);
   });
 });
+  

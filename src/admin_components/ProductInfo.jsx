@@ -39,7 +39,7 @@ const ProductInfo = ({ product, onUpdate }) => {
   }, [rate]);
 
   const activeCategoryId = categories?.some(
-    (c) => c.id === changeProduct.categoryId,
+    (c) => c.name === changeProduct.categoryId,
   )
     ? changeProduct.categoryId
     : "";
@@ -64,7 +64,7 @@ const ProductInfo = ({ product, onUpdate }) => {
     );
 
     const selectedCategory = categories.find(
-      (c) => c.id === changeProduct.categoryId,
+      (c) => c.name === changeProduct.categoryId,
     );
     onUpdate({
       title: changeProduct.title,
@@ -132,7 +132,7 @@ const ProductInfo = ({ product, onUpdate }) => {
             <>
               <option value="">No category</option>
               {(categories || []).map((category) => (
-                <option key={category.id} value={category.id}>
+                <option key={category.name} value={category.name}>
                   {category.name}
                 </option>
               ))}

@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { ALLOW_OTHERS } from "@/key-constants";
 
 export const restDataAdapter = {
   getCategories: (setCB) => {
@@ -18,13 +19,13 @@ export const restDataAdapter = {
     const response = await api.post("/category/", { name });
     return response.data.category;
   },
-  updateCategory: async (id, name) => {
-    const response = await api.patch(`/category/${id}`, { name });
+  updateCategory: async (name, newName) => {
+    const response = await api.patch(`/category/${encodeURIComponent(name)}`, { name: newName });
     return response.data.category;
   },
-  removeCategory: async (id) => {
-    const response = await api.delete(`/category/${id}`);
-    return response.data.categoryId;
+  removeCategory: async (name) => {
+    const response = await api.delete(`/category/${encodeURIComponent(name)}`);
+    return response.data.name;
   },
   getProducts: (setCB) => {
     const fetchProducts = async () => {
@@ -60,7 +61,7 @@ export const restDataAdapter = {
     const fetchUser = async () => {
       try {
         const response = await api.get("/user/me");
-        setCB(response.data);
+        setCB({ ...response.data, [ALLOW_OTHERS]: response.data.allowOthersToSeeMyOrders });
       } catch (error) {
         console.error("Failed to fetch user:", error);
         setCB(null);
@@ -70,8 +71,16 @@ export const restDataAdapter = {
     return () => {};
   },
   getPublicOrders: (setCB) => {
-    // TODO - implement REST endpoint for public orders
-    setCB([]);
+    const fetchPublicOrders = async () => {
+      try {
+        const response = await api.get("/order/public");
+        setCB([response.data]);
+      } catch (error) {
+        console.error("Failed to fetch public orders:", error);
+        setCB([]);
+      }
+    };
+    fetchPublicOrders();
     return () => {};
   },
   getOrders: (uid, setCB) => {

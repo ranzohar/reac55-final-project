@@ -106,7 +106,6 @@ const firebaseSignUp = async (
 async function updateUserInfo(uid, data) {
   if (!uid) throw new Error("UID is required");
   if (!data || typeof data !== "object") throw new Error("Data is required");
-  console.log(uid);
 
   const userRef = doc(db, "users", uid);
 

@@ -16,7 +16,7 @@ export const titleToColor = (title, lightness = 50) => {
 };
 export const getColorLightness = (isDark) => (isDark ? 20 : 42);
 const initialState = {
-  categories: {}, // { [categoryId]: { name } }
+  categories: {}, // { [name]: { name } }
   products: {}, // { [title]: { title, price, link, category, description, createDate, color } } — color derived from title via golden-ratio hash
 };
 
@@ -39,7 +39,7 @@ const dataReducer = (state = initialState, action) => {
         categories: payloadCategories
           ? Object.fromEntries(
               payloadCategories.map((category) => [
-                category.id,
+                category.name,
                 { ...category },
               ]),
             )
@@ -53,25 +53,23 @@ const dataReducer = (state = initialState, action) => {
         ...state,
         categories: {
           ...state.categories,
-          [category.id]: { ...category },
+          [category.name]: { ...category },
         },
       };
     }
 
     case "REMOVE_CATEGORY": {
-      const { id } = action.payload;
-      const { [id]: _, ...rest } = state.categories;
+      const { name } = action.payload;
+      const { [name]: _, ...rest } = state.categories;
       return { ...state, categories: rest };
     }
 
     case "UPDATE_CATEGORY": {
-      const { category } = action.payload;
+      const { category, oldName } = action.payload;
+      const { [oldName]: _, ...rest } = state.categories;
       return {
         ...state,
-        categories: {
-          ...state.categories,
-          [category.id]: { ...state.categories[category.id], ...category },
-        },
+        categories: { ...rest, [category.name]: { ...category } },
       };
     }
 

@@ -20,7 +20,7 @@ const SignOut = () => {
     navigate("/");
   };
   return (
-    <a className="sign-out" onClick={signOut}>
+    <a className="sign-out" onClick={signOut} style={{ cursor: "pointer" }}>
       Log Out
     </a>
   );

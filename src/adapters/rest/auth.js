@@ -1,11 +1,12 @@
 // REST Auth Adapter
 import useAuth from "./hooks/useAuth";
 import { api } from "./api";
+import { ALLOW_OTHERS } from "@/key-constants";
 
 export const restAuthAdapter = {
   signup: async (fname, lname, username, password, allowOthers) => {
     const doSignup = () =>
-      api.post("/user/signup", { fname, lname, username, password, allowOthers });
+      api.post("/user/signup", { fname, lname, username, password, allowOthersToSeeMyOrders: allowOthers });
     try {
       const response = await doSignup();
       return response.data;
@@ -35,7 +36,9 @@ export const restAuthAdapter = {
   },
   updateUser: async (uid, data) => {
     try {
-      const response = await api.patch("/user", data);
+      const { [ALLOW_OTHERS]: allowOthers, ...rest } = data;
+      const payload = allowOthers !== undefined ? { ...rest, allowOthersToSeeMyOrders: allowOthers } : rest;
+      const response = await api.patch("/user", payload);
       return response.data.updatedUser;
     } catch (error) {
       const message =

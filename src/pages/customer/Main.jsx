@@ -1,20 +1,31 @@
 import React from "react";
-import { useParams, Outlet } from "react-router-dom";
+import { useParams, Outlet, useNavigate } from "react-router-dom";
 
 import { Cart, SlidingWindow } from "@/customer_components";
 import { useEffect } from "react";
-import { getUser, getProducts, getCategories, getOrders, getPublicOrders } from "@/adapters";
+import {
+  getUser,
+  getProducts,
+  getCategories,
+  getOrders,
+  getPublicOrders,
+} from "@/adapters";
 import { CurrencyOverlay, LinksTab } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { customerId } = useParams();
   const user = useSelector((state) => state.customer.user);
 
   // Fetch and listen to user data changes
   useEffect(() => {
     const unsubscribeUser = getUser(customerId, (data) => {
+      if (data === null) {
+        navigate("/login");
+        return;
+      }
       dispatch({ type: "CUSTOMER_LOAD", payload: { user: data } });
     });
     const unsubscribeProducts = getProducts((data) =>
@@ -27,7 +38,7 @@ const CustomerPage = () => {
       dispatch({ type: "CUSTOMER_LOAD", payload: { orders: data } });
     });
     const unsubscribePublicOrders = getPublicOrders((data) => {
-      const totals = data[0] ?? {};
+      const { id, ...totals } = data[0] ?? {};
       dispatch({ type: "CUSTOMER_LOAD", payload: { publicOrders: totals } });
     });
     return () => {

@@ -22,24 +22,24 @@ const useCategoriesHook = () => {
     }
   };
 
-  const updateExistingCategory = async (id, name) => {
-    if (!id || !name || !categoriesMap[id]) return;
+  const updateExistingCategory = async (name, newName) => {
+    if (!name || !newName || !categoriesMap[name]) return;
     const exists = Object.values(categoriesMap).some(
-      (cat) => cat.name.toLowerCase() === name.toLowerCase(),
+      (cat) => cat.name.toLowerCase() === newName.toLowerCase(),
     );
     if (exists) return false;
-    const category = await updateCategory(id, name);
+    const category = await updateCategory(name, newName);
     if (BACKEND_TYPE === "rest" && category) {
-      dispatch({ type: "UPDATE_CATEGORY", payload: { category } });
+      dispatch({ type: "UPDATE_CATEGORY", payload: { oldName: name, category } });
     }
     return true;
   };
 
-  const removeExistingCategory = async (id) => {
-    if (!id || !categoriesMap[id]) return;
-    const categoryId = await removeCategory(id);
-    if (BACKEND_TYPE === "rest" && categoryId) {
-      dispatch({ type: "REMOVE_CATEGORY", payload: { id: categoryId } });
+  const removeExistingCategory = async (name) => {
+    if (!name || !categoriesMap[name]) return;
+    const deletedName = await removeCategory(name);
+    if (BACKEND_TYPE === "rest" && deletedName) {
+      dispatch({ type: "REMOVE_CATEGORY", payload: { name: deletedName } });
     }
   };
 

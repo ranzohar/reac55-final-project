@@ -1,6 +1,6 @@
 const initialState = {
   orders: [], // flattened array of all orders, sorted by date
-  users: {}, // { [userId]: { username, fname, lname, orders } }
+  users: {}, // { [username]: { username, fname, lname, joinDate } }
   products: {},
 };
 
@@ -21,15 +21,7 @@ const adminReducer = (state = initialState, action) => {
       const users =
         payloadUsers && payloadUsers.length > 0
           ? payloadUsers.reduce((acc, user) => {
-              const {
-                _id,
-                id: firebaseId,
-                username,
-                fname,
-                lname,
-                createDate,
-              } = user;
-              const id = _id ?? firebaseId;
+              const { username, fname, lname, createDate } = user;
               const date = createDate?.seconds
                 ? new Date(createDate.seconds * 1000)
                 : createDate
@@ -39,7 +31,7 @@ const adminReducer = (state = initialState, action) => {
                 ? `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
                 : null;
 
-              acc[id] = {
+              acc[username] = {
                 username,
                 fname,
                 lname,
@@ -69,6 +61,7 @@ const adminReducer = (state = initialState, action) => {
             ...order,
             date: formatted,
             timestamp: d && !isNaN(d) ? d.getTime() : 0,
+            username: order.username ?? order.user?.username,
           };
         })
         .sort((a, b) => a.timestamp - b.timestamp);

@@ -13,18 +13,12 @@ const CustomersTable = () => {
     const ordersPerUser = {};
 
     orders.forEach((order) => {
-      ordersPerUser[order.userId] = [
-        ...(ordersPerUser[order.userId] || []),
-        order,
-      ];
+      const key = order.username;
+      ordersPerUser[key] = [...(ordersPerUser[key] || []), order];
     });
 
-    const usersArray = Object.entries(usersMap).map(([id, user]) => ({
-      id,
-      ...user,
-    }));
-    return usersArray?.map((user) => {
-      const userOrders = ordersPerUser[user.id];
+    return Object.values(usersMap).map((user) => {
+      const userOrders = ordersPerUser[user.username];
       const ordersTableData = userOrders?.flatMap((order) => {
         return order.products.map((orderedProduct) => {
           return [

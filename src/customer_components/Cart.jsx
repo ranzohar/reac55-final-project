@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import { addOrder, getOrders } from "@/adapters";
+import { addOrder, getOrders, getPublicOrders } from "@/adapters";
 import { Price } from "@/components";
 
 import CartProduct from "./CartProduct";
@@ -41,6 +41,10 @@ const Cart = () => {
     dispatch({ type: "CLEAR_CART" });
     getOrders(customerId, (data) => {
       dispatch({ type: "CUSTOMER_LOAD", payload: { orders: data } });
+    });
+    getPublicOrders((data) => {
+      const { id, ...totals } = data[0] ?? {};
+      dispatch({ type: "CUSTOMER_LOAD", payload: { publicOrders: totals } });
     });
   };
   return (

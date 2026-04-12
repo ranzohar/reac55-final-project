@@ -5,37 +5,32 @@ import { useEffect } from "react";
 function UserSelect({ userId, setUserId }) {
   const users = useSelector((state) => state.admin.users);
 
-  const usersArray = Object.entries(users || {}).map(([id, user]) => ({
-    id,
-    ...user,
-  }));
-  const sortedUsersArray = usersArray.sort((a, b) => {
-    return a.joinTimestamp - b.joinTimestamp;
-  });
-  const entries = sortedUsersArray.map((u) => [u.id, u]);
-  const defaultKey = entries[0]?.[0];
+  const sortedUsers = Object.values(users || {}).sort(
+    (a, b) => a.joinTimestamp - b.joinTimestamp,
+  );
+  const defaultKey = sortedUsers[0]?.username || "";
 
   useEffect(() => {
     if (!userId || !(userId in (users || {}))) {
-      setUserId(defaultKey || "");
+      setUserId(defaultKey);
     }
   }, [users, setUserId]);
 
   return (
     <select
-      defaultValue={defaultKey || ""}
+      defaultValue={defaultKey}
       onChange={(e) => {
         setUserId(e.target.value);
       }}
       className="user-select"
     >
-      {entries.length === 0 ? (
+      {sortedUsers.length === 0 ? (
         <option value="" disabled>
           no users available
         </option>
       ) : (
-        entries.map(([key, user]) => (
-          <option key={key} value={key}>
+        sortedUsers.map((user) => (
+          <option key={user.username} value={user.username}>
             {user.fname}
           </option>
         ))
