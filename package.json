@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:firebase": "cross-env NODE_ENV=development VITE_BACKEND=firebase vite",
+    "dev:firebase:prod": "cross-env NODE_ENV=development VITE_BACKEND=firebase VITE_USE_TEST_DB=false vite",
     "dev:rest": "cross-env NODE_ENV=development VITE_BACKEND=rest vite",
     "test": "vitest",
     "test:firebase": "cross-env NODE_ENV=test VITE_BACKEND=firebase vitest",

@@ -4,6 +4,9 @@ import { api } from "./api";
 import { ALLOW_OTHERS } from "@/key-constants";
 
 export const restAuthAdapter = {
+  logout: async () => {
+    await api.post("/user/logout", {});
+  },
   signup: async (fname, lname, username, password, allowOthers) => {
     const doSignup = () =>
       api.post("/user/signup", { fname, lname, username, password, allowOthersToSeeMyOrders: allowOthers });

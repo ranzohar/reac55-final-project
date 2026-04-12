@@ -9,6 +9,7 @@ import {
   getCategories,
   getOrders,
   getPublicOrders,
+  logout,
 } from "@/adapters";
 import { CurrencyOverlay, LinksTab } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,8 +22,9 @@ const CustomerPage = () => {
 
   // Fetch and listen to user data changes
   useEffect(() => {
-    const unsubscribeUser = getUser(customerId, (data) => {
+    const unsubscribeUser = getUser(customerId, async (data) => {
       if (data === null) {
+        await logout();
         navigate("/login");
         return;
       }

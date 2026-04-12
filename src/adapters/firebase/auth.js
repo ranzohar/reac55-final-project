@@ -13,4 +13,5 @@ export const firebaseAuthAdapter = {
   isAdmin: checkIfAdmin,
   updateUser: updateUserInfo,
   updatePassword: updateUserPassword,
+  logout: firebaseLogout,
 };

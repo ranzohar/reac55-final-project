@@ -23,7 +23,7 @@ if (BACKEND_TYPE === "firebase") {
 }
 
 export const useAuth = selectedUseAuth;
-export const { isAdmin, signup, updateUser, updatePassword } =
+export const { isAdmin, signup, updateUser, updatePassword, logout } =
   selectedAuthAdapter;
 
 export const {
