@@ -1,5 +1,5 @@
 import { api } from "../api";
-
+import { store } from "@/redux/store";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -30,6 +30,7 @@ const useAuth = () => {
   const login = async (username, password) => {
     setLoading(true);
     try {
+      store.dispatch({ type: "RESET_STORE" });
       const response = await api.post("/user/login", { username, password });
       const data = response.data;
       setUser(data);
@@ -60,6 +61,7 @@ const useAuth = () => {
     try {
       await api.post("/user/logout", {});
       setUser(null);
+      store.dispatch({ type: "RESET_STORE" });
     } finally {
       setLoading(false);
     }

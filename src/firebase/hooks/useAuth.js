@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseLogin, firebaseLogout } from "../auth-utils";
+import { store } from "@/redux/store";
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
@@ -18,6 +19,7 @@ const useAuth = () => {
   const login = async (username, password) => {
     setLoading(true);
     try {
+      store.dispatch({ type: "RESET_STORE" });
       await firebaseLogin(username, password);
     } finally {
       setLoading(false);
@@ -28,6 +30,7 @@ const useAuth = () => {
     setLoading(true);
     try {
       await firebaseLogout();
+      store.dispatch({ type: "RESET_STORE" });
     } finally {
       setLoading(false);
     }

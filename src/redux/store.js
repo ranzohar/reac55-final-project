@@ -9,4 +9,9 @@ const rootReducer = combineReducers({
   admin: adminReducer,
 });
 
-export const store = legacy_createStore(rootReducer);
+const resettableRootReducer = (state, action) => {
+  if (action.type === "RESET_STORE") state = undefined;
+  return rootReducer(state, action);
+};
+
+export const store = legacy_createStore(resettableRootReducer);
