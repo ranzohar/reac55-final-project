@@ -50,11 +50,12 @@ const ProductInfo = ({ product, onUpdate }) => {
 
   const sanitizePriceInput = (value) => {
     const cleaned = value.replace(/[^0-9.]/g, "");
+    if (cleaned === "") return "";
     if (cleaned === ".") return "0.";
     const parts = cleaned.split(".");
     const whole = parts[0] || "0";
     const decimals = parts.slice(1).join("").slice(0, 2);
-    return decimals ? `${whole}.${decimals}` : whole;
+    return parts.length > 1 ? `${whole}.${decimals}` : whole;
   };
 
   const update = () => {
