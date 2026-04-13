@@ -16,8 +16,8 @@ export const titleToColor = (title, lightness = 50) => {
 };
 export const getColorLightness = (isDark) => (isDark ? 20 : 42);
 const initialState = {
-  categories: {}, // { [name]: { name } }
-  products: {}, // { [title]: { title, price, link, category, description, createDate, color } } — color derived from title via golden-ratio hash
+  categories: {}, // { [id]: { id, name } }
+  products: {}, // { [id]: { title, price, link, categoryId, description, createDate, color } } — color derived from title via golden-ratio hash ?TODO? - change to id?
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -25,23 +25,25 @@ const dataReducer = (state = initialState, action) => {
     case "LOAD": {
       const { products: payloadProducts, categories: payloadCategories } =
         action.payload;
-
+      // console.log("LOAD action:", {
+      //   payloadProducts: JSON.stringify(payloadProducts),
+      //   payloadCategories: JSON.stringify(payloadCategories),
+      // });
       return {
         ...state,
         products: payloadProducts
           ? Object.fromEntries(
               payloadProducts.map((product) => [
-                product.title,
+                product.id,
                 { ...product, color: titleToColor(product.title) },
               ]),
             )
           : state.products,
         categories: payloadCategories
           ? Object.fromEntries(
-              payloadCategories.map((category) => [
-                category.name,
-                { ...category },
-              ]),
+              payloadCategories
+                .filter((category) => category.id)
+                .map((category) => [category.id, { ...category }]),
             )
           : state.categories,
       };
@@ -49,47 +51,67 @@ const dataReducer = (state = initialState, action) => {
 
     case "ADD_CATEGORY": {
       const { category } = action.payload;
+      if (!category?.id) return state;
       return {
         ...state,
         categories: {
           ...state.categories,
-          [category.name]: { ...category },
+          [category.id]: { ...category },
         },
       };
     }
 
     case "REMOVE_CATEGORY": {
-      const { name } = action.payload;
-      const { [name]: _, ...rest } = state.categories;
+      const { id } = action.payload;
+      const { [id]: _, ...rest } = state.categories;
       return { ...state, categories: rest };
     }
 
     case "UPDATE_CATEGORY": {
-      const { category, oldName } = action.payload;
-      const { [oldName]: _, ...rest } = state.categories;
+      const { category } = action.payload; // { id, name }
       return {
         ...state,
-        categories: { ...rest, [category.name]: { ...category } },
+        categories: {
+          ...state.categories,
+          [category.id]: { ...state.categories[category.id], ...category },
+        },
       };
     }
 
-    case "UPSERT_PRODUCT": {
-      const { oldTitle, product } = action.payload;
-      const existing = state.products[oldTitle];
-      const color = existing?.color ?? titleToColor(product.title);
-      const productWithColor = { ...product, color };
-      if (existing) {
-        const products = Object.fromEntries(
-          Object.entries(state.products).map(([key, val]) =>
-            key === oldTitle ? [product.title, productWithColor] : [key, val],
-          ),
-        );
-        return { ...state, products };
-      }
+    case "ADD_PRODUCT": {
+      const { product } = action.payload;
       return {
         ...state,
-        products: { ...state.products, [product.title]: productWithColor },
+        products: {
+          ...state.products,
+          [product.id]: { ...product, color: titleToColor(product.title) },
+        },
       };
+    }
+
+    case "UPDATE_PRODUCT": {
+      const { id, product } = action.payload;
+      console.log("Update product action:", {
+        id,
+        product,
+        state: JSON.stringify(state.products),
+      });
+
+      return {
+        ...state,
+        products: {
+          ...state.products,
+          [id]: { ...state.products[id], ...product, id },
+        },
+      };
+    }
+
+    case "DELETE_PRODUCT": {
+      const { id } = action.payload;
+      const products = Object.fromEntries(
+        Object.entries(state.products).filter(([, p]) => p.id !== id),
+      );
+      return { ...state, products };
     }
 
     default:

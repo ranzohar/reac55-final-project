@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
 function CategorySelect({ categoryId, setCategoryId }) {
-  const categories = useSelector((state) => state.admin.categories);
+  const categories = useSelector((state) => state.data.categories);
 
   const entries = Object.entries(categories);
 

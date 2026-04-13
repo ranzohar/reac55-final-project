@@ -1,20 +1,50 @@
+let draftCounter = 0;
+
 const initialState = {
-  orders: [], // flattened array of all orders, sorted by date
-  users: {}, // { [username]: { username, fname, lname, joinDate } }
-  products: {},
+  orders: [],
+  users: {},
+  drafts: {}, // { [localId]: { localId, createdAt } }
+  boughtByMap: {}, // { [productId]: [[name, qty, date], ...] }
 };
 
 const adminReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "LOAD_ADMIN_PRODUCTS": {
-      const updatedProducts = { ...state.products };
-      action.payload.forEach((product) => {
-        updatedProducts[product.title] = { ...product };
-      });
+    case "ADD_DRAFT": {
+      const localId = ++draftCounter;
       return {
         ...state,
-        products: updatedProducts,
+        drafts: {
+          ...state.drafts,
+          [localId]: { localId, createdAt: Date.now() },
+        },
       };
+    }
+    case "SAVE_DRAFT": {
+      const { localId } = action.payload;
+      const { [localId]: _, ...drafts } = state.drafts;
+      return { ...state, drafts };
+    }
+    case "UPDATE_BOUGHT_BY": {
+      const { id, entries } = action.payload;
+      return {
+        ...state,
+        boughtByMap: { ...state.boughtByMap, [id]: entries },
+      };
+    }
+    case "UPDATE_DRAFT": {
+      const { localId, fields } = action.payload;
+      return {
+        ...state,
+        drafts: {
+          ...state.drafts,
+          [localId]: { ...state.drafts[localId], ...fields },
+        },
+      };
+    }
+    case "DELETE_DRAFT": {
+      const { localId } = action.payload;
+      const { [localId]: _, ...drafts } = state.drafts;
+      return { ...state, drafts };
     }
     case "LOAD_USERS": {
       const { users: payloadUsers } = action.payload;
@@ -66,22 +96,6 @@ const adminReducer = (state = initialState, action) => {
         })
         .sort((a, b) => a.timestamp - b.timestamp);
       return { ...state, orders };
-    }
-    case "ADD_PRODUCT": {
-      const product = action.payload;
-      return {
-        ...state,
-        products: { ...state.products, [product.title]: product },
-      };
-    }
-    case "UPSERT_PRODUCT": {
-      const { oldTitle, product } = action.payload;
-      const products = Object.fromEntries(
-        Object.entries(state.products).map(([key, val]) =>
-          key === oldTitle ? [product.title, product] : [key, val],
-        ),
-      );
-      return { ...state, products };
     }
     default:
       return state;

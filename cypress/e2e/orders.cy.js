@@ -136,6 +136,7 @@ describe("Orders E2E", () => {
       .type(PRODUCT_1.title);
     cy.get(".card-product").eq(0).find("[name='price']").type(PRODUCT_1.price);
     cy.get(".card-product").eq(0).find("button[type='submit']").click();
+    cy.get(".card-product--draft").should("not.exist");
 
     // Add product 2
     cy.containsCI("Add New").click();
@@ -147,9 +148,12 @@ describe("Orders E2E", () => {
       .type(PRODUCT_2.title);
     cy.get(".card-product").eq(1).find("[name='price']").type(PRODUCT_2.price);
     cy.get(".card-product").eq(1).find("button[type='submit']").click();
+    cy.get(".card-product--draft").should("not.exist");
 
-    cy.task("waitForFirebaseDoc", { collection: "products", id: PRODUCT_1.title });
-    cy.task("waitForFirebaseDoc", { collection: "products", id: PRODUCT_2.title });
+    if (Cypress.config("backendType") !== "rest") {
+      cy.task("waitForFirebaseDoc", { collection: "products", id: PRODUCT_1.title });
+      cy.task("waitForFirebaseDoc", { collection: "products", id: PRODUCT_2.title });
+    }
 
     cy.reload();
 

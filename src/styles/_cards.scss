@@ -86,13 +86,17 @@
       "t p"
       "c l"
       "d b"
-      "s .";
+      "s x";
     gap: 1rem;
     width: 100%;
     > form {
       display: contents;
     }
     @include colors.card-inset-shadow();
+
+    &--draft {
+      background-color: var(--card-draft-bg);
+    }
   }
 
   &-product-info {
@@ -200,6 +204,13 @@
   grid-area: s;
 }
 
+.grid-x {
+  grid-area: x;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
 .chart-wrapper {
   @include colors.card-bg-step(2);
   width: 100%;
@@ -220,4 +231,27 @@
 
 .card-product-info .product-image-cell img {
   aspect-ratio: 1/1;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  width: 100%;
+}
+
+.spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid var(--control-border);
+  border-top-color: var(--text-muted);
+  border-radius: 50%;
+  animation: spinner-rotate 0.8s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
 }

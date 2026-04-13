@@ -1,43 +1,32 @@
-import { readFileSync } from "fs";
 import {
   clearFirebaseCollections,
   deleteNonAdminFirebaseAuthUsers,
   waitForFirebaseDoc,
 } from "./cypress/support/clearFirebaseCollections.js";
 
-function readEnvFile(path) {
-  try {
-    return Object.fromEntries(
-      readFileSync(path, "utf-8")
-        .split("\n")
-        .filter((line) => /^[A-Z_]+=/.test(line.trim()))
-        .map((line) => {
-          const [key, ...rest] = line.split("=");
-          const raw = rest.join("=").trim();
-          const value = raw.split(/\s+#/)[0].trim(); // strip inline comments
-          return [key.trim(), value];
-        }),
-    );
-  } catch {
-    return {};
-  }
-}
-
-const localEnv = readEnvFile(".env.development");
-
 export default {
-  allowCypressEnv: true,
+  allowCypressEnv: false,
 
   e2e: {
     env: {
-      BACKEND: process.env.VITE_BACKEND ?? localEnv.VITE_BACKEND ?? "firebase",
+      // Read from the shell environment only — never from .env.development,
+      // which is a Vite file and may contain VITE_BACKEND=rest even when
+      // running Cypress against the Firebase backend.
+      BACKEND: process.env.VITE_BACKEND ?? "firebase",
     },
     setupNodeEvents(on, config) {
+      // Expose BACKEND as a config property so browser-side test code can read
+      // it via Cypress.config("backendType") without requiring allowCypressEnv.
+      console.log(`[DEBUG] Setting backendType to: ${config.env.BACKEND}`);
+      config.backendType = config.env.BACKEND;
+
       on("task", {
         clearFirebaseCollections,
         deleteNonAdminFirebaseAuthUsers,
         waitForFirebaseDoc,
       });
+
+      return config;
     },
   },
 };

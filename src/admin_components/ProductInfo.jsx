@@ -6,7 +6,28 @@ import { LINK_TO_PIC } from "@/key-constants";
 
 import { WebpageTable } from "@/components";
 
-const ProductInfo = ({ product, onUpdate }) => {
+const ERROR_CODE_MESSAGES = {
+  PRODUCT_TITLE_TAKEN: "Title already exists",
+  CATEGORY_NOT_FOUND: "Category not found",
+  PRODUCT_NOT_FOUND: "Product not found",
+};
+
+function parseSaveError(err) {
+  const code = err?.response?.data?.code;
+  if (code && ERROR_CODE_MESSAGES[code]) return ERROR_CODE_MESSAGES[code];
+  return (
+    err?.response?.data?.message || err?.message || "Failed to save product"
+  );
+}
+
+const ProductInfo = ({
+  product,
+  onSave,
+  onDelete,
+  onChange,
+  className,
+  initialFeedback = null,
+}) => {
   const { categories } = useCategories();
   const { rate, currentCoinSign } = useCurrencies();
 
@@ -15,7 +36,15 @@ const ProductInfo = ({ product, onUpdate }) => {
       ? (Number(product.price) * rate).toFixed(2)
       : "";
 
-  const [changeProduct, setChangeProduct] = useState({
+  const [feedback, setFeedback] = useState(initialFeedback); // { type: 'success'|'error', message }
+
+  useEffect(() => {
+    if (!feedback) return;
+    const timer = setTimeout(() => setFeedback(null), 3000);
+    return () => clearTimeout(timer);
+  }, [feedback]);
+
+  const [formState, setFormState] = useState({
     title: product.title || "",
     categoryId: product.categoryId || "",
     description: product.description || "",
@@ -27,7 +56,7 @@ const ProductInfo = ({ product, onUpdate }) => {
   useEffect(() => {
     const prevRate = prevRateRef.current;
     if (prevRate !== rate) {
-      setChangeProduct((prev) => ({
+      setFormState((prev) => ({
         ...prev,
         price:
           prev.price !== ""
@@ -39,13 +68,17 @@ const ProductInfo = ({ product, onUpdate }) => {
   }, [rate]);
 
   const activeCategoryId = categories?.some(
-    (c) => c.name === changeProduct.categoryId,
+    (c) => c.id === formState.categoryId,
   )
-    ? changeProduct.categoryId
+    ? formState.categoryId
     : "";
 
+  useEffect(() => {
+    onChange?.(formState);
+  }, [formState]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleChange = (key, value) => {
-    setChangeProduct((prev) => ({ ...prev, [key]: value }));
+    setFormState((prev) => ({ ...prev, [key]: value }));
   };
 
   const sanitizePriceInput = (value) => {
@@ -58,41 +91,58 @@ const ProductInfo = ({ product, onUpdate }) => {
     return parts.length > 1 ? `${whole}.${decimals}` : whole;
   };
 
-  const update = () => {
-    if (!changeProduct.title || !changeProduct.price) {
-      return;
-    }
-    const normalizedPrice = (Number(changeProduct.price || 0) / rate).toFixed(
-      2,
-    );
-
+  const save = async () => {
+    const normalizedPrice = (Number(formState.price) / rate).toFixed(2);
     const selectedCategory = categories.find(
-      (c) => c.name === changeProduct.categoryId,
+      (c) => c.id === formState.categoryId,
     );
-    onUpdate({
-      title: changeProduct.title,
-      price: normalizedPrice,
-      [LINK_TO_PIC]: changeProduct[LINK_TO_PIC],
-      description: changeProduct.description,
-      categoryId: changeProduct.categoryId,
-      category: selectedCategory?.name || "",
-    });
+    try {
+      // console.log("Saving product with data:", {
+      //   title: formState.title,
+      //   price: normalizedPrice,
+      //   [LINK_TO_PIC]: formState[LINK_TO_PIC],
+      //   description: formState.description,
+      //   categoryId: formState.categoryId,
+      //   categoryName: selectedCategory?.name || "",
+      // });
+      await onSave({
+        title: formState.title,
+        price: normalizedPrice,
+        [LINK_TO_PIC]: formState[LINK_TO_PIC],
+        description: formState.description,
+        categoryId: formState.categoryId,
+        // categoryName: selectedCategory?.name || "",
+      });
+      setFeedback({ type: "success", message: "Saved!" });
+    } catch (err) {
+      setFeedback({ type: "error", message: parseSaveError(err) });
+    }
   };
 
   if (!product) return null;
 
+  const formatDate = (val) => {
+    if (!val) return val;
+    const d = new Date(val);
+    if (isNaN(d)) return val;
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+  };
+
   const boughtByRows = (product.boughtBy || []).map((row) => {
-    if (Array.isArray(row)) return row.slice(0, 3);
-    if (row && typeof row === "object") return Object.values(row).slice(0, 3);
-    return row;
+    let cells;
+    if (Array.isArray(row)) cells = row.slice(0, 3);
+    else if (row && typeof row === "object")
+      cells = Object.values(row).slice(0, 3);
+    else return row;
+    return cells.map((cell, i) => (i === 2 ? formatDate(cell) : cell));
   });
 
   return (
-    <div className="card-product">
+    <div className={`card-product${className ? ` ${className}` : ""}`}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          update();
+          save();
         }}
       >
         <label className="grid-t">
@@ -100,7 +150,8 @@ const ProductInfo = ({ product, onUpdate }) => {
           <input
             className="input-base"
             name="title"
-            value={changeProduct.title}
+            placeholder="Product title"
+            value={formState.title}
             onChange={(e) => handleChange("title", e.target.value)}
             required
           />
@@ -115,7 +166,7 @@ const ProductInfo = ({ product, onUpdate }) => {
               name="price"
               type="text"
               inputMode="decimal"
-              value={changeProduct.price}
+              value={formState.price}
               onChange={(e) =>
                 handleChange("price", sanitizePriceInput(e.target.value))
               }
@@ -135,7 +186,7 @@ const ProductInfo = ({ product, onUpdate }) => {
             <>
               <option value="">No category</option>
               {(categories || []).map((category) => (
-                <option key={category.name} value={category.name}>
+                <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}
@@ -148,7 +199,7 @@ const ProductInfo = ({ product, onUpdate }) => {
           <input
             className="input-base"
             name={LINK_TO_PIC}
-            value={changeProduct[LINK_TO_PIC]}
+            value={formState[LINK_TO_PIC]}
             onChange={(e) => handleChange(LINK_TO_PIC, e.target.value)}
           />
         </label>
@@ -158,15 +209,33 @@ const ProductInfo = ({ product, onUpdate }) => {
           <textarea
             className="input-base"
             name="description"
-            value={changeProduct.description}
+            value={formState.description}
             onChange={(e) => handleChange("description", e.target.value)}
           />
         </label>
 
-        <div className="grid-s">
+        <div
+          className="grid-s"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.25rem",
+            alignItems: "flex-start",
+          }}
+        >
           <button type="submit" className="btn-green btn-small">
             Save
           </button>
+          {feedback && (
+            <span
+              style={{
+                fontSize: "var(--text-s)",
+                color: feedback.type === "error" ? "#ef4444" : "#22c55e",
+              }}
+            >
+              {feedback.message}
+            </span>
+          )}
         </div>
       </form>
 
@@ -177,6 +246,12 @@ const ProductInfo = ({ product, onUpdate }) => {
         ) : (
           <div className="message-text">No sales yet</div>
         )}
+      </div>
+
+      <div className="grid-x">
+        <button type="button" className="btn-red btn-small" onClick={onDelete}>
+          Delete
+        </button>
       </div>
     </div>
   );

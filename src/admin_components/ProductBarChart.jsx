@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useDarkMode } from "@/hooks";
 import { titleToColor, getColorLightness } from "@/redux/dataReducer";
 import { getStatsByUser } from "@/adapters/index";
+import { Spinner } from "@/components";
 
 import { BarChart, Bar, Cell, LabelList, ResponsiveContainer } from "recharts";
 import { CHART_HEIGHT } from "./chartConfig";
@@ -14,6 +15,7 @@ const ProductsBarChart = () => {
   const users = useSelector((state) => state.admin.users);
   const [userId, setUserId] = useState("");
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const isDark = useDarkMode();
   const colorLightness = getColorLightness(isDark);
 
@@ -21,7 +23,11 @@ const ProductsBarChart = () => {
 
   useEffect(() => {
     if (!username) return;
-    const unsubscribe = getStatsByUser(username, setData);
+    setIsLoading(true);
+    const unsubscribe = getStatsByUser(username, (result) => {
+      setData(result);
+      setIsLoading(false);
+    });
     return unsubscribe;
   }, [username]);
 
@@ -66,12 +72,14 @@ const ProductsBarChart = () => {
       </text>
     );
   };
-
+  console.log(JSON.stringify(data, null, 2));
   return (
     <div className="chart-wrapper">
       <h4>Products Quantity Per Customer</h4>
       <UserSelect userId={userId} setUserId={setUserId} />
-      {data.length === 0 ? (
+      {isLoading ? (
+        <Spinner />
+      ) : data.length === 0 ? (
         <div className="message-text">No data for selected user</div>
       ) : (
         <ResponsiveContainer width="100%" height={CHART_HEIGHT}>

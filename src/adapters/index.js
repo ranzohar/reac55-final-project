@@ -32,7 +32,9 @@ export const {
   updateCategory,
   removeCategory,
   getProducts,
-  upsertProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
   getUsers,
   getUser,
   getOrders,
@@ -40,5 +42,6 @@ export const {
   getPublicOrders,
   addOrder,
   getProductStats,
+  getOrdersForProduct,
   getStatsByUser,
 } = selectedDataAdapter;

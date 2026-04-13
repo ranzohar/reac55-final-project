@@ -28,6 +28,7 @@ $darken-step-dark: 3.5%;
   --text-muted: #6b7280;
   --text-inverse: #ffffff;
   --control-border: #d1d5db;
+  --card-draft-bg: #fef3c7;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -43,6 +44,7 @@ $darken-step-dark: 3.5%;
     --text-muted: #cbd5f5;
     --text-inverse: #0f172a;
     --control-border: #4b5563;
+  --card-draft-bg: #292524;
   }
 }
 

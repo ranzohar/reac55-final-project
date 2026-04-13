@@ -22,7 +22,8 @@ const Categories = () => {
         ) : (
           categories.map((category) => (
             <Category
-              key={category.name}
+              key={category.id}
+              id={category.id}
               name={category.name}
               updateExistingCategory={updateExistingCategory}
               removeExistingCategory={removeExistingCategory}

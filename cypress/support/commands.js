@@ -27,9 +27,12 @@
 // Resets app state and navigates to the home page — use in beforeEach
 // The app redirects unauthenticated users to /login automatically
 Cypress.Commands.add("resetApp", () => {
-  if (Cypress.env("BACKEND") === "rest") {
+  console.log(`[DEBUG] Resetting app state...${Cypress.config("backendType")}`);
+
+  if (Cypress.config("backendType") === "rest") {
     cy.request("POST", "http://localhost:3000/api/test/reset");
   } else {
+    console.log("[DEBUG] Clearing Firebase collections and auth users...");
     cy.task("clearFirebaseCollections");
     cy.task("deleteNonAdminFirebaseAuthUsers");
     cy.clearFirebaseAuth();

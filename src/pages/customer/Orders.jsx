@@ -5,6 +5,9 @@ import { WebpageTable, Price } from "@/components";
 const Orders = () => {
   const orders = useSelector((state) => state.customer.orders);
   const products = useSelector((state) => state.data.products);
+  const productsByTitle = Object.fromEntries(
+    Object.values(products).map((p) => [p.title, p]),
+  );
 
   if (orders.length === 0)
     return <div className="message-text">No orders yet</div>;
@@ -13,9 +16,9 @@ const Orders = () => {
   const data = orders.flatMap((order) =>
     order.products
       .map((product) => {
-        if (!(product.title in products)) return null;
+        if (!(product.title in productsByTitle)) return null;
 
-        const productData = products[product.title];
+        const productData = productsByTitle[product.title];
         const title = productData.title;
         const quantity = product.quantity;
 

@@ -15,7 +15,7 @@ const ProductInfo = ({ product, bought }) => {
     dispatch({
       type: "UPDATE_CART",
       payload: {
-        productId: product.title,
+        productTitle: product.title,
         quantity: updatedQuantity,
         price: +product.price,
         removeFromCart: updatedQuantity === 0,

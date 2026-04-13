@@ -2,83 +2,131 @@ import React from "react";
 
 import { ProductInfo } from "@/admin_components";
 import { useSelector, useDispatch } from "react-redux";
-import { upsertProduct } from "@/adapters";
-import { useEffect, useMemo, useRef } from "react";
+import {
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  getOrdersForProduct,
+} from "@/adapters";
+import { useEffect, useMemo, useState } from "react";
 import { mapObjectToArray } from "@/utils";
+import { Spinner } from "@/components";
 
 const Products = () => {
   const dispatch = useDispatch();
   const productsMap = useSelector((state) => state.data.products);
-  const adminProducts = useSelector((state) => state.admin.products);
-  const orders = useSelector((state) => state.admin.orders);
-  const users = useSelector((state) => state.admin.users);
+  const adminDrafts = useSelector((state) => state.admin.drafts);
+  const boughtByMap = useSelector((state) => state.admin.boughtByMap);
 
   const products = useMemo(() => mapObjectToArray(productsMap), [productsMap]);
-  const hasLoadedRef = useRef(false);
 
   useEffect(() => {
-    if (products.length > 0 && !hasLoadedRef.current) {
-      dispatch({ type: "LOAD_ADMIN_PRODUCTS", payload: products });
-      hasLoadedRef.current = true;
-    }
+    if (products.length === 0) return;
+    const unsubs = products.map((product) =>
+      getOrdersForProduct(product.title, (entries) => {
+        dispatch({
+          type: "UPDATE_BOUGHT_BY",
+          payload: { id: product.id, entries },
+        });
+      }),
+    );
+    return () => unsubs.forEach((unsub) => unsub?.());
   }, [products, dispatch]);
 
-  const productsWithStats = useMemo(() => {
-    const ordersPerProduct = {};
-    orders?.forEach((order) => {
-      (order.products || []).forEach(({ quantity, id }) => {
-        const user = users?.[order.userId];
-        const entry = [
-          user ? user.fname : "Unknown",
-          quantity,
-          order.date,
-          order.timestamp,
-        ];
-        ordersPerProduct[id] = ordersPerProduct[id] || [];
-        ordersPerProduct[id].push(entry);
-        ordersPerProduct[id].sort((a, b) => (a[3] || 0) - (b[3] || 0));
-      });
-    }); // TODO - get directly from backend instead of calculating on the fly. RestAPI - /stats/product/:title. Firebase - implement this calculation in the adapter.
-    const productList = Object.values(adminProducts);
-    productList.forEach((product) => {
-      product.boughtBy = ordersPerProduct[product.title] || [];
-    });
-    return productList;
-  }, [users, adminProducts]);
+  // Show spinner only on first load — once every product has cached data in Redux,
+  // navigating away and back renders instantly without re-fetching.
+  const isBoughtByLoading =
+    products.length > 0 && !products.every((p) => p.id in boughtByMap);
 
-  const addOrUpdateProduct = async (oldTitle, updatedData) => {
-    const newTitle = updatedData.title;
-    if (newTitle !== oldTitle && adminProducts[newTitle]) return; // title already exists
-    await upsertProduct(updatedData);
-    dispatch({
-      type: "UPSERT_PRODUCT",
-      payload: { oldTitle, product: updatedData },
-    });
+  const productsWithStats = useMemo(
+    () =>
+      products.map((product) => ({
+        ...product,
+        boughtBy: Array.isArray(boughtByMap[product.id])
+          ? boughtByMap[product.id]
+          : [],
+      })),
+    [products, boughtByMap],
+  );
+
+  const draftList = useMemo(
+    () => Object.values(adminDrafts).sort((a, b) => a.createdAt - b.createdAt),
+    [adminDrafts],
+  );
+
+  const handleSaveProduct = async (id, fields) => {
+    await updateProduct(id, fields);
+    console.log("Saved product with id:", id, "and fields:", fields);
+    dispatch({ type: "UPDATE_PRODUCT", payload: { id, product: fields } });
+  };
+
+  const [lastSavedId, setLastSavedId] = useState(null);
+
+  useEffect(() => {
+    if (!lastSavedId) return;
+    const t = setTimeout(() => setLastSavedId(null), 3000);
+    return () => clearTimeout(t);
+  }, [lastSavedId]);
+
+  const handleSaveDraft = async (localId, fields) => {
+    console.log("Saving draft with localId:", localId, "and fields:", fields);
+    const savedProduct = await createProduct(fields);
+    setLastSavedId(savedProduct.id);
+    dispatch({ type: "SAVE_DRAFT", payload: { localId } });
+    dispatch({ type: "ADD_PRODUCT", payload: { product: savedProduct } });
+  };
+
+  const handleDeleteProduct = async (id) => {
+    await deleteProduct(id);
+    dispatch({ type: "DELETE_PRODUCT", payload: { id } });
+  };
+
+  const handleDraftChange = (localId, fields) => {
+    dispatch({ type: "UPDATE_DRAFT", payload: { localId, fields } });
+  };
+
+  const handleDeleteDraft = (localId) => {
+    dispatch({ type: "DELETE_DRAFT", payload: { localId } });
   };
 
   const addNew = () => {
-    let title = "New Product";
-    let counter = 1;
-    while (adminProducts[title]) {
-      title = `New Product (${counter++})`;
-    }
-    dispatch({ type: "ADD_PRODUCT", payload: { title } });
+    dispatch({ type: "ADD_DRAFT" });
   };
+
+  if (isBoughtByLoading) return <Spinner />;
+
+  const isEmpty = productsWithStats.length === 0 && draftList.length === 0;
 
   return (
     <div className="card-subpage">
-      {productsWithStats.length === 0 ? (
+      {isEmpty ? (
         <div className="message-text">No products yet</div>
       ) : (
-        productsWithStats.map((product, index) => (
-          <ProductInfo
-            key={product.title}
-            product={product}
-            onUpdate={(updatedData) =>
-              addOrUpdateProduct(product.title, updatedData)
-            }
-          />
-        ))
+        <>
+          {productsWithStats.map((product) => (
+            <ProductInfo
+              key={product.id}
+              product={product}
+              onSave={(fields) => handleSaveProduct(product.id, fields)}
+              onDelete={() => handleDeleteProduct(product.id)}
+              initialFeedback={
+                lastSavedId === product.id
+                  ? { type: "success", message: "Saved!" }
+                  : null
+              }
+            />
+          ))}
+          {draftList.map((draft) => (
+            <ProductInfo
+              key={draft.localId}
+              product={draft}
+              onSave={(fields) => handleSaveDraft(draft.localId, fields)}
+              onDelete={() => handleDeleteDraft(draft.localId)}
+              onChange={(fields) => handleDraftChange(draft.localId, fields)}
+              className="card-product--draft"
+            />
+          ))}
+        </>
       )}
       <button className="btn-teal btn-small" onClick={addNew}>
         Add New

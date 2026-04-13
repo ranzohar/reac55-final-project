@@ -29,7 +29,6 @@ const withCreateDate = (data) => ({
 const createSortedQuery = (collectionName) =>
   query(collection(db, collectionName), orderBy("createDate", "asc"));
 
-
 function setData(setCB, collectionName) {
   const q = createSortedQuery(collectionName);
   return onSnapshot(q, (qSnap) => {
@@ -99,6 +98,8 @@ async function addOrderToUser(uid, orderData) {
   const userSnap = await getDoc(userRef);
   const allowOthers = userSnap.data()?.[ALLOW_OTHERS] ?? false;
 
+  console.log(`orderData  for user ${uid}:`, orderData);
+
   await updateDoc(userRef, {
     orders: arrayUnion({ ...orderData, date: new Date() }),
   });
@@ -107,13 +108,16 @@ async function addOrderToUser(uid, orderData) {
     const colRef = collection(db, "public-orders");
     const snap = await getDocs(colRef);
     const updates = Object.fromEntries(
-      orderData.products.map(({ title, quantity }) => [title, increment(quantity)])
+      orderData.products.map(({ title, quantity }) => [
+        title,
+        increment(quantity),
+      ]),
     );
     if (!snap.empty) {
       await updateDoc(doc(db, "public-orders", snap.docs[0].id), updates);
     } else {
       const initialValues = Object.fromEntries(
-        orderData.products.map(({ title, quantity }) => [title, quantity])
+        orderData.products.map(({ title, quantity }) => [title, quantity]),
       );
       await addDoc(colRef, withCreateDate(initialValues));
     }
@@ -125,34 +129,34 @@ async function addOrderToUser(uid, orderData) {
 function getCategories(setCB) {
   const q = createSortedQuery("categories");
   return onSnapshot(q, (qSnap) => {
-    const data = qSnap.docs.map((doc) => ({ ...doc.data() }));
+    const data = qSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
     setCB(data);
   });
 }
 
 async function addCategory(name) {
   if (!name) return;
-  const catRef = doc(db, "categories", name);
-  await setDoc(catRef, withCreateDate({ name }));
-  return name;
+  const docRef = await addDoc(
+    collection(db, "categories"),
+    withCreateDate({ name }),
+  );
+  return { id: docRef.id, name };
 }
 
-async function updateCategory(name, newName) {
-  if (!name || !newName) {
-    throw new Error("name and newName are required");
+async function updateCategory(id, newName) {
+  if (!id || !newName) {
+    throw new Error("id and newName are required");
   }
-  const oldRef = doc(db, "categories", name);
-  const oldSnap = await getDoc(oldRef);
-  const data = oldSnap.exists() ? oldSnap.data() : withCreateDate({});
-  await deleteDoc(oldRef);
-  await setDoc(doc(db, "categories", newName), { ...data, name: newName });
+  await updateDoc(doc(db, "categories", id), { name: newName });
+  return { id, name: newName };
 }
 
-async function removeCategory(name) {
-  if (!name) {
-    throw new Error("name is required");
+async function removeCategory(id) {
+  if (!id) {
+    throw new Error("id is required");
   }
-  await deleteDoc(doc(db, "categories", name));
+  await deleteDoc(doc(db, "categories", id));
+  return id;
 }
 
 /** --------------------- PRODUCTS --------------------- **/
@@ -160,7 +164,7 @@ async function removeCategory(name) {
 function getProductsData(setCB) {
   const q = createSortedQuery("products");
   return onSnapshot(q, (qSnap) => {
-    const data = qSnap.docs.map((doc) => ({ ...doc.data() }));
+    const data = qSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
     setCB(data);
   });
 }
@@ -171,14 +175,11 @@ async function loadProductsOnce() {
   return productsSnapshot.docs.map((doc) => ({ ...doc.data() }));
 }
 
-async function upsertProduct(fields) {
+async function createProduct(fields) {
   const { title, price, description, categoryId } = fields;
   const linkToPic = fields[LINK_TO_PIC];
 
   if (!title || !price) throw new Error("title and price are required");
-
-  const productRef = doc(db, "products", title);
-  const snap = await getDoc(productRef);
 
   const data = {
     title,
@@ -188,10 +189,30 @@ async function upsertProduct(fields) {
   };
   data[LINK_TO_PIC] = linkToPic || "";
 
-  if (!snap.exists()) {
-    Object.assign(data, withCreateDate({}));
-  }
-  await setDoc(productRef, data, { merge: true });
+  const docRef = await addDoc(collection(db, "products"), withCreateDate(data));
+  return { id: docRef.id, ...data };
+}
+
+async function updateProduct(id, fields) {
+  const { title, price, description, categoryId } = fields;
+  const linkToPic = fields[LINK_TO_PIC];
+
+  if (!title || !price) throw new Error("title and price are required");
+
+  const data = {
+    title,
+    price,
+    description: description || "",
+    categoryId: categoryId || "",
+  };
+  data[LINK_TO_PIC] = linkToPic || "";
+
+  await setDoc(doc(db, "products", id), data, { merge: true });
+  return { id, ...data };
+}
+
+async function deleteProduct(id) {
+  await deleteDoc(doc(db, "products", id));
 }
 
 /** --------------------- ORDERS --------------------- **/
@@ -233,7 +254,7 @@ function getProductStats(setCB) {
   const compute = () => {
     if (!latestOrders || !latestProducts) return;
     const productsMap = Object.fromEntries(
-      latestProducts.map((p) => [p.title, p])
+      latestProducts.map((p) => [p.title, p]),
     );
     const totals = {};
     latestOrders.forEach((order) => {
@@ -252,7 +273,7 @@ function getProductStats(setCB) {
         name,
         value: qty,
         color,
-      }))
+      })),
     );
   };
 
@@ -272,6 +293,39 @@ function getProductStats(setCB) {
   };
 }
 
+/** --------------------- ORDERS FOR PRODUCT --------------------- **/
+
+function getOrdersForProduct(title, setCB) {
+  const q = createSortedQuery("users");
+  return onSnapshot(q, (qSnap) => {
+    const entries = [];
+    qSnap.docs.forEach((docSnap) => {
+      const user = docSnap.data();
+      (user.orders ?? []).forEach((order) => {
+        const product = (order.products ?? []).find((p) => p.title === title);
+        if (product) {
+          const raw = order.date;
+          const d =
+            raw?.toDate?.() ??
+            (raw?.seconds ? new Date(raw.seconds * 1000) : new Date(raw));
+          const ms = d && !isNaN(d) ? d.getTime() : 0;
+          const formatted = ms
+            ? `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
+            : "-";
+          entries.push([
+            user.fname ?? "Unknown",
+            product.quantity,
+            formatted,
+            ms,
+          ]);
+        }
+      });
+    });
+    entries.sort((a, b) => a[3] - b[3]);
+    setCB(entries);
+  });
+}
+
 /** --------------------- STATS BY USER --------------------- **/
 
 function getStatsByUser(username, setCB) {
@@ -287,6 +341,7 @@ function getStatsByUser(username, setCB) {
           totals[title] = (totals[title] ?? 0) + quantity;
         });
       });
+    console.log("Computed totals for user:", username, totals);
     setCB(Object.entries(totals).map(([name, value]) => ({ name, value })));
   };
 
@@ -328,7 +383,9 @@ const safeAddOrderToUser = safeAsync(addOrderToUser, "addOrderToUser");
 const safeAddCategory = safeAsync(addCategory, "addCategory");
 const safeUpdateCategory = safeAsync(updateCategory, "updateCategory");
 const safeRemoveCategory = safeAsync(removeCategory, "removeCategory");
-const safeUpsertProduct = safeAsync(upsertProduct, "upsertProduct");
+const safeCreateProduct = safeAsync(createProduct, "createProduct");
+const safeUpdateProduct = safeAsync(updateProduct, "updateProduct");
+const safeDeleteProduct = safeAsync(deleteProduct, "deleteProduct");
 const safeSetPublicOrders = safeAsync(setPublicOrders, "setPublicOrders");
 
 /** --------------------- EXPORTS --------------------- **/
@@ -347,9 +404,12 @@ export {
   safeRemoveCategory as removeCategory,
   getProductsData,
   loadProductsOnce,
-  safeUpsertProduct as upsertProduct,
+  safeCreateProduct as createProduct,
+  safeUpdateProduct as updateProduct,
+  safeDeleteProduct as deleteProduct,
   getPublicOrders,
   safeSetPublicOrders as setPublicOrders,
   getProductStats,
+  getOrdersForProduct,
   getStatsByUser,
 };

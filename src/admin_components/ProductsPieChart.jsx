@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { getProductStats } from "@/adapters/index";
 import { useDarkMode } from "@/hooks";
 import { titleToColor, getColorLightness } from "@/redux/dataReducer";
+import { Spinner } from "@/components";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { CHART_HEIGHT } from "./chartConfig";
 
 const ProductsPieChart = () => {
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const isDark = useDarkMode();
   const colorLightness = getColorLightness(isDark);
 
@@ -70,18 +72,24 @@ const ProductsPieChart = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = getProductStats(setData);
+    setIsLoading(true);
+    const unsubscribe = getProductStats((result) => {
+      setData([...result].sort((a, b) => b.value - a.value));
+      setIsLoading(false);
+    });
     return unsubscribe;
   }, []);
 
   return (
     <div className="chart-wrapper">
       <h4 className="text-center">Total Sold Products</h4>
-      {data.length === 0 ? (
+      {isLoading ? (
+        <Spinner />
+      ) : data.length === 0 ? (
         <div className="message-text">No sales yet</div>
       ) : (
         <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
-          <PieChart>
+          <PieChart margin={{ top: 30, right: 80, bottom: 30, left: 80 }}>
             <Pie
               data={data}
               labelLine={false}

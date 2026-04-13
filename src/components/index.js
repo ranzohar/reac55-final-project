@@ -4,3 +4,4 @@ export { default as Price } from "./Price";
 export { default as PasswordInput } from "./PasswordInput";
 export { default as SignOut } from "./SignOut";
 export { default as WebpageTable } from "./WebpageTable";
+export { default as Spinner } from "./Spinner";

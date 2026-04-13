@@ -17,14 +17,14 @@ const customerReducer = (state = INITIAL_STATE, action) => {
       };
     }
     case "UPDATE_CART": {
-      const { productId, quantity, price, removeFromCart } = action.payload;
+      const { productTitle, quantity, price, removeFromCart } = action.payload;
       let cart = { ...state.cart };
       cart.price =
-        cart.price + price * quantity - (cart[productId] ?? 0) * price;
+        cart.price + price * quantity - (cart[productTitle] ?? 0) * price;
       if (removeFromCart) {
-        delete cart[productId];
+        delete cart[productTitle];
       } else {
-        cart[productId] = quantity;
+        cart[productTitle] = quantity;
       }
       return { ...state, cart };
     }

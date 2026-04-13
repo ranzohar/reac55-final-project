@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, Outlet, useNavigate } from "react-router-dom";
 
 import { Cart, SlidingWindow } from "@/customer_components";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   getUser,
   getProducts,
@@ -11,7 +11,7 @@ import {
   getPublicOrders,
   logout,
 } from "@/adapters";
-import { CurrencyOverlay, LinksTab } from "@/components";
+import { CurrencyOverlay, LinksTab, Spinner } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerPage = () => {
@@ -19,6 +19,16 @@ const CustomerPage = () => {
   const navigate = useNavigate();
   const { customerId } = useParams();
   const user = useSelector((state) => state.customer.user);
+  const [loadedFlags, setLoadedFlags] = useState({
+    user: false,
+    products: false,
+    categories: false,
+    orders: false,
+    publicOrders: false,
+  });
+  const isLoading = !Object.values(loadedFlags).every(Boolean);
+  const markLoaded = (key) =>
+    setLoadedFlags((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
 
   // Fetch and listen to user data changes
   useEffect(() => {
@@ -29,19 +39,24 @@ const CustomerPage = () => {
         return;
       }
       dispatch({ type: "CUSTOMER_LOAD", payload: { user: data } });
+      markLoaded("user");
     });
-    const unsubscribeProducts = getProducts((data) =>
-      dispatch({ type: "LOAD", payload: { products: data } }),
-    );
-    const unsubscribeCategories = getCategories((data) =>
-      dispatch({ type: "LOAD", payload: { categories: data } }),
-    );
+    const unsubscribeProducts = getProducts((data) => {
+      dispatch({ type: "LOAD", payload: { products: data } });
+      markLoaded("products");
+    });
+    const unsubscribeCategories = getCategories((data) => {
+      dispatch({ type: "LOAD", payload: { categories: data } });
+      markLoaded("categories");
+    });
     const unsubscribeOrders = getOrders(customerId, (data) => {
       dispatch({ type: "CUSTOMER_LOAD", payload: { orders: data } });
+      markLoaded("orders");
     });
     const unsubscribePublicOrders = getPublicOrders((data) => {
       const { id, ...totals } = data[0] ?? {};
       dispatch({ type: "CUSTOMER_LOAD", payload: { publicOrders: totals } });
+      markLoaded("publicOrders");
     });
     return () => {
       unsubscribeUser && unsubscribeUser();
@@ -51,6 +66,8 @@ const CustomerPage = () => {
       unsubscribePublicOrders && unsubscribePublicOrders();
     };
   }, [customerId, dispatch]);
+
+  if (isLoading) return <Spinner />;
 
   const links = [
     { name: "Products", path: "products" },

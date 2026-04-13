@@ -16,7 +16,11 @@
     "preview": "vite preview",
     "test:ui": "vitest --ui",
     "cy:run": "cypress run",
+    "cy:run:firebase": "cross-env VITE_BACKEND=firebase cypress run",
+    "cy:run:rest": "cross-env VITE_BACKEND=rest cypress run",
     "cy:open": "cypress open",
+    "cy:open:firebase": "cross-env VITE_BACKEND=firebase cypress open",
+    "cy:open:rest": "cross-env VITE_BACKEND=rest cypress open",
     "e2e": "npm run cy:run"
   },
   "dependencies": {

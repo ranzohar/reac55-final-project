@@ -45,8 +45,8 @@ const FilterTab = ({
         onChange={(e) => setCategoryFilter(e.target.value)}
       >
         <option value="">All</option>
-        {Object.entries(categories).map(([name, cat]) => (
-          <option key={name} value={name}>
+        {Object.entries(categories).map(([id, cat]) => (
+          <option key={id} value={id}>
             {cat.name}
           </option>
         ))}

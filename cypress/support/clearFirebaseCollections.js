@@ -35,6 +35,7 @@ async function clearCollection(collectionName) {
 }
 
 export async function clearFirebaseCollections() {
+  console.log("[DEBUG] Clearing Firebase collections...");
   const collections = ["categories", "products", "users", "public-orders"];
   await Promise.all(collections.map(clearCollection));
   return null;

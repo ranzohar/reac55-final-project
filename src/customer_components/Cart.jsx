@@ -12,11 +12,14 @@ const Cart = () => {
   const { customerId } = useParams();
   const { cart } = useSelector((state) => state.customer);
   const products = useSelector((state) => state.data.products);
-  const updateCart = (productId, quantity, price, removeFromCart) => {
+  const productsByTitle = Object.fromEntries(
+    Object.values(products).map((p) => [p.title, p]),
+  );
+  const updateCart = (productTitle, quantity, price, removeFromCart) => {
     dispatch({
       type: "UPDATE_CART",
       payload: {
-        productId,
+        productTitle,
         quantity,
         price,
         removeFromCart,
@@ -51,21 +54,21 @@ const Cart = () => {
     <>
       <h4>Cart:</h4>
       <br />
-      {Object.entries(cart).map(([productId, quantity]) => {
-        if (!(productId in products)) {
+      {Object.entries(cart).map(([productTitle, quantity]) => {
+        if (!(productTitle in productsByTitle)) {
           return null;
         }
-        const price = products[productId].price;
+        const price = productsByTitle[productTitle].price;
         return (
           <CartProduct
-            key={productId}
-            name={products[productId].title}
+            key={productTitle}
+            name={productTitle}
             quantity={quantity}
             price={price}
             updateCart={(quantity, removeFromCart) =>
-              updateCart(productId, quantity, price, removeFromCart)
+              updateCart(productTitle, quantity, price, removeFromCart)
             }
-            productId={productId}
+            productId={productTitle}
           />
         );
       })}

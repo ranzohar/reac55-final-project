@@ -151,8 +151,6 @@ const Account = () => {
   const user = useSelector((state) => state.customer.user);
   const { customerId } = useParams();
 
-  if (!Object.keys(user).length) return <div>Loading...</div>;
-
   return <AccountForm user={user} customerId={customerId} />;
 };
 

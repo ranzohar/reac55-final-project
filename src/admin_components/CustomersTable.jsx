@@ -7,7 +7,6 @@ import { WebpageTable } from "@/components";
 const CustomersTable = () => {
   const usersMap = useSelector((state) => state.admin.users);
   const orders = useSelector((state) => state.admin.orders);
-  const products = useSelector((state) => state.data.products);
   const tableData = useMemo(() => {
     if (!usersMap || Object.keys(usersMap).length === 0) return [];
     const ordersPerUser = {};
@@ -22,7 +21,7 @@ const CustomersTable = () => {
       const ordersTableData = userOrders?.flatMap((order) => {
         return order.products.map((orderedProduct) => {
           return [
-            products[orderedProduct.title]?.title,
+            orderedProduct.title,
             orderedProduct.quantity,
             order.date,
           ];
@@ -42,7 +41,7 @@ const CustomersTable = () => {
       }
       return [`${user.fname} ${user.lname}`, user.joinDate, ordersTable];
     });
-  }, [usersMap, orders, products]);
+  }, [usersMap, orders]);
 
   if (!tableData.length)
     return <div className="message-text">No customers yet</div>;

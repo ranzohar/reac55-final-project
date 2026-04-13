@@ -34,7 +34,6 @@ const SignUp = () => {
       if (BACKEND_TYPE === "rest") {
         navigate(`/customer/${result.uid}`);
       }
-      // TODO - add real time user updates via rest as well to allow the same logic
     } catch (err) {
       setError(err.message || "Signup failed");
     }

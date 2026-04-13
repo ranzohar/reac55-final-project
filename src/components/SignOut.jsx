@@ -8,13 +8,6 @@ const SignOut = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!user && !loading) {
-  //     navigate("/");
-  //   }
-  // }, [user, loading]); TODO - add websocket to handle from REST API option.
-
-  // Generic signOut function using the current auth adapter
   const signOut = async () => {
     await logout();
     navigate("/");

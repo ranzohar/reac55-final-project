@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { addCategory, updateCategory, removeCategory } from "@/adapters";
 import { mapObjectToArray } from "@/utils";
-import { BACKEND_TYPE } from "@/config/backend";
 
 const useCategoriesHook = () => {
   const categoriesMap = useSelector((state) => state.data.categories);
@@ -17,29 +16,30 @@ const useCategoriesHook = () => {
     );
     if (exists) return;
     const category = await addCategory(newCategoryName);
-    if (BACKEND_TYPE === "rest" && category) {
+    if (category) {
       dispatch({ type: "ADD_CATEGORY", payload: { category } });
     }
   };
 
-  const updateExistingCategory = async (name, newName) => {
-    if (!name || !newName || !categoriesMap[name]) return;
+  const updateExistingCategory = async (id, newName) => {
+    if (!id || !newName || !categoriesMap[id]) return;
     const exists = Object.values(categoriesMap).some(
-      (cat) => cat.name.toLowerCase() === newName.toLowerCase(),
+      (cat) =>
+        cat.id !== id && cat.name.toLowerCase() === newName.toLowerCase(),
     );
     if (exists) return false;
-    const category = await updateCategory(name, newName);
-    if (BACKEND_TYPE === "rest" && category) {
-      dispatch({ type: "UPDATE_CATEGORY", payload: { oldName: name, category } });
+    const category = await updateCategory(id, newName);
+    if (category) {
+      dispatch({ type: "UPDATE_CATEGORY", payload: { category } });
     }
     return true;
   };
 
-  const removeExistingCategory = async (name) => {
-    if (!name || !categoriesMap[name]) return;
-    const deletedName = await removeCategory(name);
-    if (BACKEND_TYPE === "rest" && deletedName) {
-      dispatch({ type: "REMOVE_CATEGORY", payload: { name: deletedName } });
+  const removeExistingCategory = async (id) => {
+    if (!id || !categoriesMap[id]) return;
+    const deletedId = await removeCategory(id);
+    if (deletedId) {
+      dispatch({ type: "REMOVE_CATEGORY", payload: { id: deletedId } });
     }
   };
 

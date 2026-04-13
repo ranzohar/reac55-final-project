@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 
 const Category = ({
+  id,
   name,
   updateExistingCategory,
   removeExistingCategory,
@@ -9,7 +10,7 @@ const Category = ({
   const [editMode, setEditMode] = useState(false);
   const [nameUpdate, setNameUpdate] = useState(name || "");
 
-  if (!name) return null;
+  if (!id) return null;
 
   const handleUpdate = async () => {
     if (!nameUpdate) {
@@ -17,7 +18,7 @@ const Category = ({
       return;
     }
     if (nameUpdate !== name) {
-      const success = await updateExistingCategory(name, nameUpdate);
+      const success = await updateExistingCategory(id, nameUpdate);
       if (!success) {
         setNameUpdate(name);
       }
@@ -26,7 +27,7 @@ const Category = ({
   };
 
   const handleRemove = () => {
-    removeExistingCategory(name);
+    removeExistingCategory(id);
   };
 
   return (
